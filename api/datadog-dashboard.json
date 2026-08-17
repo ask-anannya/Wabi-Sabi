@@ -1,0 +1,29 @@
+{
+    "title": "Example dahboard",
+    "widgets": [
+        {
+        "definition": {
+            "type": "timeseries",
+            "requests": [
+            {
+                "q": "avg:system.cpu.user{*} by {host}",
+                "display_type": "line",
+                "style": {
+                "palette": "dog_classic",
+                "line_type": "solid",
+                "line_width": "normal"
+                }
+            }
+            ],
+            "title": "Average CPU User Time by Host"
+        },
+        "layout": {
+            "x": 0,
+            "y": 0,
+            "width": 47,
+            "height": 15
+        }
+        }
+    ],
+    "layout_type": "ordered"
+}

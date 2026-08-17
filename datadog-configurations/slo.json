@@ -1,0 +1,440 @@
+{
+    "data": [
+        {
+            "id": "e2cd2927f26c5526af468d2ae421c0c3",
+            "name": "Wabi-Sabi Website Availability SLO",
+            "tags": [
+                "check_status:live",
+                "team:ai-engineering-team",
+                "team:dev-team"
+            ],
+            "monitor_tags": [],
+            "thresholds": [
+                {
+                    "timeframe": "7d",
+                    "target": 95.0,
+                    "target_display": "95.",
+                    "warning": 98.0,
+                    "warning_display": "98."
+                }
+            ],
+            "type": "metric",
+            "type_id": 1,
+            "description": "Ensures continuous availability of the Wabi-Sabi application by tracking successful uptime checks from an external monitoring perspective.",
+            "timeframe": "7d",
+            "warning_threshold": 98.0,
+            "target_threshold": 95.0,
+            "query": {
+                "denominator": "sum:synthetics.test_runs{check_id:ayj-kvd-t3f}.as_count()",
+                "numerator": "sum:synthetics.test_runs{check_id:ayj-kvd-t3f, status:success}.as_count()"
+            },
+            "creator": {
+                "name": "wabi-sabi",
+                "handle": "contact@wabi-sabi.beauty",
+                "email": "contact@wabi-sabi.beauty"
+            },
+            "created_at": 1766996411,
+            "modified_at": 1767179174
+        },
+        {
+            "id": "3d61773a5cfd587cbf8154f6881e6ef7",
+            "name": "Wabi-Sabi LLM Chat API Latency",
+            "tags": [
+                "team:dev-team",
+                "service:fastapi",
+                "check_type:api"
+            ],
+            "monitor_tags": [],
+            "thresholds": [
+                {
+                    "timeframe": "7d",
+                    "target": 99.9,
+                    "target_display": "99.9"
+                }
+            ],
+            "type": "time_slice",
+            "type_id": 2,
+            "description": "Tracks the responsiveness of the Wabi-Sabi backend APIs by measuring request latency. This SLO ensures that API responses remain fast enough to provide a smooth user experience.",
+            "timeframe": "7d",
+            "target_threshold": 99.9,
+            "creator": {
+                "name": "wabi-sabi",
+                "handle": "contact@wabi-sabi.beauty",
+                "email": "contact@wabi-sabi.beauty"
+            },
+            "created_at": 1766997929,
+            "modified_at": 1767004757,
+            "sli_specification": {
+                "time_slice": {
+                    "query": {
+                        "formulas": [
+                            {
+                                "formula": "query1"
+                            }
+                        ],
+                        "queries": [
+                            {
+                                "data_source": "metrics",
+                                "name": "query1",
+                                "query": "p95:trace.fastapi.request{*}"
+                            }
+                        ]
+                    },
+                    "query_interval_seconds": 300,
+                    "comparator": "<=",
+                    "threshold": 7.5,
+                    "no_data_strategy": "COUNT_AS_UPTIME"
+                }
+            }
+        },
+        {
+            "id": "c1478ca5124256c987359731c6c12509",
+            "name": "Wabi-Sabi LLM Chat API Error Rate SLO",
+            "tags": [
+                "check_status:live",
+                "team:ai-engineering-team",
+                "check_type:api",
+                "service:grpc-client",
+                "team:dev-team",
+                "service:fastapi"
+            ],
+            "monitor_tags": [],
+            "thresholds": [
+                {
+                    "timeframe": "7d",
+                    "target": 95.0,
+                    "target_display": "95.",
+                    "warning": 98.0,
+                    "warning_display": "98."
+                }
+            ],
+            "type": "metric",
+            "type_id": 1,
+            "description": "Measures the percentage of successful API responses returned by the Wabi-Sabi backend. This SLO helps ensure system stability by tracking error rates and identifying reliability regressions.",
+            "timeframe": "7d",
+            "warning_threshold": 98.0,
+            "target_threshold": 95.0,
+            "query": {
+                "denominator": "sum:trace.fastapi.request.hits{*}.as_count()",
+                "numerator": "sum:trace.fastapi.request.hits{http.status_code:200}.as_count()"
+            },
+            "creator": {
+                "name": "wabi-sabi",
+                "handle": "contact@wabi-sabi.beauty",
+                "email": "contact@wabi-sabi.beauty"
+            },
+            "created_at": 1766998582,
+            "modified_at": 1767011222
+        },
+        {
+            "id": "560e7b29b7db5fce8d7dc111440da64e",
+            "name": "Wabi-Sabi LLM Response Quality (Hallucinations Rate) SLO",
+            "tags": [
+                "service:grpc-client",
+                "team:ai-engineering-team",
+                "product:apm"
+            ],
+            "monitor_tags": [],
+            "thresholds": [
+                {
+                    "timeframe": "7d",
+                    "target": 90.0,
+                    "target_display": "90.",
+                    "warning": 95.0,
+                    "warning_display": "95."
+                }
+            ],
+            "type": "time_slice",
+            "type_id": 2,
+            "description": "Evaluates the quality and grounding of LLM-generated responses by measuring how often outputs meet defined hallucination or grounding thresholds. This SLO helps ensure that responses remain accurate, relevant, and trustworthy.",
+            "timeframe": "7d",
+            "warning_threshold": 95.0,
+            "target_threshold": 90.0,
+            "creator": {
+                "name": "wabi-sabi",
+                "handle": "contact@wabi-sabi.beauty",
+                "email": "contact@wabi-sabi.beauty"
+            },
+            "created_at": 1767005409,
+            "modified_at": 1767008532,
+            "sli_specification": {
+                "time_slice": {
+                    "query": {
+                        "formulas": [
+                            {
+                                "formula": "query1"
+                            }
+                        ],
+                        "queries": [
+                            {
+                                "data_source": "metrics",
+                                "name": "query1",
+                                "query": "avg:llm.hallucinations.score{*}"
+                            }
+                        ]
+                    },
+                    "query_interval_seconds": 300,
+                    "comparator": "<",
+                    "threshold": 0.5,
+                    "no_data_strategy": "COUNT_AS_UPTIME"
+                }
+            }
+        },
+        {
+            "id": "977aa9941a9f531191ad5dfe2f6829d8",
+            "name": "Wabi-Sabi LLM First Token Latency",
+            "tags": [
+                "team:ai-engineering-team"
+            ],
+            "monitor_tags": [],
+            "thresholds": [
+                {
+                    "timeframe": "7d",
+                    "target": 99.9,
+                    "target_display": "99.9",
+                    "warning": 99.95,
+                    "warning_display": "99.95"
+                }
+            ],
+            "type": "time_slice",
+            "type_id": 2,
+            "description": "Measures the latency of LLM responses, the time taken for the LLM to generate the first token. This SLO ensures that users receive timely responses and maintains a responsive conversational experience.",
+            "timeframe": "7d",
+            "warning_threshold": 99.95,
+            "target_threshold": 99.9,
+            "creator": {
+                "name": "wabi-sabi",
+                "handle": "contact@wabi-sabi.beauty",
+                "email": "contact@wabi-sabi.beauty"
+            },
+            "created_at": 1767006642,
+            "modified_at": 1767006642,
+            "sli_specification": {
+                "time_slice": {
+                    "query": {
+                        "formulas": [
+                            {
+                                "formula": "query1 / 1000"
+                            }
+                        ],
+                        "queries": [
+                            {
+                                "data_source": "metrics",
+                                "name": "query1",
+                                "query": "avg:gcp.aiplatform.publisher.online_serving.first_token_latencies.p95{*}"
+                            }
+                        ]
+                    },
+                    "query_interval_seconds": 300,
+                    "comparator": "<=",
+                    "threshold": 5,
+                    "no_data_strategy": "COUNT_AS_UPTIME"
+                }
+            }
+        },
+        {
+            "id": "e339a8b7481c5013a76e6ab8b05a98a3",
+            "name": "Wabi-Sabi LLM Cost Control SLO",
+            "tags": [
+                "service",
+                "team:ai-engineering-team"
+            ],
+            "monitor_tags": [],
+            "thresholds": [
+                {
+                    "timeframe": "7d",
+                    "target": 90.0,
+                    "target_display": "90.",
+                    "warning": 95.0,
+                    "warning_display": "95."
+                }
+            ],
+            "type": "time_slice",
+            "type_id": 2,
+            "description": "Tracks LLM token usage and estimated cost per request to ensure the application remains within defined cost expectations. This SLO supports sustainable and predictable LLM usage.",
+            "timeframe": "7d",
+            "warning_threshold": 95.0,
+            "target_threshold": 90.0,
+            "creator": {
+                "name": "wabi-sabi",
+                "handle": "contact@wabi-sabi.beauty",
+                "email": "contact@wabi-sabi.beauty"
+            },
+            "created_at": 1767008313,
+            "modified_at": 1767008332,
+            "sli_specification": {
+                "time_slice": {
+                    "query": {
+                        "formulas": [
+                            {
+                                "formula": "query1"
+                            }
+                        ],
+                        "queries": [
+                            {
+                                "data_source": "metrics",
+                                "name": "query1",
+                                "query": "avg:ml_obs.span.llm.total.cost{*}"
+                            }
+                        ]
+                    },
+                    "query_interval_seconds": 300,
+                    "comparator": "<=",
+                    "threshold": 0.05,
+                    "no_data_strategy": "COUNT_AS_UPTIME"
+                }
+            }
+        },
+        {
+            "id": "f71c2610f6af5a8299bf18c0e6d28a28",
+            "name": "LLM Hallucination Detection Error Rate SLO",
+            "tags": [
+                "check_type:api",
+                "team:dev-team",
+                "team:ai-engineering-team",
+                "service:fastapi"
+            ],
+            "monitor_tags": [],
+            "thresholds": [
+                {
+                    "timeframe": "7d",
+                    "target": 75.0,
+                    "target_display": "75.",
+                    "warning": 85.0,
+                    "warning_display": "85."
+                }
+            ],
+            "type": "metric",
+            "type_id": 1,
+            "description": "This SLO measures the reliability of the hallucination detection pipeline by tracking the percentage of LLM interactions that are successfully processed without hallucination detection or JSON parsing failures.\n\nErrors indicate failures in safety validation or structured output parsing, which can compromise response trustworthiness and downstream enforcement logic.",
+            "timeframe": "7d",
+            "warning_threshold": 85.0,
+            "target_threshold": 75.0,
+            "query": {
+                "denominator": "sum:llm.chats.total{*}.as_count()",
+                "numerator": "sum:llm.chats.total{*}.as_count() - (sum:llm.errors.hallucination_detection_failure{*}.as_count() + sum:llm.errors.json_parsing_failure{*}.as_count())"
+            },
+            "creator": {
+                "name": "wabi-sabi",
+                "handle": "contact@wabi-sabi.beauty",
+                "email": "contact@wabi-sabi.beauty"
+            },
+            "created_at": 1767126485,
+            "modified_at": 1767177830
+        },
+        {
+            "id": "881f142d4767505f805d03c0fe2983d2",
+            "name": "LLM Hallucination Pre-Filter Accuracy SLO",
+            "tags": [
+                "team:ai-engineering-team",
+                "service",
+                "service:fastapi"
+            ],
+            "monitor_tags": [],
+            "thresholds": [
+                {
+                    "timeframe": "7d",
+                    "target": 75.0,
+                    "target_display": "75.",
+                    "warning": 85.0,
+                    "warning_display": "85."
+                }
+            ],
+            "type": "metric",
+            "type_id": 1,
+            "description": "This SLO measures the accuracy of the hallucination pre-filter by tracking the percentage of evaluated prompts that are correctly flagged as hallucinations before downstream processing.",
+            "timeframe": "7d",
+            "warning_threshold": 85.0,
+            "target_threshold": 75.0,
+            "query": {
+                "denominator": "sum:llm.hallucination.evaluated.count{*}.as_count()",
+                "numerator": "sum:llm.hallucination.flagged.count{*}.as_count()"
+            },
+            "creator": {
+                "name": "wabi-sabi",
+                "handle": "contact@wabi-sabi.beauty",
+                "email": "contact@wabi-sabi.beauty"
+            },
+            "created_at": 1767126949,
+            "modified_at": 1767178251
+        },
+        {
+            "id": "314ceabac2795dc78562bdf559dced6f",
+            "name": "LLM Hallucination Blast Radius Control SLO",
+            "tags": [
+                "team:ai-engineering-team",
+                "service",
+                "service:fastapi"
+            ],
+            "monitor_tags": [],
+            "thresholds": [
+                {
+                    "timeframe": "7d",
+                    "target": 75.0,
+                    "target_display": "75.",
+                    "warning": 85.0,
+                    "warning_display": "85."
+                }
+            ],
+            "type": "monitor",
+            "type_id": 0,
+            "description": "This SLO measures the system\u2019s ability to limit the real-world impact of hallucinations by controlling their blast radius.\n\nThe blast radius is a composite indicator derived from hallucination severity, user exposure, and persona risk sensitivity.\n\nThis ensures that even when hallucinations occur, their impact is contained and does not propagate widely or affect high-risk user personas.",
+            "timeframe": "7d",
+            "warning_threshold": 85.0,
+            "target_threshold": 75.0,
+            "monitor_ids": [
+                17356223
+            ],
+            "creator": {
+                "name": "wabi-sabi",
+                "handle": "contact@wabi-sabi.beauty",
+                "email": "contact@wabi-sabi.beauty"
+            },
+            "created_at": 1767178914,
+            "modified_at": 1767179072
+        },
+        {
+            "id": "140a4691d3715dd1bd21d939f86b08ef",
+            "name": "LLM Hallucination Affected Users Rate SLO",
+            "tags": [
+                "team:ai-engineering-team",
+                "service",
+                "service:fastapi"
+            ],
+            "monitor_tags": [],
+            "thresholds": [
+                {
+                    "timeframe": "7d",
+                    "target": 85.0,
+                    "target_display": "85.",
+                    "warning": 90.0,
+                    "warning_display": "90."
+                }
+            ],
+            "type": "metric",
+            "type_id": 1,
+            "description": "This SLO measures the system\u2019s ability to limit the number of users affected by hallucinations during normal operation.\n\nEnsures that hallucinations remain rare from an end-user perspective and validates that safeguards such as pre-filters, evaluation gating, and secondary validation are effectively protecting users at scale.",
+            "timeframe": "7d",
+            "warning_threshold": 90.0,
+            "target_threshold": 85.0,
+            "query": {
+                "denominator": "sum:llm.chats.total{*}.as_count()",
+                "numerator": "sum:llm.chats.total{*}.as_count() - sum:llm.users.affected{*}.as_count()"
+            },
+            "creator": {
+                "name": "wabi-sabi",
+                "handle": "contact@wabi-sabi.beauty",
+                "email": "contact@wabi-sabi.beauty"
+            },
+            "created_at": 1767180189,
+            "modified_at": 1767180189
+        }
+    ],
+    "error": null,
+    "metadata": {
+        "page": {
+            "total_count": 10,
+            "total_filtered_count": 10
+        }
+    }
+}

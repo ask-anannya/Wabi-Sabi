@@ -1,0 +1,13 @@
+{
+  "_comment": "Real ui_score values captured from an actual successful YouCam task on 2026-08-16 (score_info.json inside the results zip). All metrics are higher_is_better 0-100 health scores, confirmed live.",
+  "task_status": "success",
+  "task_id": "mock-task-fixture",
+  "results": {
+    "pore": 66,
+    "acne": 92,
+    "wrinkle": 83,
+    "redness": 84,
+    "moisture": 71,
+    "age_spot": 92
+  }
+}

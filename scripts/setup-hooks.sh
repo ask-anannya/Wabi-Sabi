@@ -1,0 +1,2 @@
+#!/bin/sh
+./scripts/pre-commit.sh

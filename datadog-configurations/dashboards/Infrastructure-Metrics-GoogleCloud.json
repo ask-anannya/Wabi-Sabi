@@ -1,0 +1,829 @@
+{
+    "title": "Infrastructure Metrics (Google Cloud)",
+    "description": "This dashboard presents events and metrics from GCE, Cloud SQL, and App Engine so you can stay up to date on your Google Cloud Platform infrastructure. For more information, see:\n\n- [Google Cloud Platform integration documentation](https://docs.datadoghq.com/integrations/google-cloud-platform/)\n\n- [GCE monitoring guide](https://www.datadoghq.com/blog/monitor-google-compute-engine-with-datadog/)\n\n- [Monitoring Google App Engine](https://www.datadoghq.com/blog/monitor-google-app-engine-datadog/)\n\n- [Monitoring Google Cloud SQL](https://www.datadoghq.com/blog/monitor-google-cloud-sql/)\n\nClone this template dashboard to make changes and add your own graph widgets.",
+    "widgets": [
+        {
+            "id": 7913631886715112,
+            "definition": {
+                "title": "Google Compute Engine",
+                "background_color": "orange",
+                "show_title": true,
+                "type": "group",
+                "layout_type": "ordered",
+                "widgets": [
+                    {
+                        "id": 2357834982992578,
+                        "definition": {
+                            "title": "Active GCE instances",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "query_value",
+                            "requests": [
+                                {
+                                    "formulas": [
+                                        {
+                                            "formula": "query1"
+                                        }
+                                    ],
+                                    "response_format": "scalar",
+                                    "queries": [
+                                        {
+                                            "query": "sum:gcp.gce.instance.is_running{*,*}.weighted()",
+                                            "data_source": "metrics",
+                                            "name": "query1",
+                                            "aggregator": "max"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "autoscale": true,
+                            "text_align": "center",
+                            "custom_links": [],
+                            "precision": 0
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 0,
+                            "width": 2,
+                            "height": 1
+                        }
+                    },
+                    {
+                        "id": 4315708129891464,
+                        "definition": {
+                            "title": "GCE Instances with Failed Status",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "query_value",
+                            "requests": [
+                                {
+                                    "formulas": [
+                                        {
+                                            "formula": "query1 - query2"
+                                        }
+                                    ],
+                                    "response_format": "scalar",
+                                    "queries": [
+                                        {
+                                            "query": "sum:gcp.gce.instance.count{*,*}",
+                                            "data_source": "metrics",
+                                            "name": "query1",
+                                            "aggregator": "max"
+                                        },
+                                        {
+                                            "query": "sum:gcp.gce.instance.is_running{*,*}.weighted()",
+                                            "data_source": "metrics",
+                                            "name": "query2",
+                                            "aggregator": "max"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "autoscale": true,
+                            "precision": 2
+                        },
+                        "layout": {
+                            "x": 2,
+                            "y": 0,
+                            "width": 2,
+                            "height": 1
+                        }
+                    },
+                    {
+                        "id": 1553188039943924,
+                        "definition": {
+                            "title": "Total Network In",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "query_value",
+                            "requests": [
+                                {
+                                    "formulas": [
+                                        {
+                                            "formula": "query1"
+                                        }
+                                    ],
+                                    "response_format": "scalar",
+                                    "queries": [
+                                        {
+                                            "query": "sum:gcp.gce.instance.network.received_bytes_count{*,*}.as_rate()",
+                                            "data_source": "metrics",
+                                            "name": "query1",
+                                            "aggregator": "sum"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "autoscale": true,
+                            "custom_links": [],
+                            "precision": 2
+                        },
+                        "layout": {
+                            "x": 4,
+                            "y": 0,
+                            "width": 2,
+                            "height": 1
+                        }
+                    },
+                    {
+                        "id": 3283324306415208,
+                        "definition": {
+                            "title": "Total Network Out",
+                            "title_size": "13",
+                            "title_align": "left",
+                            "type": "query_value",
+                            "requests": [
+                                {
+                                    "formulas": [
+                                        {
+                                            "formula": "query1"
+                                        }
+                                    ],
+                                    "response_format": "scalar",
+                                    "queries": [
+                                        {
+                                            "query": "sum:gcp.gce.instance.network.sent_bytes_count{*,*}.as_rate()",
+                                            "data_source": "metrics",
+                                            "name": "query1",
+                                            "aggregator": "sum"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "autoscale": true,
+                            "precision": 2
+                        },
+                        "layout": {
+                            "x": 6,
+                            "y": 0,
+                            "width": 2,
+                            "height": 1
+                        }
+                    },
+                    {
+                        "id": 3525196502870830,
+                        "definition": {
+                            "title": "Avg CPU Utilization",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "query_value",
+                            "requests": [
+                                {
+                                    "formulas": [
+                                        {
+                                            "formula": "query1"
+                                        }
+                                    ],
+                                    "response_format": "scalar",
+                                    "queries": [
+                                        {
+                                            "query": "avg:gcp.gce.instance.cpu.utilization{*,*}",
+                                            "data_source": "metrics",
+                                            "name": "query1",
+                                            "aggregator": "avg"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "custom_links": [],
+                            "precision": 2
+                        },
+                        "layout": {
+                            "x": 8,
+                            "y": 0,
+                            "width": 2,
+                            "height": 1
+                        }
+                    },
+                    {
+                        "id": 5541463056696694,
+                        "definition": {
+                            "title": "Max CPU utilization",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "query_value",
+                            "requests": [
+                                {
+                                    "formulas": [
+                                        {
+                                            "formula": "query1"
+                                        }
+                                    ],
+                                    "conditional_formats": [
+                                        {
+                                            "comparator": ">=",
+                                            "palette": "white_on_red",
+                                            "value": 90
+                                        },
+                                        {
+                                            "comparator": ">=",
+                                            "palette": "white_on_yellow",
+                                            "value": 80
+                                        }
+                                    ],
+                                    "response_format": "scalar",
+                                    "queries": [
+                                        {
+                                            "query": "avg:gcp.gce.instance.cpu.utilization{*,*}",
+                                            "data_source": "metrics",
+                                            "name": "query1",
+                                            "aggregator": "max"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "autoscale": true,
+                            "custom_unit": "%",
+                            "text_align": "center",
+                            "custom_links": [],
+                            "precision": 1
+                        },
+                        "layout": {
+                            "x": 10,
+                            "y": 0,
+                            "width": 2,
+                            "height": 1
+                        }
+                    },
+                    {
+                        "id": 7335880550018028,
+                        "definition": {
+                            "title": "Active GCE instances by Availability Zone",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "show_legend": true,
+                            "legend_layout": "auto",
+                            "legend_columns": [
+                                "avg",
+                                "min",
+                                "max",
+                                "value",
+                                "sum"
+                            ],
+                            "type": "timeseries",
+                            "requests": [
+                                {
+                                    "formulas": [
+                                        {
+                                            "alias": "GCEs",
+                                            "formula": "query1"
+                                        }
+                                    ],
+                                    "queries": [
+                                        {
+                                            "query": "sum:gcp.gce.instance.is_running{*,*} by {availability-zone}.weighted()",
+                                            "data_source": "metrics",
+                                            "name": "query1"
+                                        }
+                                    ],
+                                    "response_format": "timeseries",
+                                    "style": {
+                                        "palette": "orange",
+                                        "line_type": "solid",
+                                        "line_width": "normal"
+                                    },
+                                    "display_type": "bars"
+                                }
+                            ],
+                            "custom_links": []
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 1,
+                            "width": 4,
+                            "height": 4
+                        }
+                    },
+                    {
+                        "id": 4945291654682634,
+                        "definition": {
+                            "title": "Network I/O",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "show_legend": true,
+                            "legend_layout": "auto",
+                            "legend_columns": [
+                                "avg",
+                                "min",
+                                "max",
+                                "value",
+                                "sum"
+                            ],
+                            "type": "timeseries",
+                            "requests": [
+                                {
+                                    "formulas": [
+                                        {
+                                            "alias": "Network In",
+                                            "formula": "query1"
+                                        }
+                                    ],
+                                    "queries": [
+                                        {
+                                            "query": "sum:gcp.gce.instance.network.sent_bytes_count{*,*}.as_count()",
+                                            "data_source": "metrics",
+                                            "name": "query1"
+                                        }
+                                    ],
+                                    "response_format": "timeseries",
+                                    "style": {
+                                        "palette": "orange",
+                                        "line_type": "solid",
+                                        "line_width": "normal"
+                                    },
+                                    "display_type": "area"
+                                },
+                                {
+                                    "formulas": [
+                                        {
+                                            "alias": "Network Out",
+                                            "formula": "0 - query0"
+                                        }
+                                    ],
+                                    "queries": [
+                                        {
+                                            "query": "sum:gcp.gce.instance.network.received_bytes_count{*,*}.as_count()",
+                                            "data_source": "metrics",
+                                            "name": "query0"
+                                        }
+                                    ],
+                                    "response_format": "timeseries",
+                                    "style": {
+                                        "palette": "warm",
+                                        "line_type": "solid",
+                                        "line_width": "normal"
+                                    },
+                                    "display_type": "area"
+                                }
+                            ],
+                            "custom_links": []
+                        },
+                        "layout": {
+                            "x": 4,
+                            "y": 1,
+                            "width": 4,
+                            "height": 4
+                        }
+                    },
+                    {
+                        "id": 49272975048506,
+                        "definition": {
+                            "title": "CPU Utilization (Top 50)",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "query_table",
+                            "requests": [
+                                {
+                                    "response_format": "scalar",
+                                    "queries": [
+                                        {
+                                            "query": "avg:gcp.gce.instance.cpu.utilization{*,*} by {host}",
+                                            "data_source": "metrics",
+                                            "name": "query1",
+                                            "aggregator": "avg"
+                                        }
+                                    ],
+                                    "sort": {
+                                        "count": 50,
+                                        "order_by": [
+                                            {
+                                                "type": "formula",
+                                                "index": 0,
+                                                "order": "desc"
+                                            }
+                                        ]
+                                    },
+                                    "formulas": [
+                                        {
+                                            "alias": "Usage",
+                                            "conditional_formats": [
+                                                {
+                                                    "palette": "black_on_light_red",
+                                                    "value": 95,
+                                                    "comparator": ">"
+                                                },
+                                                {
+                                                    "palette": "black_on_light_yellow",
+                                                    "value": 85,
+                                                    "comparator": ">="
+                                                }
+                                            ],
+                                            "formula": "query1"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        "layout": {
+                            "x": 8,
+                            "y": 1,
+                            "width": 4,
+                            "height": 4
+                        }
+                    }
+                ]
+            },
+            "layout": {
+                "x": 0,
+                "y": 0,
+                "width": 12,
+                "height": 6
+            }
+        },
+        {
+            "id": 282306131405249,
+            "definition": {
+                "title": "Application Logs",
+                "background_color": "blue",
+                "show_title": true,
+                "type": "group",
+                "layout_type": "ordered",
+                "widgets": [
+                    {
+                        "id": 7698987088348590,
+                        "definition": {
+                            "title": "Application Logs",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "requests": [
+                                {
+                                    "response_format": "event_list",
+                                    "query": {
+                                        "data_source": "logs_transaction_stream",
+                                        "query_string": "",
+                                        "indexes": [],
+                                        "group_by": [
+                                            {
+                                                "facet": "service"
+                                            }
+                                        ],
+                                        "compute": [
+                                            {
+                                                "facet": "count",
+                                                "aggregation": "count"
+                                            }
+                                        ],
+                                        "storage": "hot"
+                                    },
+                                    "columns": [
+                                        {
+                                            "field": "group_by",
+                                            "width": "auto"
+                                        },
+                                        {
+                                            "field": "timeline",
+                                            "width": "auto"
+                                        },
+                                        {
+                                            "field": "duration",
+                                            "width": "auto"
+                                        },
+                                        {
+                                            "field": "max_severity",
+                                            "width": "auto"
+                                        },
+                                        {
+                                            "field": "count:count",
+                                            "width": "auto"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "type": "list_stream"
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 0,
+                            "width": 12,
+                            "height": 4
+                        }
+                    }
+                ]
+            },
+            "layout": {
+                "x": 0,
+                "y": 6,
+                "width": 12,
+                "height": 5
+            }
+        },
+        {
+            "id": 8663772707175186,
+            "definition": {
+                "title": "Infrastructure Metrics",
+                "background_color": "green",
+                "show_title": true,
+                "type": "group",
+                "layout_type": "ordered",
+                "widgets": [
+                    {
+                        "id": 6213777385718370,
+                        "definition": {
+                            "title": "Active GCE instances",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "time": {
+                                "live_span": "1h"
+                            },
+                            "type": "query_value",
+                            "requests": [
+                                {
+                                    "response_format": "scalar",
+                                    "queries": [
+                                        {
+                                            "query": "sum:gcp.gce.instance.is_running{*}",
+                                            "data_source": "metrics",
+                                            "name": "query1",
+                                            "aggregator": "max"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "autoscale": true,
+                            "custom_links": [],
+                            "precision": 2
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 0,
+                            "width": 3,
+                            "height": 1
+                        }
+                    },
+                    {
+                        "id": 751476578261516,
+                        "definition": {
+                            "title": "Avg GCE CPU Utilization",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "query_value",
+                            "requests": [
+                                {
+                                    "formulas": [
+                                        {
+                                            "formula": "query1"
+                                        }
+                                    ],
+                                    "response_format": "scalar",
+                                    "queries": [
+                                        {
+                                            "query": "avg:gcp.gce.instance.cpu.utilization{*,*}",
+                                            "data_source": "metrics",
+                                            "name": "query1",
+                                            "aggregator": "avg"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "autoscale": true,
+                            "custom_links": [],
+                            "precision": 2
+                        },
+                        "layout": {
+                            "x": 3,
+                            "y": 0,
+                            "width": 3,
+                            "height": 1
+                        }
+                    },
+                    {
+                        "id": 6522368594291752,
+                        "definition": {
+                            "title": "Total Network In",
+                            "title_size": "13",
+                            "title_align": "left",
+                            "type": "query_value",
+                            "requests": [
+                                {
+                                    "formulas": [
+                                        {
+                                            "formula": "query1"
+                                        }
+                                    ],
+                                    "response_format": "scalar",
+                                    "queries": [
+                                        {
+                                            "query": "sum:gcp.gce.instance.network.received_bytes_count{*,*}.as_rate()",
+                                            "data_source": "metrics",
+                                            "name": "query1",
+                                            "aggregator": "sum"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "autoscale": true,
+                            "precision": 2
+                        },
+                        "layout": {
+                            "x": 6,
+                            "y": 0,
+                            "width": 3,
+                            "height": 1
+                        }
+                    },
+                    {
+                        "id": 4574141437883928,
+                        "definition": {
+                            "title": "Total Network Out",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "query_value",
+                            "requests": [
+                                {
+                                    "formulas": [
+                                        {
+                                            "formula": "query1"
+                                        }
+                                    ],
+                                    "response_format": "scalar",
+                                    "queries": [
+                                        {
+                                            "query": "sum:gcp.gce.instance.network.sent_bytes_count{*,*}.as_rate()",
+                                            "data_source": "metrics",
+                                            "name": "query1",
+                                            "aggregator": "sum"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "autoscale": true,
+                            "custom_links": [],
+                            "precision": 2
+                        },
+                        "layout": {
+                            "x": 9,
+                            "y": 0,
+                            "width": 3,
+                            "height": 1
+                        }
+                    },
+                    {
+                        "id": 25172891825364,
+                        "definition": {
+                            "title": "Scheduler Waiting Time",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "show_legend": true,
+                            "legend_layout": "auto",
+                            "legend_columns": [
+                                "avg",
+                                "min",
+                                "max",
+                                "value",
+                                "sum"
+                            ],
+                            "type": "timeseries",
+                            "requests": [
+                                {
+                                    "formulas": [
+                                        {
+                                            "formula": "query0"
+                                        }
+                                    ],
+                                    "queries": [
+                                        {
+                                            "query": "sum:gcp.gce.instance.cpu.scheduler_wait_time{*,*} by {host}",
+                                            "data_source": "metrics",
+                                            "name": "query0"
+                                        }
+                                    ],
+                                    "response_format": "timeseries",
+                                    "style": {
+                                        "palette": "warm",
+                                        "line_type": "solid",
+                                        "line_width": "normal"
+                                    },
+                                    "display_type": "area"
+                                }
+                            ],
+                            "custom_links": []
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 1,
+                            "width": 6,
+                            "height": 4
+                        }
+                    },
+                    {
+                        "id": 5369382724107928,
+                        "definition": {
+                            "title": "CPU Utilization (Top 50)",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "query_table",
+                            "requests": [
+                                {
+                                    "response_format": "scalar",
+                                    "queries": [
+                                        {
+                                            "query": "avg:gcp.gce.instance.cpu.utilization{*,*} by {host}",
+                                            "data_source": "metrics",
+                                            "name": "query1",
+                                            "aggregator": "avg"
+                                        }
+                                    ],
+                                    "sort": {
+                                        "count": 50,
+                                        "order_by": [
+                                            {
+                                                "type": "formula",
+                                                "index": 0,
+                                                "order": "desc"
+                                            }
+                                        ]
+                                    },
+                                    "formulas": [
+                                        {
+                                            "alias": "Usage",
+                                            "conditional_formats": [
+                                                {
+                                                    "palette": "black_on_light_red",
+                                                    "value": 95,
+                                                    "comparator": ">"
+                                                },
+                                                {
+                                                    "palette": "black_on_light_yellow",
+                                                    "value": 85,
+                                                    "comparator": ">="
+                                                }
+                                            ],
+                                            "formula": "query1"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        "layout": {
+                            "x": 6,
+                            "y": 1,
+                            "width": 6,
+                            "height": 3
+                        }
+                    },
+                    {
+                        "id": 5899246295427642,
+                        "definition": {
+                            "title": "CPU Utilization by Availability Zone",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "show_legend": true,
+                            "legend_layout": "auto",
+                            "legend_columns": [
+                                "avg",
+                                "min",
+                                "max",
+                                "value",
+                                "sum"
+                            ],
+                            "type": "timeseries",
+                            "requests": [
+                                {
+                                    "formulas": [
+                                        {
+                                            "alias": "GCEs",
+                                            "formula": "query1"
+                                        }
+                                    ],
+                                    "queries": [
+                                        {
+                                            "query": "sum:gcp.gce.instance.cpu.utilization{*,*} by {availability-zone}",
+                                            "data_source": "metrics",
+                                            "name": "query1"
+                                        }
+                                    ],
+                                    "response_format": "timeseries",
+                                    "style": {
+                                        "palette": "purple",
+                                        "line_type": "solid",
+                                        "line_width": "normal"
+                                    },
+                                    "display_type": "bars"
+                                }
+                            ],
+                            "custom_links": []
+                        },
+                        "layout": {
+                            "x": 6,
+                            "y": 4,
+                            "width": 6,
+                            "height": 4
+                        }
+                    }
+                ]
+            },
+            "layout": {
+                "x": 0,
+                "y": 11,
+                "width": 12,
+                "height": 9,
+                "is_column_break": true
+            }
+        }
+    ],
+    "template_variables": [],
+    "layout_type": "ordered",
+    "notify_list": [],
+    "reflow_type": "fixed",
+    "pause_auto_refresh": false
+}

@@ -1,0 +1,394 @@
+{
+    "title": "Application Health Dashboard",
+    "description": "[[suggested_dashboards]]",
+    "widgets": [
+        {
+            "id": 2827877814841480,
+            "definition": {
+                "title": "API Requests Overview",
+                "background_color": "green",
+                "show_title": true,
+                "type": "group",
+                "layout_type": "ordered",
+                "widgets": [
+                    {
+                        "id": 8420286349600974,
+                        "definition": {
+                            "title": "API Request Volume",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "query_value",
+                            "requests": [
+                                {
+                                    "response_format": "scalar",
+                                    "queries": [
+                                        {
+                                            "name": "query1",
+                                            "data_source": "metrics",
+                                            "query": "sum:trace.fastapi.request.hits{*}.as_count()",
+                                            "aggregator": "sum"
+                                        }
+                                    ],
+                                    "formulas": [
+                                        {
+                                            "formula": "query1"
+                                        }
+                                    ],
+                                    "comparison": {
+                                        "type": "relative",
+                                        "duration": {
+                                            "type": "previous_day"
+                                        },
+                                        "directionality": "increase_better"
+                                    }
+                                }
+                            ],
+                            "autoscale": true,
+                            "text_align": "center",
+                            "precision": 0,
+                            "timeseries_background": {
+                                "type": "bars",
+                                "yaxis": {}
+                            }
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 0,
+                            "width": 3,
+                            "height": 2
+                        }
+                    },
+                    {
+                        "id": 7739357838160030,
+                        "definition": {
+                            "title": "HTTP Error Count",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "query_value",
+                            "requests": [
+                                {
+                                    "formulas": [
+                                        {
+                                            "formula": "query1"
+                                        }
+                                    ],
+                                    "queries": [
+                                        {
+                                            "query": "sum:trace.fastapi.request.errors{*}.as_count()",
+                                            "data_source": "metrics",
+                                            "name": "query1",
+                                            "aggregator": "sum"
+                                        }
+                                    ],
+                                    "response_format": "scalar",
+                                    "conditional_formats": [
+                                        {
+                                            "comparator": ">=",
+                                            "value": 2,
+                                            "palette": "red_on_white"
+                                        }
+                                    ],
+                                    "comparison": {
+                                        "type": "relative",
+                                        "duration": {
+                                            "type": "previous_day"
+                                        },
+                                        "directionality": "decrease_better"
+                                    }
+                                }
+                            ],
+                            "autoscale": true,
+                            "precision": 0,
+                            "timeseries_background": {
+                                "type": "area",
+                                "yaxis": {
+                                    "include_zero": true
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x": 3,
+                            "y": 0,
+                            "width": 3,
+                            "height": 2
+                        }
+                    },
+                    {
+                        "id": 765442326491821,
+                        "definition": {
+                            "title": "HTTP Status Code Distribution",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "requests": [
+                                {
+                                    "response_format": "scalar",
+                                    "queries": [
+                                        {
+                                            "query": "sum:trace.fastapi.request.hits.by_http_status{*} by {http.status_code}.as_count()",
+                                            "data_source": "metrics",
+                                            "name": "query1",
+                                            "aggregator": "sum"
+                                        }
+                                    ],
+                                    "style": {
+                                        "palette": "semantic"
+                                    },
+                                    "formulas": [
+                                        {
+                                            "formula": "query1"
+                                        }
+                                    ],
+                                    "sort": {
+                                        "count": 500,
+                                        "order_by": [
+                                            {
+                                                "type": "formula",
+                                                "index": 0,
+                                                "order": "desc"
+                                            }
+                                        ]
+                                    }
+                                }
+                            ],
+                            "type": "sunburst",
+                            "hide_total": false,
+                            "legend": {
+                                "type": "table"
+                            }
+                        },
+                        "layout": {
+                            "x": 6,
+                            "y": 0,
+                            "width": 6,
+                            "height": 3
+                        }
+                    },
+                    {
+                        "id": 3267556986996554,
+                        "definition": {
+                            "title": "Request Latency (P50/P95)",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "show_legend": true,
+                            "legend_layout": "auto",
+                            "legend_columns": [
+                                "avg",
+                                "min",
+                                "max",
+                                "value",
+                                "sum"
+                            ],
+                            "time": {
+                                "type": "live",
+                                "unit": "week",
+                                "value": 1
+                            },
+                            "type": "timeseries",
+                            "requests": [
+                                {
+                                    "response_format": "timeseries",
+                                    "queries": [
+                                        {
+                                            "name": "query1",
+                                            "data_source": "metrics",
+                                            "query": "p50:trace.fastapi.request{*}"
+                                        },
+                                        {
+                                            "name": "query2",
+                                            "data_source": "metrics",
+                                            "query": "p95:trace.fastapi.request{*}"
+                                        }
+                                    ],
+                                    "formulas": [
+                                        {
+                                            "formula": "query1"
+                                        },
+                                        {
+                                            "formula": "query2"
+                                        }
+                                    ],
+                                    "style": {
+                                        "palette": "dog_classic",
+                                        "order_by": "values",
+                                        "line_type": "solid",
+                                        "line_width": "normal"
+                                    },
+                                    "display_type": "line"
+                                }
+                            ],
+                            "yaxis": {
+                                "include_zero": true,
+                                "scale": "linear"
+                            },
+                            "markers": [
+                                {
+                                    "value": "y = 4",
+                                    "display_type": "error dashed"
+                                }
+                            ]
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 2,
+                            "width": 6,
+                            "height": 4
+                        }
+                    }
+                ]
+            },
+            "layout": {
+                "x": 0,
+                "y": 0,
+                "width": 12,
+                "height": 7
+            }
+        },
+        {
+            "id": 1851037696598687,
+            "definition": {
+                "title": "Resource Utilisation",
+                "background_color": "orange",
+                "show_title": true,
+                "type": "group",
+                "layout_type": "ordered",
+                "widgets": [
+                    {
+                        "id": 3534806698683838,
+                        "definition": {
+                            "title": "Memory Utitlization (MiB)",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "show_legend": true,
+                            "legend_layout": "auto",
+                            "legend_columns": [
+                                "avg",
+                                "min",
+                                "max",
+                                "value",
+                                "sum"
+                            ],
+                            "type": "timeseries",
+                            "requests": [
+                                {
+                                    "response_format": "timeseries",
+                                    "queries": [
+                                        {
+                                            "name": "query1",
+                                            "data_source": "metrics",
+                                            "query": "avg:container.memory.usage{*}"
+                                        }
+                                    ],
+                                    "formulas": [
+                                        {
+                                            "formula": "query1"
+                                        }
+                                    ],
+                                    "style": {
+                                        "palette": "dog_classic",
+                                        "order_by": "values",
+                                        "line_type": "solid",
+                                        "line_width": "normal"
+                                    },
+                                    "display_type": "line"
+                                }
+                            ],
+                            "markers": [
+                                {
+                                    "value": "y = 200",
+                                    "display_type": "error dashed"
+                                }
+                            ]
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 0,
+                            "width": 6,
+                            "height": 4
+                        }
+                    },
+                    {
+                        "id": 3174457942583046,
+                        "definition": {
+                            "title": "CPU Utilization (%)",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "show_legend": true,
+                            "legend_layout": "auto",
+                            "legend_columns": [
+                                "avg",
+                                "min",
+                                "max",
+                                "value",
+                                "sum"
+                            ],
+                            "time": {
+                                "type": "live",
+                                "unit": "week",
+                                "value": 1
+                            },
+                            "type": "timeseries",
+                            "requests": [
+                                {
+                                    "response_format": "timeseries",
+                                    "queries": [
+                                        {
+                                            "name": "query1",
+                                            "data_source": "metrics",
+                                            "query": "avg:container.cpu.usage{container_name:wabi-sabi-api}"
+                                        },
+                                        {
+                                            "name": "query2",
+                                            "data_source": "metrics",
+                                            "query": "avg:container.cpu.limit{container_name:wabi-sabi-api}"
+                                        }
+                                    ],
+                                    "formulas": [
+                                        {
+                                            "number_format": {
+                                                "unit": {
+                                                    "type": "canonical_unit",
+                                                    "unit_name": "percent"
+                                                }
+                                            },
+                                            "formula": "query1 / query2 * 100 * 100"
+                                        }
+                                    ],
+                                    "style": {
+                                        "palette": "dog_classic",
+                                        "order_by": "values",
+                                        "line_type": "solid",
+                                        "line_width": "normal"
+                                    },
+                                    "display_type": "line"
+                                }
+                            ],
+                            "markers": [
+                                {
+                                    "value": "y = 75",
+                                    "display_type": "error dashed"
+                                }
+                            ]
+                        },
+                        "layout": {
+                            "x": 6,
+                            "y": 0,
+                            "width": 6,
+                            "height": 4
+                        }
+                    }
+                ]
+            },
+            "layout": {
+                "x": 0,
+                "y": 7,
+                "width": 12,
+                "height": 5
+            }
+        }
+    ],
+    "template_variables": [],
+    "layout_type": "ordered",
+    "notify_list": [],
+    "reflow_type": "fixed",
+    "pause_auto_refresh": false
+}

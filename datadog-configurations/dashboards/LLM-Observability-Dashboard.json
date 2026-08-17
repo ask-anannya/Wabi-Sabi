@@ -1,0 +1,2210 @@
+{
+    "title": "LLM Observability Dashboard",
+    "description": "[[suggested_dashboards]]",
+    "widgets": [
+        {
+            "id": 1996262233434581,
+            "definition": {
+                "title": "Evaluation Decision Observability",
+                "background_color": "vivid_blue",
+                "show_title": true,
+                "type": "group",
+                "layout_type": "ordered",
+                "widgets": [
+                    {
+                        "id": 7863895947453172,
+                        "definition": {
+                            "type": "note",
+                            "content": "**Proves that hallucination evaluation is selective, policy-driven, and cost-aware, not applied blindly to every LLM response**",
+                            "background_color": "white",
+                            "font_size": "18",
+                            "text_align": "center",
+                            "vertical_align": "center",
+                            "show_tick": false,
+                            "tick_pos": "50%",
+                            "tick_edge": "left",
+                            "has_padding": true
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 0,
+                            "width": 12,
+                            "height": 1
+                        }
+                    },
+                    {
+                        "id": 794956828225719,
+                        "definition": {
+                            "type": "note",
+                            "content": "Shows the percentage of total LLM interactions that are routed through hallucination evaluation instead of all the chats, validating cost-aware quality monitoring.",
+                            "background_color": "blue",
+                            "font_size": "14",
+                            "text_align": "center",
+                            "vertical_align": "center",
+                            "show_tick": true,
+                            "tick_pos": "50%",
+                            "tick_edge": "right",
+                            "has_padding": true
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 1,
+                            "width": 2,
+                            "height": 3
+                        }
+                    },
+                    {
+                        "id": 6720409426725123,
+                        "definition": {
+                            "title": "Evaluation Coverage Percentage Over Time",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "show_legend": true,
+                            "legend_layout": "auto",
+                            "legend_columns": [
+                                "avg",
+                                "min",
+                                "max",
+                                "value",
+                                "sum"
+                            ],
+                            "type": "timeseries",
+                            "requests": [
+                                {
+                                    "response_format": "timeseries",
+                                    "queries": [
+                                        {
+                                            "data_source": "metrics",
+                                            "name": "query2",
+                                            "query": "avg:llm.hallucination.evaluated.count{*}.as_count()"
+                                        },
+                                        {
+                                            "data_source": "metrics",
+                                            "name": "query1",
+                                            "query": "avg:llm.chats.total{*}.as_count()"
+                                        }
+                                    ],
+                                    "formulas": [
+                                        {
+                                            "number_format": {
+                                                "unit": {
+                                                    "type": "canonical_unit",
+                                                    "unit_name": "percent"
+                                                }
+                                            },
+                                            "alias": "Coverage Percentage",
+                                            "formula": "query2 / query1 * 100"
+                                        }
+                                    ],
+                                    "style": {
+                                        "palette": "cool",
+                                        "order_by": "values",
+                                        "line_type": "solid",
+                                        "line_width": "normal"
+                                    },
+                                    "display_type": "line"
+                                }
+                            ],
+                            "yaxis": {
+                                "include_zero": true,
+                                "max": "100"
+                            }
+                        },
+                        "layout": {
+                            "x": 2,
+                            "y": 1,
+                            "width": 4,
+                            "height": 3
+                        }
+                    },
+                    {
+                        "id": 7088315580111524,
+                        "definition": {
+                            "title": "Evaluation Trigger Rate",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "query_value",
+                            "requests": [
+                                {
+                                    "formulas": [
+                                        {
+                                            "formula": "query1 / query2 * 100",
+                                            "number_format": {
+                                                "unit": {
+                                                    "type": "canonical_unit",
+                                                    "unit_name": "percent"
+                                                }
+                                            }
+                                        }
+                                    ],
+                                    "queries": [
+                                        {
+                                            "data_source": "metrics",
+                                            "name": "query1",
+                                            "query": "avg:llm.hallucination.evaluated.count{*}.as_rate()",
+                                            "aggregator": "avg"
+                                        },
+                                        {
+                                            "data_source": "metrics",
+                                            "name": "query2",
+                                            "query": "avg:llm.chats.total{*}.as_rate()",
+                                            "aggregator": "avg"
+                                        }
+                                    ],
+                                    "response_format": "scalar",
+                                    "comparison": {
+                                        "type": "relative",
+                                        "duration": {
+                                            "type": "previous_timeframe"
+                                        },
+                                        "directionality": "decrease_better"
+                                    }
+                                }
+                            ],
+                            "autoscale": true,
+                            "precision": 2,
+                            "timeseries_background": {
+                                "type": "area"
+                            }
+                        },
+                        "layout": {
+                            "x": 6,
+                            "y": 1,
+                            "width": 4,
+                            "height": 3
+                        }
+                    },
+                    {
+                        "id": 132117120664110,
+                        "definition": {
+                            "type": "note",
+                            "content": "Demonstrates that hallucination evaluation is selectively triggered rather than applying to every LLM interaction",
+                            "background_color": "blue",
+                            "font_size": "14",
+                            "text_align": "center",
+                            "vertical_align": "center",
+                            "show_tick": true,
+                            "tick_pos": "50%",
+                            "tick_edge": "left",
+                            "has_padding": true
+                        },
+                        "layout": {
+                            "x": 10,
+                            "y": 1,
+                            "width": 2,
+                            "height": 3
+                        }
+                    },
+                    {
+                        "id": 6601459177994207,
+                        "definition": {
+                            "type": "note",
+                            "content": "## Pre-Filters Set for Wabi-Sabi:\n1. **Absolute Claims** (Certainty / guarantee,  Time-bound miracle claims, Percentage / perfection claims, Overgeneralization words, Regulatory red flags, Soft absolutes that still mislead)\n2. **Unsafe Ingredient** (Retinoids, Skin lightening agents, Steroids, Exfoliants, Antibiotics, Hormonal / acne meds, Pregnancy risk, Other banned / high-risk agents)\n3. **Medical Claims**\n\n_These can be changed as per usecase_",
+                            "background_color": "blue",
+                            "font_size": "14",
+                            "text_align": "center",
+                            "vertical_align": "center",
+                            "show_tick": false,
+                            "tick_pos": "50%",
+                            "tick_edge": "left",
+                            "has_padding": true
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 4,
+                            "width": 6,
+                            "height": 3
+                        }
+                    },
+                    {
+                        "id": 3367157144978254,
+                        "definition": {
+                            "title": "Prefilter Risk Classification Distribution",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "show_legend": true,
+                            "legend_layout": "auto",
+                            "legend_columns": [
+                                "avg",
+                                "min",
+                                "max",
+                                "value",
+                                "sum"
+                            ],
+                            "type": "timeseries",
+                            "requests": [
+                                {
+                                    "formulas": [
+                                        {
+                                            "number_format": {
+                                                "unit": {
+                                                    "type": "custom_unit_label",
+                                                    "label": "Score"
+                                                }
+                                            },
+                                            "alias": "Absolute Claim",
+                                            "formula": "query2"
+                                        },
+                                        {
+                                            "number_format": {
+                                                "unit": {
+                                                    "type": "custom_unit_label",
+                                                    "label": "Score"
+                                                }
+                                            },
+                                            "alias": "Medical Claim",
+                                            "formula": "query1"
+                                        },
+                                        {
+                                            "number_format": {
+                                                "unit": {
+                                                    "type": "custom_unit_label",
+                                                    "label": "Score"
+                                                }
+                                            },
+                                            "alias": "Unsafe Ingredient",
+                                            "formula": "query3"
+                                        },
+                                        {
+                                            "number_format": {
+                                                "unit": {
+                                                    "type": "custom_unit_label",
+                                                    "label": "Score"
+                                                }
+                                            },
+                                            "alias": "JSON Format Violation",
+                                            "formula": "query4"
+                                        }
+                                    ],
+                                    "queries": [
+                                        {
+                                            "data_source": "metrics",
+                                            "name": "query2",
+                                            "query": "avg:llm.prefilter.trigger.absolute_claim{*}.as_count()"
+                                        },
+                                        {
+                                            "data_source": "metrics",
+                                            "name": "query1",
+                                            "query": "avg:llm.prefilter.trigger.medical_claim{*}.as_count()"
+                                        },
+                                        {
+                                            "data_source": "metrics",
+                                            "name": "query3",
+                                            "query": "avg:llm.prefilter.trigger.unsafe_ingredient{*}.as_count()"
+                                        },
+                                        {
+                                            "data_source": "metrics",
+                                            "name": "query4",
+                                            "query": "avg:llm.prefilter.trigger.json_format_violation{*}.as_count()"
+                                        }
+                                    ],
+                                    "response_format": "timeseries",
+                                    "style": {
+                                        "palette": "datadog16",
+                                        "order_by": "values",
+                                        "line_type": "solid",
+                                        "line_width": "normal"
+                                    },
+                                    "display_type": "bars"
+                                }
+                            ],
+                            "yaxis": {
+                                "scale": "linear",
+                                "include_zero": true,
+                                "min": "auto",
+                                "max": "auto"
+                            }
+                        },
+                        "layout": {
+                            "x": 6,
+                            "y": 4,
+                            "width": 4,
+                            "height": 3
+                        }
+                    },
+                    {
+                        "id": 436715679377276,
+                        "definition": {
+                            "type": "note",
+                            "content": "Breakdown of prefilter risk signals that _caused prompts_ to enter hallucination evaluation",
+                            "background_color": "blue",
+                            "font_size": "14",
+                            "text_align": "center",
+                            "vertical_align": "center",
+                            "show_tick": true,
+                            "tick_pos": "50%",
+                            "tick_edge": "left",
+                            "has_padding": true
+                        },
+                        "layout": {
+                            "x": 10,
+                            "y": 4,
+                            "width": 2,
+                            "height": 3
+                        }
+                    }
+                ]
+            },
+            "layout": {
+                "x": 0,
+                "y": 0,
+                "width": 12,
+                "height": 8
+            }
+        },
+        {
+            "id": 8698031128101380,
+            "definition": {
+                "title": "Hallucination Blast Radius",
+                "background_color": "vivid_orange",
+                "show_title": true,
+                "type": "group",
+                "layout_type": "ordered",
+                "widgets": [
+                    {
+                        "id": 5591074468454736,
+                        "definition": {
+                            "type": "note",
+                            "content": "Not all hallucinations have the same impact.\n\nThis section correlates **hallucination quality** with **user exposure** and **persona sensitivity** to distinguish low-impact issues from those that pose real user risk.",
+                            "background_color": "white",
+                            "font_size": "16",
+                            "text_align": "center",
+                            "vertical_align": "center",
+                            "show_tick": false,
+                            "tick_pos": "50%",
+                            "tick_edge": "right",
+                            "has_padding": true
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 0,
+                            "width": 12,
+                            "height": 1
+                        }
+                    },
+                    {
+                        "id": 5054523597009984,
+                        "definition": {
+                            "type": "note",
+                            "content": "Blast Radius = **Hallucination Score** x **Chat Volume** x **Persona Risk Weight**\n- The Hallucination Blast Radius Index combines hallucination severity, traffic volume, and persona risk into a single signal.\n- Higher values indicate hallucinations that are both severe and widely exposed, requiring immediate attention.\n",
+                            "background_color": "orange",
+                            "font_size": "14",
+                            "text_align": "center",
+                            "vertical_align": "center",
+                            "show_tick": true,
+                            "tick_pos": "50%",
+                            "tick_edge": "right",
+                            "has_padding": true
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 1,
+                            "width": 3,
+                            "height": 3
+                        }
+                    },
+                    {
+                        "id": 6469209028687482,
+                        "definition": {
+                            "title": "Hallucination Blast Radius Index (HBRS)",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "show_legend": true,
+                            "legend_layout": "auto",
+                            "legend_columns": [
+                                "avg",
+                                "min",
+                                "max",
+                                "value",
+                                "sum"
+                            ],
+                            "type": "timeseries",
+                            "requests": [
+                                {
+                                    "response_format": "timeseries",
+                                    "queries": [
+                                        {
+                                            "data_source": "metrics",
+                                            "name": "query1",
+                                            "query": "avg:llm.hallucination.persona_risk_weight{*}"
+                                        },
+                                        {
+                                            "data_source": "metrics",
+                                            "name": "query2",
+                                            "query": "avg:llm.chats.total{*}.as_count()"
+                                        },
+                                        {
+                                            "data_source": "metrics",
+                                            "name": "query3",
+                                            "query": "avg:llm.hallucination.score{*}.as_count()"
+                                        }
+                                    ],
+                                    "formulas": [
+                                        {
+                                            "alias": "Blast Radius",
+                                            "formula": "query1 * query2 * query3"
+                                        }
+                                    ],
+                                    "style": {
+                                        "palette": "dog_classic",
+                                        "order_by": "values",
+                                        "line_type": "solid",
+                                        "line_width": "normal"
+                                    },
+                                    "display_type": "line"
+                                }
+                            ]
+                        },
+                        "layout": {
+                            "x": 3,
+                            "y": 1,
+                            "width": 4,
+                            "height": 3
+                        }
+                    },
+                    {
+                        "id": 1163924745154933,
+                        "definition": {
+                            "title": "Persona - Risk Weight List",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "query_table",
+                            "requests": [
+                                {
+                                    "queries": [
+                                        {
+                                            "data_source": "metrics",
+                                            "name": "query3",
+                                            "query": "avg:llm.hallucination.persona_risk_weight{*} by {user.skin_type,user.age_bucket,user.skin_concern}",
+                                            "aggregator": "avg"
+                                        }
+                                    ],
+                                    "response_format": "scalar",
+                                    "sort": {
+                                        "count": 10,
+                                        "order_by": [
+                                            {
+                                                "type": "formula",
+                                                "index": 0,
+                                                "order": "desc"
+                                            }
+                                        ]
+                                    },
+                                    "formulas": [
+                                        {
+                                            "cell_display_mode": "number",
+                                            "alias": "Persona Risk Weight",
+                                            "formula": "query3"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "has_search_bar": "auto"
+                        },
+                        "layout": {
+                            "x": 7,
+                            "y": 1,
+                            "width": 5,
+                            "height": 3
+                        }
+                    },
+                    {
+                        "id": 120068503030163,
+                        "definition": {
+                            "type": "note",
+                            "content": "Shows when hallucinations are both low quality and widely seen by users",
+                            "background_color": "orange",
+                            "font_size": "14",
+                            "text_align": "center",
+                            "vertical_align": "center",
+                            "show_tick": true,
+                            "tick_pos": "50%",
+                            "tick_edge": "right",
+                            "has_padding": true
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 4,
+                            "width": 2,
+                            "height": 3
+                        }
+                    },
+                    {
+                        "id": 630764588843071,
+                        "definition": {
+                            "title": "Blast Radius Heatmap by User Persona",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "show_legend": false,
+                            "type": "heatmap",
+                            "requests": [
+                                {
+                                    "response_format": "timeseries",
+                                    "queries": [
+                                        {
+                                            "data_source": "metrics",
+                                            "name": "query1",
+                                            "query": "avg:llm.hallucination.score{*}.as_count()"
+                                        },
+                                        {
+                                            "data_source": "metrics",
+                                            "name": "query2",
+                                            "query": "avg:llm.hallucination.persona_risk_weight{*}"
+                                        }
+                                    ],
+                                    "formulas": [
+                                        {
+                                            "formula": "query1"
+                                        },
+                                        {
+                                            "formula": "query2"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        "layout": {
+                            "x": 2,
+                            "y": 4,
+                            "width": 4,
+                            "height": 3
+                        }
+                    },
+                    {
+                        "id": 6735840036585063,
+                        "definition": {
+                            "title": "Hallucination Risk Matrix",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "scatterplot",
+                            "requests": {
+                                "table": {
+                                    "response_format": "scalar",
+                                    "queries": [
+                                        {
+                                            "data_source": "metrics",
+                                            "name": "query1",
+                                            "query": "avg:llm.chats.total{*}.as_count()",
+                                            "aggregator": "sum"
+                                        },
+                                        {
+                                            "data_source": "metrics",
+                                            "name": "query2",
+                                            "query": "avg:llm.hallucination.score{*}.as_count()",
+                                            "aggregator": "avg"
+                                        },
+                                        {
+                                            "data_source": "metrics",
+                                            "name": "query3",
+                                            "query": "avg:llm.hallucination.persona_risk_weight{*}",
+                                            "aggregator": "avg"
+                                        }
+                                    ],
+                                    "formulas": [
+                                        {
+                                            "dimension": "x",
+                                            "alias": "Total Chat",
+                                            "formula": "query1"
+                                        },
+                                        {
+                                            "dimension": "y",
+                                            "alias": "Hallucination Score",
+                                            "formula": "query2"
+                                        },
+                                        {
+                                            "dimension": "radius",
+                                            "alias": "Persona Risk Weight",
+                                            "formula": "query3"
+                                        }
+                                    ]
+                                }
+                            },
+                            "xaxis": {
+                                "scale": "linear",
+                                "include_zero": true,
+                                "min": "auto",
+                                "max": "auto"
+                            },
+                            "yaxis": {
+                                "scale": "linear",
+                                "include_zero": true,
+                                "min": "auto",
+                                "max": "1"
+                            },
+                            "color_by_groups": []
+                        },
+                        "layout": {
+                            "x": 6,
+                            "y": 4,
+                            "width": 4,
+                            "height": 3
+                        }
+                    },
+                    {
+                        "id": 2518335051617474,
+                        "definition": {
+                            "type": "note",
+                            "content": "Correlates hallucination severity with user exposure and persona sensitivity to identify hallucinations with the highest real-world impact.",
+                            "background_color": "orange",
+                            "font_size": "14",
+                            "text_align": "center",
+                            "vertical_align": "center",
+                            "show_tick": true,
+                            "tick_pos": "50%",
+                            "tick_edge": "left",
+                            "has_padding": true
+                        },
+                        "layout": {
+                            "x": 10,
+                            "y": 4,
+                            "width": 2,
+                            "height": 3
+                        }
+                    }
+                ]
+            },
+            "layout": {
+                "x": 0,
+                "y": 8,
+                "width": 12,
+                "height": 8
+            }
+        },
+        {
+            "id": 814676954919544,
+            "definition": {
+                "title": "Hallucination Detection Metrics",
+                "background_color": "vivid_purple",
+                "show_title": true,
+                "type": "group",
+                "layout_type": "ordered",
+                "widgets": [
+                    {
+                        "id": 6106270118583071,
+                        "definition": {
+                            "title": "Affected Users Count",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "query_value",
+                            "requests": [
+                                {
+                                    "formulas": [
+                                        {
+                                            "number_format": {
+                                                "unit": {
+                                                    "type": "canonical_unit",
+                                                    "unit_name": "user"
+                                                }
+                                            },
+                                            "formula": "query1"
+                                        }
+                                    ],
+                                    "queries": [
+                                        {
+                                            "data_source": "metrics",
+                                            "name": "query1",
+                                            "query": "sum:llm.users.affected{*}.as_count()",
+                                            "aggregator": "sum"
+                                        }
+                                    ],
+                                    "response_format": "scalar",
+                                    "comparison": {
+                                        "type": "absolute",
+                                        "duration": {
+                                            "type": "previous_timeframe"
+                                        },
+                                        "directionality": "decrease_better"
+                                    }
+                                }
+                            ],
+                            "autoscale": true,
+                            "precision": 2,
+                            "timeseries_background": {
+                                "type": "area",
+                                "yaxis": {
+                                    "include_zero": false
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 0,
+                            "width": 2,
+                            "height": 3
+                        }
+                    },
+                    {
+                        "id": 2228230860927543,
+                        "definition": {
+                            "title": "Hallucination Score Over Time",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "show_legend": true,
+                            "legend_layout": "auto",
+                            "legend_columns": [
+                                "avg",
+                                "min",
+                                "max",
+                                "value",
+                                "sum"
+                            ],
+                            "type": "timeseries",
+                            "requests": [
+                                {
+                                    "response_format": "timeseries",
+                                    "queries": [
+                                        {
+                                            "data_source": "metrics",
+                                            "name": "query1",
+                                            "query": "avg:llm.hallucination.score{*}.as_count()"
+                                        },
+                                        {
+                                            "data_source": "metrics",
+                                            "name": "query2",
+                                            "query": "avg:llm.hallucination.evaluated.count{*}.as_count()"
+                                        }
+                                    ],
+                                    "formulas": [
+                                        {
+                                            "alias": "Hallucination Score",
+                                            "formula": "query1 / query2"
+                                        }
+                                    ],
+                                    "style": {
+                                        "palette": "dog_classic",
+                                        "order_by": "values",
+                                        "line_type": "solid",
+                                        "line_width": "normal"
+                                    },
+                                    "display_type": "line"
+                                }
+                            ],
+                            "yaxis": {
+                                "include_zero": true,
+                                "min": "0",
+                                "max": "1"
+                            },
+                            "markers": [
+                                {
+                                    "value": "y = 0.8",
+                                    "display_type": "error dashed"
+                                }
+                            ]
+                        },
+                        "layout": {
+                            "x": 2,
+                            "y": 0,
+                            "width": 4,
+                            "height": 3
+                        }
+                    },
+                    {
+                        "id": 1710342187968600,
+                        "definition": {
+                            "title": "Total LLM chats",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "show_legend": true,
+                            "legend_layout": "auto",
+                            "legend_columns": [
+                                "avg",
+                                "min",
+                                "max",
+                                "value",
+                                "sum"
+                            ],
+                            "type": "timeseries",
+                            "requests": [
+                                {
+                                    "response_format": "timeseries",
+                                    "queries": [
+                                        {
+                                            "data_source": "metrics",
+                                            "name": "query1",
+                                            "query": "avg:llm.chats.total{*}.as_count()"
+                                        }
+                                    ],
+                                    "formulas": [
+                                        {
+                                            "alias": "Chat Count",
+                                            "formula": "query1"
+                                        }
+                                    ],
+                                    "style": {
+                                        "palette": "dog_classic",
+                                        "order_by": "values",
+                                        "line_type": "solid",
+                                        "line_width": "normal"
+                                    },
+                                    "display_type": "line"
+                                }
+                            ]
+                        },
+                        "layout": {
+                            "x": 6,
+                            "y": 0,
+                            "width": 4,
+                            "height": 3
+                        }
+                    },
+                    {
+                        "id": 7248183981609776,
+                        "definition": {
+                            "title": "LLM Chats - Count",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "query_value",
+                            "requests": [
+                                {
+                                    "formulas": [
+                                        {
+                                            "formula": "query1",
+                                            "number_format": {
+                                                "unit": {
+                                                    "type": "custom_unit_label",
+                                                    "label": "Chats"
+                                                }
+                                            }
+                                        }
+                                    ],
+                                    "queries": [
+                                        {
+                                            "data_source": "metrics",
+                                            "name": "query1",
+                                            "query": "avg:llm.chats.total{*}.as_count()",
+                                            "aggregator": "sum"
+                                        }
+                                    ],
+                                    "response_format": "scalar",
+                                    "comparison": {
+                                        "type": "absolute",
+                                        "duration": {
+                                            "type": "previous_timeframe"
+                                        },
+                                        "directionality": "increase_better"
+                                    }
+                                }
+                            ],
+                            "autoscale": true,
+                            "precision": 2,
+                            "timeseries_background": {
+                                "yaxis": {},
+                                "type": "bars"
+                            }
+                        },
+                        "layout": {
+                            "x": 10,
+                            "y": 0,
+                            "width": 2,
+                            "height": 3
+                        }
+                    },
+                    {
+                        "id": 7031141742786678,
+                        "definition": {
+                            "type": "note",
+                            "content": "Number of chats where the pre filters were used",
+                            "background_color": "purple",
+                            "font_size": "14",
+                            "text_align": "center",
+                            "vertical_align": "center",
+                            "show_tick": true,
+                            "tick_pos": "50%",
+                            "tick_edge": "right",
+                            "has_padding": true
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 3,
+                            "width": 2,
+                            "height": 3
+                        }
+                    },
+                    {
+                        "id": 5204060559431103,
+                        "definition": {
+                            "title": "LLM Pre-filters Applied Count",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "show_legend": true,
+                            "legend_layout": "auto",
+                            "legend_columns": [
+                                "avg",
+                                "min",
+                                "max",
+                                "value",
+                                "sum"
+                            ],
+                            "type": "timeseries",
+                            "requests": [
+                                {
+                                    "response_format": "timeseries",
+                                    "queries": [
+                                        {
+                                            "data_source": "metrics",
+                                            "name": "query1",
+                                            "query": "avg:llm.prefilter.score{*}.as_count()"
+                                        }
+                                    ],
+                                    "formulas": [
+                                        {
+                                            "number_format": {},
+                                            "alias": "Pre filter Score",
+                                            "formula": "query1"
+                                        }
+                                    ],
+                                    "style": {
+                                        "palette": "dog_classic",
+                                        "order_by": "values",
+                                        "line_type": "solid",
+                                        "line_width": "normal"
+                                    },
+                                    "display_type": "line"
+                                }
+                            ],
+                            "markers": [
+                                {
+                                    "value": "y = 0.25",
+                                    "display_type": "error dashed"
+                                }
+                            ]
+                        },
+                        "layout": {
+                            "x": 2,
+                            "y": 3,
+                            "width": 4,
+                            "height": 3
+                        }
+                    },
+                    {
+                        "id": 1158489998438641,
+                        "definition": {
+                            "title": "Evaluated vs Non-Evaluated Outcomes",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "show_legend": true,
+                            "legend_layout": "auto",
+                            "legend_columns": [
+                                "avg",
+                                "min",
+                                "max",
+                                "value",
+                                "sum"
+                            ],
+                            "type": "timeseries",
+                            "requests": [
+                                {
+                                    "formulas": [
+                                        {
+                                            "number_format": {
+                                                "unit": {
+                                                    "type": "custom_unit_label",
+                                                    "label": "Count"
+                                                }
+                                            },
+                                            "alias": "Clean Count",
+                                            "formula": "query1"
+                                        },
+                                        {
+                                            "number_format": {
+                                                "unit": {
+                                                    "type": "custom_unit_label",
+                                                    "label": "Count"
+                                                }
+                                            },
+                                            "alias": "Flagged Count",
+                                            "formula": "query2"
+                                        }
+                                    ],
+                                    "queries": [
+                                        {
+                                            "data_source": "metrics",
+                                            "name": "query1",
+                                            "query": "avg:llm.hallucination.clean.count{*}.as_count()"
+                                        },
+                                        {
+                                            "data_source": "metrics",
+                                            "name": "query2",
+                                            "query": "avg:llm.hallucination.flagged.count{*}.as_count()"
+                                        }
+                                    ],
+                                    "response_format": "timeseries",
+                                    "style": {
+                                        "palette": "cool",
+                                        "order_by": "values",
+                                        "color_order": "monotonic",
+                                        "line_type": "solid",
+                                        "line_width": "normal"
+                                    },
+                                    "display_type": "bars"
+                                }
+                            ],
+                            "yaxis": {
+                                "scale": "linear",
+                                "include_zero": true,
+                                "min": "auto",
+                                "max": "auto"
+                            }
+                        },
+                        "layout": {
+                            "x": 6,
+                            "y": 3,
+                            "width": 4,
+                            "height": 3
+                        }
+                    },
+                    {
+                        "id": 5188819859931280,
+                        "definition": {
+                            "type": "note",
+                            "content": "Shows the distribution of hallucination evaluation outcomes\n\n- **Clean count** - Evaluated responses are validated \n- **Flagged count**- Evaluated responses are flagged for risk \n",
+                            "background_color": "purple",
+                            "font_size": "14",
+                            "text_align": "center",
+                            "vertical_align": "center",
+                            "show_tick": true,
+                            "tick_pos": "50%",
+                            "tick_edge": "left",
+                            "has_padding": true
+                        },
+                        "layout": {
+                            "x": 10,
+                            "y": 3,
+                            "width": 2,
+                            "height": 3
+                        }
+                    },
+                    {
+                        "id": 193393007435802,
+                        "definition": {
+                            "type": "note",
+                            "content": "**Hallucination Detection Errors** - Encountered while identifying the hallucinations in the LLM interactions",
+                            "background_color": "white",
+                            "font_size": "16",
+                            "text_align": "center",
+                            "vertical_align": "center",
+                            "show_tick": false,
+                            "tick_pos": "50%",
+                            "tick_edge": "right",
+                            "has_padding": true
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 6,
+                            "width": 12,
+                            "height": 1
+                        }
+                    },
+                    {
+                        "id": 4536410611621222,
+                        "definition": {
+                            "title": "Hallucination Detection Errors",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "query_value",
+                            "requests": [
+                                {
+                                    "formulas": [
+                                        {
+                                            "formula": "query1 + query2"
+                                        }
+                                    ],
+                                    "queries": [
+                                        {
+                                            "data_source": "metrics",
+                                            "name": "query1",
+                                            "query": "avg:llm.errors.json_parsing_failure{*}.as_count()",
+                                            "aggregator": "sum"
+                                        },
+                                        {
+                                            "data_source": "metrics",
+                                            "name": "query2",
+                                            "query": "avg:llm.errors.hallucination_detection_failure{*}.as_count()",
+                                            "aggregator": "sum"
+                                        }
+                                    ],
+                                    "response_format": "scalar",
+                                    "comparison": {
+                                        "type": "absolute",
+                                        "duration": {
+                                            "type": "previous_timeframe"
+                                        },
+                                        "directionality": "decrease_better"
+                                    }
+                                }
+                            ],
+                            "autoscale": true,
+                            "precision": 2,
+                            "timeseries_background": {
+                                "yaxis": {},
+                                "type": "bars"
+                            }
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 7,
+                            "width": 2,
+                            "height": 3
+                        }
+                    },
+                    {
+                        "id": 1772704242225663,
+                        "definition": {
+                            "title": "Hallucination detection failure",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "show_legend": true,
+                            "legend_layout": "auto",
+                            "legend_columns": [
+                                "avg",
+                                "min",
+                                "max",
+                                "value",
+                                "sum"
+                            ],
+                            "type": "timeseries",
+                            "requests": [
+                                {
+                                    "response_format": "timeseries",
+                                    "queries": [
+                                        {
+                                            "data_source": "metrics",
+                                            "name": "query1",
+                                            "query": "sum:llm.errors.hallucination_detection_failure{*}.as_count()"
+                                        }
+                                    ],
+                                    "formulas": [
+                                        {
+                                            "formula": "query1"
+                                        }
+                                    ],
+                                    "style": {
+                                        "palette": "dog_classic",
+                                        "order_by": "values",
+                                        "line_type": "solid",
+                                        "line_width": "normal"
+                                    },
+                                    "display_type": "line"
+                                }
+                            ]
+                        },
+                        "layout": {
+                            "x": 2,
+                            "y": 7,
+                            "width": 4,
+                            "height": 3
+                        }
+                    },
+                    {
+                        "id": 4624119461012212,
+                        "definition": {
+                            "title": "JSON Parsing Failures",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "show_legend": true,
+                            "legend_layout": "auto",
+                            "legend_columns": [
+                                "avg",
+                                "min",
+                                "max",
+                                "value",
+                                "sum"
+                            ],
+                            "type": "timeseries",
+                            "requests": [
+                                {
+                                    "response_format": "timeseries",
+                                    "queries": [
+                                        {
+                                            "data_source": "metrics",
+                                            "name": "query1",
+                                            "query": "avg:llm.errors.json_parsing_failure{*}.as_count()"
+                                        }
+                                    ],
+                                    "formulas": [
+                                        {
+                                            "formula": "query1"
+                                        }
+                                    ],
+                                    "style": {
+                                        "palette": "dog_classic",
+                                        "order_by": "values",
+                                        "line_type": "solid",
+                                        "line_width": "normal"
+                                    },
+                                    "display_type": "line"
+                                }
+                            ]
+                        },
+                        "layout": {
+                            "x": 6,
+                            "y": 7,
+                            "width": 4,
+                            "height": 3
+                        }
+                    },
+                    {
+                        "id": 5620697892163841,
+                        "definition": {
+                            "type": "note",
+                            "content": "When the response JSON from the LLM was not able to parse",
+                            "background_color": "purple",
+                            "font_size": "14",
+                            "text_align": "center",
+                            "vertical_align": "center",
+                            "show_tick": true,
+                            "tick_pos": "50%",
+                            "tick_edge": "left",
+                            "has_padding": true
+                        },
+                        "layout": {
+                            "x": 10,
+                            "y": 7,
+                            "width": 2,
+                            "height": 3
+                        }
+                    }
+                ]
+            },
+            "layout": {
+                "x": 0,
+                "y": 16,
+                "width": 12,
+                "height": 11
+            }
+        },
+        {
+            "id": 6272177624351502,
+            "definition": {
+                "title": "Token Usage and Cost Breakdown",
+                "background_color": "green",
+                "show_title": true,
+                "type": "group",
+                "layout_type": "ordered",
+                "widgets": [
+                    {
+                        "id": 6114708834008236,
+                        "definition": {
+                            "title": "Token Usage Distribution by Model",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "requests": [
+                                {
+                                    "response_format": "scalar",
+                                    "queries": [
+                                        {
+                                            "query": "sum:gcp.aiplatform.publisher.online_serving.token_count{*} by {model_user_id}.as_count()",
+                                            "data_source": "metrics",
+                                            "name": "query1",
+                                            "aggregator": "avg"
+                                        }
+                                    ],
+                                    "style": {
+                                        "palette": "datadog16"
+                                    },
+                                    "formulas": [
+                                        {
+                                            "formula": "query1"
+                                        }
+                                    ],
+                                    "sort": {
+                                        "count": 500,
+                                        "order_by": [
+                                            {
+                                                "type": "formula",
+                                                "index": 0,
+                                                "order": "desc"
+                                            }
+                                        ]
+                                    }
+                                }
+                            ],
+                            "type": "sunburst",
+                            "legend": {
+                                "type": "table"
+                            }
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 0,
+                            "width": 6,
+                            "height": 4
+                        }
+                    },
+                    {
+                        "id": 8285614125550613,
+                        "definition": {
+                            "title": "Average Output Tokens per Request",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "query_value",
+                            "requests": [
+                                {
+                                    "response_format": "scalar",
+                                    "queries": [
+                                        {
+                                            "name": "query1",
+                                            "data_source": "metrics",
+                                            "query": "avg:ml_obs.span.llm.output.tokens{*}",
+                                            "aggregator": "avg"
+                                        }
+                                    ],
+                                    "conditional_formats": [
+                                        {
+                                            "comparator": ">",
+                                            "value": 500,
+                                            "palette": "red_on_white"
+                                        }
+                                    ],
+                                    "formulas": [
+                                        {
+                                            "formula": "query1"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "autoscale": true,
+                            "precision": 2,
+                            "timeseries_background": {
+                                "type": "area"
+                            }
+                        },
+                        "layout": {
+                            "x": 6,
+                            "y": 0,
+                            "width": 3,
+                            "height": 2
+                        }
+                    },
+                    {
+                        "id": 7078992400464010,
+                        "definition": {
+                            "title": "Average Tokens per LLM Request",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "query_value",
+                            "requests": [
+                                {
+                                    "response_format": "scalar",
+                                    "queries": [
+                                        {
+                                            "name": "query1",
+                                            "data_source": "metrics",
+                                            "query": "sum:gcp.aiplatform.publisher.online_serving.token_count{*}.as_count()",
+                                            "aggregator": "avg"
+                                        }
+                                    ],
+                                    "conditional_formats": [
+                                        {
+                                            "comparator": ">",
+                                            "value": 10000,
+                                            "palette": "red_on_white"
+                                        }
+                                    ],
+                                    "formulas": [
+                                        {
+                                            "formula": "query1"
+                                        }
+                                    ],
+                                    "comparison": {
+                                        "type": "relative",
+                                        "duration": {
+                                            "type": "previous_day"
+                                        },
+                                        "directionality": "decrease_better"
+                                    }
+                                }
+                            ],
+                            "autoscale": true,
+                            "precision": 2,
+                            "timeseries_background": {
+                                "type": "area",
+                                "yaxis": {
+                                    "include_zero": false
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x": 9,
+                            "y": 0,
+                            "width": 3,
+                            "height": 4
+                        }
+                    },
+                    {
+                        "id": 7672604644341852,
+                        "definition": {
+                            "title": "Average Input Tokens per Request",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "query_value",
+                            "requests": [
+                                {
+                                    "response_format": "scalar",
+                                    "queries": [
+                                        {
+                                            "name": "query1",
+                                            "data_source": "metrics",
+                                            "query": "avg:ml_obs.span.llm.input.tokens{*}",
+                                            "aggregator": "avg"
+                                        }
+                                    ],
+                                    "conditional_formats": [
+                                        {
+                                            "comparator": ">",
+                                            "value": 1500,
+                                            "palette": "red_on_white"
+                                        }
+                                    ],
+                                    "formulas": [
+                                        {
+                                            "formula": "query1"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "autoscale": true,
+                            "precision": 2,
+                            "timeseries_background": {
+                                "type": "area"
+                            }
+                        },
+                        "layout": {
+                            "x": 6,
+                            "y": 2,
+                            "width": 3,
+                            "height": 2
+                        }
+                    },
+                    {
+                        "id": 1940899091178914,
+                        "definition": {
+                            "title": "Average Output Token Cost",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "query_value",
+                            "requests": [
+                                {
+                                    "response_format": "scalar",
+                                    "queries": [
+                                        {
+                                            "data_source": "llm_observability",
+                                            "name": "query1",
+                                            "indexes": [
+                                                "llmobs"
+                                            ],
+                                            "compute": {
+                                                "aggregation": "avg",
+                                                "metric": "@metrics.estimated_output_cost"
+                                            },
+                                            "group_by": [],
+                                            "search": {
+                                                "query": "@event_type:span @parent_id:undefined"
+                                            }
+                                        }
+                                    ],
+                                    "formulas": [
+                                        {
+                                            "formula": "query1"
+                                        }
+                                    ],
+                                    "comparison": {
+                                        "type": "relative",
+                                        "duration": {
+                                            "type": "previous_day"
+                                        },
+                                        "directionality": "decrease_better"
+                                    }
+                                }
+                            ],
+                            "autoscale": true,
+                            "precision": 2,
+                            "timeseries_background": {
+                                "type": "area"
+                            }
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 4,
+                            "width": 3,
+                            "height": 2
+                        }
+                    },
+                    {
+                        "id": 5164903171524090,
+                        "definition": {
+                            "type": "note",
+                            "content": "The Wabi-Sabi application uses a **dual-model strategy** to balance responsiveness, cost efficiency, and safety.\n\n-   The **Gemini Flash-Lite model** is used for primary user interactions, enabling fast, low-latency, and cost-efficient conversational responses.\n-   The **Gemini Flash model** is selectively invoked for **hallucination validation and safety checks**, where higher reasoning accuracy is required",
+                            "background_color": "green",
+                            "font_size": "16",
+                            "text_align": "left",
+                            "vertical_align": "center",
+                            "show_tick": true,
+                            "tick_pos": "50%",
+                            "tick_edge": "right",
+                            "has_padding": true
+                        },
+                        "layout": {
+                            "x": 3,
+                            "y": 4,
+                            "width": 4,
+                            "height": 4
+                        }
+                    },
+                    {
+                        "id": 5525625143002375,
+                        "definition": {
+                            "title": "Average Cost Per Request Breakdown By Model",
+                            "type": "treemap",
+                            "requests": [
+                                {
+                                    "queries": [
+                                        {
+                                            "data_source": "metrics",
+                                            "name": "query1",
+                                            "query": "avg:ml_obs.span.llm.total.cost{ml_app:wabi-sabi} by {model_name}",
+                                            "aggregator": "avg"
+                                        }
+                                    ],
+                                    "response_format": "scalar",
+                                    "style": {
+                                        "palette": "semantic"
+                                    },
+                                    "formulas": [
+                                        {
+                                            "formula": "query1"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        "layout": {
+                            "x": 7,
+                            "y": 4,
+                            "width": 5,
+                            "height": 4
+                        }
+                    },
+                    {
+                        "id": 7136315365896577,
+                        "definition": {
+                            "title": "Average Input Token Cost",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "query_value",
+                            "requests": [
+                                {
+                                    "response_format": "scalar",
+                                    "queries": [
+                                        {
+                                            "data_source": "llm_observability",
+                                            "name": "query1",
+                                            "indexes": [
+                                                "*"
+                                            ],
+                                            "compute": {
+                                                "aggregation": "avg",
+                                                "metric": "@metrics.estimated_input_cost"
+                                            },
+                                            "group_by": [],
+                                            "search": {
+                                                "query": "@event_type:span @parent_id:undefined"
+                                            }
+                                        }
+                                    ],
+                                    "formulas": [
+                                        {
+                                            "formula": "query1"
+                                        }
+                                    ],
+                                    "comparison": {
+                                        "type": "relative",
+                                        "duration": {
+                                            "type": "previous_day"
+                                        },
+                                        "directionality": "decrease_better"
+                                    }
+                                }
+                            ],
+                            "autoscale": true,
+                            "precision": 2,
+                            "timeseries_background": {
+                                "type": "area",
+                                "yaxis": {
+                                    "include_zero": false
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 6,
+                            "width": 3,
+                            "height": 2
+                        }
+                    }
+                ]
+            },
+            "layout": {
+                "x": 0,
+                "y": 27,
+                "width": 12,
+                "height": 9
+            }
+        },
+        {
+            "id": 8326565925078174,
+            "definition": {
+                "title": "LLM Request Overview",
+                "background_color": "orange",
+                "show_title": true,
+                "type": "group",
+                "layout_type": "ordered",
+                "widgets": [
+                    {
+                        "id": 1238224272747953,
+                        "definition": {
+                            "title": "LLM Response Volume (Vertex AI)",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "query_value",
+                            "requests": [
+                                {
+                                    "response_format": "scalar",
+                                    "queries": [
+                                        {
+                                            "name": "query1",
+                                            "data_source": "metrics",
+                                            "query": "sum:gcp.aiplatform.prediction.online.response_count{*}.as_count()",
+                                            "aggregator": "sum"
+                                        }
+                                    ],
+                                    "formulas": [
+                                        {
+                                            "formula": "query1"
+                                        }
+                                    ],
+                                    "comparison": {
+                                        "type": "relative",
+                                        "duration": {
+                                            "type": "previous_day"
+                                        },
+                                        "directionality": "increase_better"
+                                    }
+                                }
+                            ],
+                            "autoscale": true,
+                            "precision": 2,
+                            "timeseries_background": {
+                                "type": "bars"
+                            }
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 0,
+                            "width": 3,
+                            "height": 3
+                        }
+                    },
+                    {
+                        "id": 3374893325239835,
+                        "definition": {
+                            "title": "Average Characters per LLM Request",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "query_value",
+                            "requests": [
+                                {
+                                    "response_format": "scalar",
+                                    "queries": [
+                                        {
+                                            "name": "query1",
+                                            "data_source": "metrics",
+                                            "query": "sum:gcp.aiplatform.publisher.online_serving.character_count{*}.as_count()",
+                                            "aggregator": "avg"
+                                        }
+                                    ],
+                                    "formulas": [
+                                        {
+                                            "formula": "query1"
+                                        }
+                                    ],
+                                    "comparison": {
+                                        "type": "relative",
+                                        "duration": {
+                                            "type": "previous_timeframe"
+                                        },
+                                        "directionality": "decrease_better"
+                                    }
+                                }
+                            ],
+                            "autoscale": true,
+                            "precision": 2,
+                            "timeseries_background": {
+                                "type": "area",
+                                "yaxis": {
+                                    "include_zero": false
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x": 3,
+                            "y": 0,
+                            "width": 3,
+                            "height": 3
+                        }
+                    },
+                    {
+                        "id": 4557000706391070,
+                        "definition": {
+                            "title": "LLM Requests by Model",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "toplist",
+                            "requests": [
+                                {
+                                    "queries": [
+                                        {
+                                            "data_source": "metrics",
+                                            "name": "query1",
+                                            "query": "sum:gcp.aiplatform.publisher.online_serving.model_invocation_count{*} by {model_user_id}.as_count()",
+                                            "aggregator": "sum"
+                                        }
+                                    ],
+                                    "response_format": "scalar",
+                                    "formulas": [
+                                        {
+                                            "formula": "query1"
+                                        }
+                                    ],
+                                    "sort": {
+                                        "count": 10,
+                                        "order_by": [
+                                            {
+                                                "type": "formula",
+                                                "index": 0,
+                                                "order": "desc"
+                                            }
+                                        ]
+                                    }
+                                }
+                            ],
+                            "style": {
+                                "display": {
+                                    "type": "stacked",
+                                    "legend": "automatic"
+                                },
+                                "scaling": "relative"
+                            }
+                        },
+                        "layout": {
+                            "x": 6,
+                            "y": 0,
+                            "width": 6,
+                            "height": 3
+                        }
+                    },
+                    {
+                        "id": 8939567718779502,
+                        "definition": {
+                            "title": "Error Details",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "query_table",
+                            "requests": [
+                                {
+                                    "queries": [
+                                        {
+                                            "data_source": "llm_observability",
+                                            "name": "query1",
+                                            "indexes": [
+                                                "*"
+                                            ],
+                                            "compute": {
+                                                "aggregation": "count"
+                                            },
+                                            "group_by": [
+                                                {
+                                                    "facet": "@meta.error.type",
+                                                    "limit": 10,
+                                                    "sort": {
+                                                        "order": "desc",
+                                                        "aggregation": "count"
+                                                    }
+                                                },
+                                                {
+                                                    "facet": "@meta.model_name",
+                                                    "limit": 10,
+                                                    "sort": {
+                                                        "order": "desc",
+                                                        "aggregation": "count"
+                                                    }
+                                                },
+                                                {
+                                                    "facet": "source",
+                                                    "limit": 10,
+                                                    "sort": {
+                                                        "order": "desc",
+                                                        "aggregation": "count"
+                                                    }
+                                                }
+                                            ],
+                                            "search": {
+                                                "query": ""
+                                            }
+                                        }
+                                    ],
+                                    "response_format": "scalar",
+                                    "sort": {
+                                        "count": 1000,
+                                        "order_by": [
+                                            {
+                                                "type": "formula",
+                                                "index": 0,
+                                                "order": "desc"
+                                            }
+                                        ]
+                                    },
+                                    "formulas": [
+                                        {
+                                            "cell_display_mode": "bar",
+                                            "formula": "query1"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "has_search_bar": "auto"
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 3,
+                            "width": 6,
+                            "height": 2
+                        }
+                    },
+                    {
+                        "id": 1013996399477481,
+                        "definition": {
+                            "title": "Success / Error Count for the Requests",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "query_table",
+                            "requests": [
+                                {
+                                    "queries": [
+                                        {
+                                            "data_source": "apm_metrics",
+                                            "name": "query1",
+                                            "stat": "hits",
+                                            "service": "grpc-client",
+                                            "group_by": [
+                                                "rpc.grpc.status_code"
+                                            ]
+                                        }
+                                    ],
+                                    "response_format": "scalar",
+                                    "text_formats": [
+                                        [
+                                            {
+                                                "match": {
+                                                    "type": "contains",
+                                                    "value": "0"
+                                                },
+                                                "palette": "green_on_white",
+                                                "replace": {
+                                                    "type": "all",
+                                                    "with": "Success"
+                                                }
+                                            },
+                                            {
+                                                "match": {
+                                                    "type": "contains",
+                                                    "value": "7"
+                                                },
+                                                "palette": "red_on_white",
+                                                "replace": {
+                                                    "type": "all",
+                                                    "with": "Error"
+                                                }
+                                            }
+                                        ]
+                                    ],
+                                    "sort": {
+                                        "count": 500,
+                                        "order_by": [
+                                            {
+                                                "type": "formula",
+                                                "index": 0,
+                                                "order": "desc"
+                                            }
+                                        ]
+                                    },
+                                    "formulas": [
+                                        {
+                                            "cell_display_mode": "bar",
+                                            "formula": "query1"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "has_search_bar": "auto"
+                        },
+                        "layout": {
+                            "x": 6,
+                            "y": 3,
+                            "width": 6,
+                            "height": 2
+                        }
+                    }
+                ]
+            },
+            "layout": {
+                "x": 0,
+                "y": 36,
+                "width": 12,
+                "height": 6
+            }
+        },
+        {
+            "id": 7560067153361832,
+            "definition": {
+                "title": "Latency Overview",
+                "background_color": "pink",
+                "show_title": true,
+                "type": "group",
+                "layout_type": "ordered",
+                "widgets": [
+                    {
+                        "id": 4745030781331295,
+                        "definition": {
+                            "title": "LLM Prediction Latency (P95/P99)",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "show_legend": true,
+                            "legend_layout": "auto",
+                            "legend_columns": [
+                                "avg",
+                                "min",
+                                "max",
+                                "value",
+                                "sum"
+                            ],
+                            "type": "timeseries",
+                            "requests": [
+                                {
+                                    "response_format": "timeseries",
+                                    "queries": [
+                                        {
+                                            "name": "query1",
+                                            "data_source": "metrics",
+                                            "query": "sum:gcp.aiplatform.prediction.online.prediction_latencies.p95{*}"
+                                        },
+                                        {
+                                            "name": "query2",
+                                            "data_source": "metrics",
+                                            "query": "sum:gcp.aiplatform.prediction.online.prediction_latencies.p99{*}"
+                                        }
+                                    ],
+                                    "formulas": [
+                                        {
+                                            "number_format": {
+                                                "unit": {
+                                                    "type": "canonical_unit",
+                                                    "unit_name": "second"
+                                                }
+                                            },
+                                            "formula": "query1 / 1000"
+                                        },
+                                        {
+                                            "formula": "query2 / 1000",
+                                            "number_format": {
+                                                "unit": {
+                                                    "type": "canonical_unit",
+                                                    "unit_name": "second"
+                                                }
+                                            }
+                                        }
+                                    ],
+                                    "style": {
+                                        "palette": "dog_classic",
+                                        "order_by": "values",
+                                        "line_type": "solid",
+                                        "line_width": "normal"
+                                    },
+                                    "display_type": "line"
+                                }
+                            ],
+                            "markers": [
+                                {
+                                    "value": "y = 15",
+                                    "display_type": "error dashed"
+                                }
+                            ]
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 0,
+                            "width": 6,
+                            "height": 4
+                        }
+                    },
+                    {
+                        "id": 2776171952666756,
+                        "definition": {
+                            "title": "Time to First Token (TTFT)",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "show_legend": true,
+                            "legend_layout": "auto",
+                            "legend_columns": [
+                                "avg",
+                                "min",
+                                "max",
+                                "value",
+                                "sum"
+                            ],
+                            "type": "timeseries",
+                            "requests": [
+                                {
+                                    "response_format": "timeseries",
+                                    "queries": [
+                                        {
+                                            "data_source": "metrics",
+                                            "name": "query1",
+                                            "query": "avg:gcp.aiplatform.publisher.online_serving.first_token_latencies.p95{*}"
+                                        }
+                                    ],
+                                    "formulas": [
+                                        {
+                                            "formula": "query1 / 1000",
+                                            "number_format": {
+                                                "unit": {
+                                                    "type": "canonical_unit",
+                                                    "unit_name": "second"
+                                                }
+                                            }
+                                        }
+                                    ],
+                                    "style": {
+                                        "palette": "dog_classic",
+                                        "order_by": "values",
+                                        "line_type": "solid",
+                                        "line_width": "normal"
+                                    },
+                                    "display_type": "line"
+                                }
+                            ],
+                            "markers": [
+                                {
+                                    "value": "y = 3",
+                                    "display_type": "error dashed"
+                                }
+                            ]
+                        },
+                        "layout": {
+                            "x": 6,
+                            "y": 0,
+                            "width": 6,
+                            "height": 4
+                        }
+                    }
+                ]
+            },
+            "layout": {
+                "x": 0,
+                "y": 42,
+                "width": 12,
+                "height": 5
+            }
+        },
+        {
+            "id": 6033227357124549,
+            "definition": {
+                "title": "LLM Traces Overview",
+                "background_color": "yellow",
+                "show_title": true,
+                "type": "group",
+                "layout_type": "ordered",
+                "widgets": [
+                    {
+                        "id": 2970370440013674,
+                        "definition": {
+                            "title": "Recent LLM Requests & Responses",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "requests": [
+                                {
+                                    "response_format": "event_list",
+                                    "query": {
+                                        "data_source": "llm_observability_stream",
+                                        "query_string": "@event_type:span",
+                                        "indexes": [],
+                                        "sort": {
+                                            "column": "timestamp",
+                                            "order": "desc"
+                                        }
+                                    },
+                                    "columns": [
+                                        {
+                                            "field": "timestamp",
+                                            "width": "auto"
+                                        },
+                                        {
+                                            "field": "@meta.input.value",
+                                            "width": "auto"
+                                        },
+                                        {
+                                            "field": "@meta.output.value",
+                                            "width": "auto"
+                                        },
+                                        {
+                                            "field": "@ml_app",
+                                            "width": "auto"
+                                        },
+                                        {
+                                            "field": "@duration",
+                                            "width": "auto"
+                                        },
+                                        {
+                                            "field": "@meta.model_name",
+                                            "width": "auto"
+                                        },
+                                        {
+                                            "field": "@metrics.total_tokens",
+                                            "width": "auto"
+                                        },
+                                        {
+                                            "field": "@metrics.estimated_total_cost",
+                                            "width": "auto"
+                                        },
+                                        {
+                                            "field": "@status",
+                                            "width": "auto"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "type": "list_stream"
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 0,
+                            "width": 12,
+                            "height": 4
+                        }
+                    }
+                ]
+            },
+            "layout": {
+                "x": 0,
+                "y": 47,
+                "width": 12,
+                "height": 5
+            }
+        }
+    ],
+    "template_variables": [],
+    "layout_type": "ordered",
+    "notify_list": [],
+    "reflow_type": "fixed",
+    "pause_auto_refresh": false
+}

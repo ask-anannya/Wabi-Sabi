@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-sans bg-ink;
+  }
+  h1,
+  h2,
+  h3 {
+    @apply font-display;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-blob {
+    animation: none;
+  }
+}

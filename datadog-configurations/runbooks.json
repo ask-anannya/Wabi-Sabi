@@ -1,0 +1,280 @@
+{
+    "data": [
+        {
+            "type": "notebooks",
+            "id": 263136,
+            "attributes": {
+                "name": "Runbook: LLM Hallucination Affected Users",
+                "cells": [
+                    {
+                        "type": "notebook_cells",
+                        "attributes": {
+                            "definition": {
+                                "type": "markdown",
+                                "text": "## Alert Name\n\n**Users impacted by hallucinations exceed safe threshold**\n\n---\n\n## Purpose\n\nThis runbook defines the response procedure when the **percentage of users affected by hallucinated LLM responses** exceeds acceptable limits.\n\nThe objective is to **protect end users from incorrect, misleading, or unsafe outputs**, and to ensure that hallucinations do not impact a significant portion of the user base.\n\n---\n\n## Alert Description\n\nThis alert triggers when the **rate of users affected by hallucinations** rises above the defined Service Level Objective over the rolling evaluation window.\n\nA breach indicates that:\n\n* Users are receiving hallucinated responses\n\n* Safety and trust guarantees are degrading\n\n* Protective mechanisms may be failing to contain exposure\n\nThis condition requires prompt investigation due to direct user impact.\n\n---\n\n## Service Level Objective (SLO)\n\nSLO Link - [https://us5.datadoghq.com/slo/manage?sp=%5B%7B%22p%22%3A%7B%22id%22%3A%22140a4691d3715dd1bd21d939f86b08ef%22%2C%22timeFrame%22%3A%7B%22start%22%3A1766577656228%2C%22end%22%3A1767182456228%2C%22mode%22%3A%22sliding%22%2C%22fromUser%22%3Afalse%2C%22paused%22%3Afalse%7D%7D%2C%22i%22%3A%22slo-panel%22%7D%5D](https://us5.datadoghq.com/slo/manage?sp=%5B%7B%22p%22%3A%7B%22id%22%3A%22140a4691d3715dd1bd21d939f86b08ef%22%2C%22timeFrame%22%3A%7B%22start%22%3A1766577656228%2C%22end%22%3A1767182456228%2C%22mode%22%3A%22sliding%22%2C%22fromUser%22%3Afalse%2C%22paused%22%3Afalse%7D%7D%2C%22i%22%3A%22slo-panel%22%7D%5D)\n\n \n\nMonitor Link - [https://us5.datadoghq.com/monitors/17356359](https://us5.datadoghq.com/monitors/17356359)\n\n \n\n| Parameter| Value|\n|-|-|\n| SLO Type| Ratio-based|\n| Good Events| Users not affected by hallucinated responses|\n| Bad Events| Users affected by hallucinations|\n| Rolling Window| 7 days|\n| Target| \u2265 85% unaffected users|\n| Warning Threshold| < 90%|\n| Critical Threshold| < 85%|\n\n---\n\n## Impact Assessment\n\nAn elevated affected users rate may result in:\n\n* Users receiving incorrect or unsafe guidance\n\n* Loss of user trust and engagement\n\n* Increased support or complaint volume\n\n* Regulatory or ethical concerns in sensitive domains\n\n* Expanded hallucination blast radius\n\nThis alert represents a **direct safety and experience risk**.\n\n---\n\n## Initial Triage Checklist\n\nConfirm the following:\n\n* Is the increase sudden or gradual?\n\n* Are specific user personas more affected?\n\n* Is the issue limited to certain prompt types or flows?\n\n* Did the increase follow a deployment, model change, or prompt update?\n\n---\n\n## Investigation Steps\n\n### 1. Identify Affected User Segments\n\nReview dashboards:\n\n* Affected users over time\n\n* Persona-based blast radius\n\n* Hallucination severity by user group\n\nDetermine:\n\n* Which personas are impacted (age, skin concern, sensitivity)\n\n* Whether high-risk users are disproportionately affected\n\n---\n\n### 2. Analyze Hallucination Severity\n\nCorrelate affected users with:\n\n* Hallucination score trends\n\n* Clean vs flagged response ratios\n\nDetermine whether:\n\n* Many users are affected by low-severity hallucinations, or\n\n* Fewer users are affected by high-severity hallucinations\n\nThis guides containment priority.\n\n---\n\n### 3. Validate Safety Controls\n\nReview:\n\n* Pre-filter accuracy\n\n* Evaluation trigger rate\n\n* Detection success rate\n\nConfirm whether:\n\n* Risky prompts are bypassing safety controls\n\n* Evaluation gating is too permissive\n\n---\n\n### 4. Correlate with Traffic Patterns\n\nCheck:\n\n* Traffic spikes or unusual user behavior\n\n* New onboarding flows or campaigns\n\n* Load-related degradation in safety checks\n\nHigh traffic can amplify user exposure.\n\n---\n\n## Mitigation Actions\n\nBased on findings, take appropriate action:\n\n* Increase hallucination evaluation coverage temporarily\n\n* Tighten pre-filter thresholds for high-risk prompts\n\n* Route sensitive personas to stricter validation workflows\n\n* Roll back recent model or prompt changes\n\n* Disable high-risk response patterns if necessary\n\n---\n\n## Verification Steps\n\nAfter mitigation:\n\n* Confirm affected users rate is decreasing\n\n* Validate hallucination scores are stabilizing\n\n* Ensure no new personas are entering the affected group\n\n* Monitor metrics for at least one full rolling window\n\n---\n\n## Escalation Guidelines\n\nEscalate if:\n\n* Affected users rate remains above critical threshold\n\n* High-risk personas continue to be impacted\n\n* Mitigation actions fail to reduce exposure\n\nEscalation path:\n\n1. AI Engineering\n\n2. Safety & Policy Team\n\n3. Product Owner\n\n4. Incident Commander\n\n---\n\n## Post-Incident Actions\n\nOnce resolved:\n\n* Document root cause and timeline\n\n* Improve safety controls or evaluation logic\n\n* Add early-warning alerts for rising user exposure\n\n* Review persona risk weighting\n\n* Update dashboards and runbooks if gaps are identified"
+                            }
+                        },
+                        "id": "xvhnbpco"
+                    }
+                ],
+                "time": {
+                    "live_span": "1h"
+                },
+                "metadata": {
+                    "take_snapshots": false,
+                    "is_template": false,
+                    "is_favorite": false,
+                    "type": "runbook"
+                },
+                "template_variables": [],
+                "status": "published",
+                "modified": "2025-12-31T12:02:05.111946+00:00",
+                "created": "2025-12-31T11:59:23.253648+00:00",
+                "deleted": null,
+                "tags": [],
+                "author": {
+                    "name": "wabi-sabi",
+                    "handle": "contact@wabi-sabi.beauty",
+                    "created_at": "2025-12-17T18:15:30.142172+00:00",
+                    "email": "contact@wabi-sabi.beauty",
+                    "icon": "https://secure.gravatar.com/avatar/3cd0d96fa00b2cf68c0c06a298c37e81?s=48&d=retro",
+                    "title": "",
+                    "verified": true,
+                    "disabled": false,
+                    "status": "Active"
+                }
+            }
+        },
+        {
+            "type": "notebooks",
+            "id": 263135,
+            "attributes": {
+                "name": "Runbook: LLM Hallucination Pre-Filter Accuracy",
+                "cells": [
+                    {
+                        "type": "notebook_cells",
+                        "attributes": {
+                            "definition": {
+                                "type": "markdown",
+                                "text": "## Alert Name\n\n**LLM hallucination pre-filter accuracy below target**\n\n---\n\n## Purpose\n\nThis runbook defines the response procedure when the **hallucination pre-filter accuracy** falls below the defined threshold.\n\nThe pre-filter acts as the **first line of defense** in the LLM safety pipeline, determining whether prompts require deeper hallucination evaluation. Maintaining high accuracy ensures that:\n\n* Risky prompts are intercepted early\n\n* Safe prompts are not unnecessarily escalated\n\n* Evaluation costs remain controlled\n\n* Safety guarantees remain intact\n\n---\n\n## Alert Description\n\nThis alert triggers when the **percentage of evaluated prompts correctly flagged by the pre-filter** drops below the defined Service Level Objective over the rolling evaluation window.\n\nA breach indicates that the pre-filter is either:\n\n* Missing risky prompts (false negatives), or\n\n* Over-triggering evaluation unnecessarily (false positives)\n\nBoth conditions degrade system safety and efficiency.\n\n---\n\n## Service Level Objective (SLO)\n\nSLO Link - [https://us5.datadoghq.com/slo/manage?sp=%5B%7B%22p%22%3A%7B%22id%22%3A%22881f142d4767505f805d03c0fe2983d2%22%2C%22timeFrame%22%3A%7B%22start%22%3A1766577369447%2C%22end%22%3A1767182169447%2C%22mode%22%3A%22sliding%22%2C%22fromUser%22%3Afalse%2C%22paused%22%3Afalse%7D%7D%2C%22i%22%3A%22slo-panel%22%7D%5D](https://us5.datadoghq.com/slo/manage?sp=%5B%7B%22p%22%3A%7B%22id%22%3A%22881f142d4767505f805d03c0fe2983d2%22%2C%22timeFrame%22%3A%7B%22start%22%3A1766577369447%2C%22end%22%3A1767182169447%2C%22mode%22%3A%22sliding%22%2C%22fromUser%22%3Afalse%2C%22paused%22%3Afalse%7D%7D%2C%22i%22%3A%22slo-panel%22%7D%5D)\n\n \n\nMonitor Link - [https://us5.datadoghq.com/monitors/17356210](https://us5.datadoghq.com/monitors/17356210)\n\n \n\n| Parameter| Value|\n|-|-|\n| SLO Type| Count-based|\n| Good Events| Evaluated prompts correctly flagged by pre-filter|\n| Bad Events| Evaluated prompts missed or incorrectly classified|\n| Rolling Window| 7 days|\n| Target| \u2265 75%|\n| Warning Threshold| < 85%|\n| Critical Threshold| < 75%|\n\n---\n\n## Impact Assessment\n\nReduced pre-filter accuracy can lead to:\n\n* Unsafe prompts bypassing hallucination checks\n\n* Increased hallucination exposure to users\n\n* Unnecessary downstream evaluation costs\n\n* Degraded trust in safety controls\n\n* Increased blast radius if combined with high traffic\n\nThis alert signals a **safety and efficiency regression**, not just a classification issue.\n\n---\n\n## Initial Triage Checklist\n\nConfirm the following:\n\n* Is accuracy degradation sudden or gradual?\n\n* Are specific risk categories affected more than others?\n\n* Did the issue start after a prompt, rule, or model update?\n\n* Is traffic volume or prompt distribution changing?\n\n---\n\n## Investigation Steps\n\n### 1. Review Risk Classification Distribution\n\nAnalyze metrics:\n\n* `llm.prefilter.trigger.medical_claim`\n\n* `llm.prefilter.trigger.absolute_claim`\n\n* `llm.prefilter.trigger.unsafe_ingredient`\n\n* `llm.prefilter.trigger.json_format_violation`\n\nCheck for:\n\n* Missing expected triggers\n\n* Sudden shifts in category distribution\n\n---\n\n### 2. Compare Prefilter Decisions vs Evaluation Outcomes\n\nReview:\n\n* Evaluated vs non-evaluated outcome trends\n\n* Clean vs flagged evaluation results\n\nIdentify:\n\n* False negatives (risky prompts missed)\n\n* False positives (safe prompts escalated)\n\n---\n\n### 3. Validate Prefilter Rules and Thresholds\n\nInspect:\n\n* Rule logic and scoring thresholds\n\n* Keyword or pattern matching logic\n\n* Prompt classification heuristics\n\nEnsure recent updates did not unintentionally reduce sensitivity.\n\n---\n\n### 4. Correlate with Prompt and Persona Changes\n\nCheck whether:\n\n* New prompt formats are bypassing rules\n\n* Certain personas or concerns are misclassified\n\n* New user flows are not covered by existing logic\n\n---\n\n## Mitigation Actions\n\nDepending on findings:\n\n* Tighten pre-filter thresholds for high-risk categories\n\n* Add or refine classification rules\n\n* Temporarily increase evaluation coverage\n\n* Roll back recent pre-filter changes\n\n* Introduce fallback evaluation for ambiguous prompts\n\n---\n\n## Verification Steps\n\nAfter mitigation:\n\n* Confirm pre-filter accuracy returns above warning threshold\n\n* Validate risk category distribution stability\n\n* Ensure downstream evaluation load is within expectations\n\n* Monitor accuracy metrics for at least one full rolling window\n\n---\n\n## Escalation Guidelines\n\nEscalate if:\n\n* Risky prompts continue to bypass the pre-filter\n\n* Accuracy does not recover after mitigation\n\n* High-risk personas are impacted\n\nEscalation path:\n\n1. AI Engineering\n\n2. Safety & Policy Team\n\n3. Observability / Platform Team\n\n4. Product Owner\n\n---\n\n## Post-Incident Actions\n\nOnce resolved:\n\n* Document root cause and contributing factors\n\n* Improve test coverage for pre-filter rules\n\n* Add early-warning alerts for accuracy drift\n\n* Update dashboards or thresholds if needed\n\n* Review alignment with blast radius and quality SLOs\n\n---"
+                            }
+                        },
+                        "id": "avj7h127"
+                    }
+                ],
+                "time": {
+                    "live_span": "1h"
+                },
+                "metadata": {
+                    "take_snapshots": false,
+                    "is_template": false,
+                    "is_favorite": false,
+                    "type": null
+                },
+                "template_variables": [],
+                "status": "published",
+                "modified": "2025-12-31T11:57:32.257829+00:00",
+                "created": "2025-12-31T11:55:53.836191+00:00",
+                "deleted": null,
+                "tags": [],
+                "author": {
+                    "name": "wabi-sabi",
+                    "handle": "contact@wabi-sabi.beauty",
+                    "created_at": "2025-12-17T18:15:30.142172+00:00",
+                    "email": "contact@wabi-sabi.beauty",
+                    "icon": "https://secure.gravatar.com/avatar/3cd0d96fa00b2cf68c0c06a298c37e81?s=48&d=retro",
+                    "title": "",
+                    "verified": true,
+                    "disabled": false,
+                    "status": "Active"
+                }
+            }
+        },
+        {
+            "type": "notebooks",
+            "id": 263134,
+            "attributes": {
+                "name": "Runbook: LLM Response Quality (Hallucinations Rate)",
+                "cells": [
+                    {
+                        "type": "notebook_cells",
+                        "attributes": {
+                            "definition": {
+                                "type": "markdown",
+                                "text": "## Alert Name\n\n**Hallucinations scores are unstable**\n\n---\n\n## Purpose\n\nThis runbook defines the response procedure when the **hallucination rate of LLM responses exceeds acceptable limits**.\n\nThe goal is to **maintain response correctness, safety, and trustworthiness**, ensuring that the LLM does not produce misleading, unsafe, or fabricated information at scale.\n\nThis alert focuses on **model output quality**, not system availability.\n\n---\n\n## Alert Description\n\nThis alert triggers when the **percentage of hallucinated responses** crosses the defined threshold over a rolling evaluation window.\n\nA breach indicates that:\n\n* The model is generating factually incorrect or unsafe outputs\n\n* Safety guarantees are degrading\n\n* Users may receive misleading guidance\n\nThis condition requires **immediate investigation**, especially in safety-sensitive domains such as skincare, medical advice, or ingredient recommendations.\n\n---\n\n## Service Level Objective (SLO)\n\nSLO Link - [https://us5.datadoghq.com/slo/manage?sp=%5B%7B%22p%22%3A%7B%22id%22%3A%22560e7b29b7db5fce8d7dc111440da64e%22%2C%22timeFrame%22%3A%7B%22start%22%3A1766577198755%2C%22end%22%3A1767181998755%2C%22mode%22%3A%22sliding%22%2C%22fromUser%22%3Afalse%2C%22paused%22%3Afalse%7D%7D%2C%22i%22%3A%22slo-panel%22%7D%5D](https://us5.datadoghq.com/slo/manage?sp=%5B%7B%22p%22%3A%7B%22id%22%3A%22560e7b29b7db5fce8d7dc111440da64e%22%2C%22timeFrame%22%3A%7B%22start%22%3A1766577198755%2C%22end%22%3A1767181998755%2C%22mode%22%3A%22sliding%22%2C%22fromUser%22%3Afalse%2C%22paused%22%3Afalse%7D%7D%2C%22i%22%3A%22slo-panel%22%7D%5D)\n\n \n\nMonitor Link - [https://us5.datadoghq.com/monitors/17326627](https://us5.datadoghq.com/monitors/17326627)\n\n \n\n| Parameter| Value|\n|-|-|\n| SLO Type| Ratio-based|\n| Good Events| Clean (non-hallucinated) evaluated responses|\n| Bad Events| Flagged hallucinated responses|\n| Rolling Window| 7 days|\n| Target| \u2265 75% clean responses|\n| Warning Threshold| < 85%|\n| Critical Threshold| < 75%|\n\n---\n\n## Impact Assessment\n\nAn elevated hallucination rate can lead to:\n\n* Incorrect skincare or health guidance\n\n* Brand trust erosion\n\n* Regulatory and compliance risks\n\n* Increased user harm potential\n\n* Escalation of blast radius when combined with high traffic\n\nSeverity increases if hallucinations affect **high-risk personas or common user flows**.\n\n---\n\n## Initial Triage Checklist\n\nConfirm the following:\n\n* Is the hallucination rate increasing steadily or spiking suddenly?\n\n* Is the issue isolated to a specific model version?\n\n* Are particular prompt types or intents affected?\n\n* Did the issue coincide with a deployment, prompt update, or model switch?\n\n---\n\n## Investigation Steps\n\n### 1. Analyze Hallucination Score Trends\n\nReview:\n\n* `llm.hallucination.score`\n\n* `llm.hallucination.flagged.count`\n\n* Clean vs flagged response ratios\n\nDetermine:\n\n* Severity of hallucinations (low confidence vs critical)\n\n* Whether issues are widespread or localized\n\n---\n\n### 2. Identify Affected Prompt Categories\n\nCorrelate hallucinations with:\n\n* Medical or absolute claims\n\n* Ingredient safety recommendations\n\n* Routine sequencing advice\n\n* JSON formatting or schema outputs\n\nThis helps isolate **prompt sensitivity weaknesses**.\n\n---\n\n### 3. Correlate with Model and Version\n\nCheck:\n\n* Hallucination rate by `model_name`\n\n* Recent model upgrades or configuration changes\n\n* Differences between primary generation model and validation model\n\nDetermine if rollback is necessary.\n\n---\n\n### 4. Evaluate Blast Radius\n\nCross-reference with:\n\n* Total chat volume\n\n* Persona risk weight\n\n* Affected user count\n\nHigh hallucination rate combined with high exposure indicates **elevated real-world risk**.\n\n---\n\n## Mitigation Actions\n\nBased on findings:\n\n* Roll back to a previous stable prompt or model version\n\n* Increase evaluation strictness for high-risk prompts\n\n* Narrow allowed response patterns\n\n* Introduce stronger grounding instructions\n\n* Route sensitive prompts to stricter validation workflows\n\n* Temporarily reduce output verbosity\n\n---\n\n## Verification Steps\n\nAfter mitigation:\n\n* Confirm hallucination rate returns below warning threshold\n\n* Validate clean vs flagged ratio stability\n\n* Review recent evaluated responses manually\n\n* Monitor for at least one full rolling window\n\n---\n\n## Escalation Guidelines\n\nEscalate if:\n\n* Hallucination rate remains above critical threshold\n\n* High-risk personas are affected\n\n* Mitigation attempts do not reduce severity\n\nEscalation path:\n\n1. AI Engineering\n\n2. Safety & Policy Team\n\n3. Product Owner\n\n4. Incident Commander\n\n---\n\n## Post-Incident Actions\n\nOnce stabilized:\n\n* Document root cause (prompt, model, or data drift)\n\n* Improve prefilter or grounding logic\n\n* Add early-warning monitors for rising hallucination trends\n\n* Review SLO thresholds for realism\n\n* Update evaluation datasets if bias or gaps are found\n\n---"
+                            }
+                        },
+                        "id": "5spcgw4d"
+                    }
+                ],
+                "time": {
+                    "live_span": "1h"
+                },
+                "metadata": {
+                    "take_snapshots": false,
+                    "is_template": false,
+                    "is_favorite": false,
+                    "type": null
+                },
+                "template_variables": [],
+                "status": "published",
+                "modified": "2025-12-31T11:54:23.310739+00:00",
+                "created": "2025-12-31T11:49:56.196668+00:00",
+                "deleted": null,
+                "tags": [],
+                "author": {
+                    "name": "wabi-sabi",
+                    "handle": "contact@wabi-sabi.beauty",
+                    "created_at": "2025-12-17T18:15:30.142172+00:00",
+                    "email": "contact@wabi-sabi.beauty",
+                    "icon": "https://secure.gravatar.com/avatar/3cd0d96fa00b2cf68c0c06a298c37e81?s=48&d=retro",
+                    "title": "",
+                    "verified": true,
+                    "disabled": false,
+                    "status": "Active"
+                }
+            }
+        },
+        {
+            "type": "notebooks",
+            "id": 263133,
+            "attributes": {
+                "name": "Runbook: LLM Hallucination Detection Error Rate Elevation",
+                "cells": [
+                    {
+                        "type": "notebook_cells",
+                        "attributes": {
+                            "definition": {
+                                "type": "markdown",
+                                "text": "## Alert Name\n\n**Hallucination Detection Success Rate below target**\n\n---\n\n## Purpose\n\nThis runbook defines the response procedure when the **hallucination detection pipeline itself becomes unreliable**. The objective is to **restore the accuracy and availability of hallucination detection**, ensuring that unsafe or misleading LLM outputs are not silently passing through due to detection failures.\n\nThis alert focuses on **observability correctness**, not model quality.\n\n---\n\n## Alert Description\n\nThis alert triggers when the **hallucination detection error rate** exceeds the acceptable threshold over the configured rolling window.\n\nA breach indicates failures such as:\n\n* Hallucination detection service errors\n\n* JSON parsing or schema validation failures\n\n* Evaluation model timeouts or malformed responses\n\n* Downstream detection pipeline instability\n\nWhen this occurs, hallucinations may go **undetected**, increasing safety and compliance risk.\n\n---\n\n## Service Level Objective (SLO)\n\nSLO Link - [https://us5.datadoghq.com/slo/manage?sp=%5B%7B%22p%22%3A%7B%22id%22%3A%22f71c2610f6af5a8299bf18c0e6d28a28%22%2C%22timeFrame%22%3A%7B%22start%22%3A1766576913949%2C%22end%22%3A1767181713949%2C%22mode%22%3A%22sliding%22%2C%22fromUser%22%3Afalse%2C%22paused%22%3Afalse%7D%7D%2C%22i%22%3A%22slo-panel%22%7D%5D](https://us5.datadoghq.com/slo/manage?sp=%5B%7B%22p%22%3A%7B%22id%22%3A%22f71c2610f6af5a8299bf18c0e6d28a28%22%2C%22timeFrame%22%3A%7B%22start%22%3A1766576913949%2C%22end%22%3A1767181713949%2C%22mode%22%3A%22sliding%22%2C%22fromUser%22%3Afalse%2C%22paused%22%3Afalse%7D%7D%2C%22i%22%3A%22slo-panel%22%7D%5D)\n\n \n\nMonitor Link - [https://us5.datadoghq.com/monitors/17356156](https://us5.datadoghq.com/monitors/17356156)\n\n \n\n| Parameter| Value|\n|-|-|\n| SLO Type| Count-based|\n| Good Events| Successful hallucination detection outcomes|\n| Bad Events| Detection failures and parsing errors|\n| Rolling Window| 7 days|\n| Target| \u2265 75%|\n| Warning Threshold| < 85%|\n| Critical Threshold| < 75%|\n\n---\n\n## Impact Assessment\n\nAn elevated detection error rate results in **loss of trust in safety signals**. Potential impacts include:\n\n* Unsafe responses not being flagged\n\n* False sense of system reliability\n\n* Inaccurate dashboards and alerts\n\n* Increased blast radius due to blind spots\n\nImmediate investigation is required.\n\n---\n\n## Initial Triage Checklist\n\nConfirm the following:\n\n* Is the failure rate increasing suddenly or gradually?\n\n* Are errors localized to a specific model or request type?\n\n* Are failures systemic or tied to specific personas or prompts?\n\n* Did the issue begin after a deployment or configuration change?\n\n---\n\n## Investigation Steps\n\n### 1. Identify Failure Type Distribution\n\nReview error metrics:\n\n* `llm.errors.hallucination_detection_failure`\n\n* `llm.errors.json_parsing_failure`\n\n* Evaluation timeout or schema mismatch metrics\n\nDetermine:\n\n* Whether failures are model-related or infrastructure-related\n\n* Which failure type dominates\n\n---\n\n### 2. Inspect Detection Model Health\n\nValidate:\n\n* Evaluation model availability and latency\n\n* Token limits and output truncation\n\n* Schema compliance of evaluation responses\n\nCheck if:\n\n* The evaluation model is returning incomplete or malformed outputs\n\n* Rate limiting or quota exhaustion is occurring\n\n---\n\n### 3. Validate Input and Output Schema Contracts\n\nReview recent changes to:\n\n* Prompt templates\n\n* JSON schemas\n\n* Detection output format\n\nEnsure:\n\n* Schema versions match across services\n\n* No backward compatibility issues were introduced\n\n---\n\n### 4. Correlate with Traffic and Cost Metrics\n\nAnalyze:\n\n* Spike in evaluation volume\n\n* Token usage anomalies\n\n* Cost or throughput saturation\n\nHigh load may degrade detection reliability.\n\n---\n\n## Mitigation Actions\n\nDepending on root cause:\n\n* Temporarily reduce evaluation scope to essential risk categories\n\n* Roll back recent prompt or schema changes\n\n* Route detection to fallback validation logic\n\n* Increase evaluation model timeouts or token limits\n\n* Enable stricter input validation before evaluation\n\n---\n\n## Verification Steps\n\nAfter mitigation:\n\n* Confirm detection error metrics are decreasing\n\n* Validate successful evaluation completion rates\n\n* Ensure hallucination dashboards reflect stable data\n\n* Monitor for at least one full evaluation window\n\n---\n\n## Escalation Guidelines\n\nEscalate if:\n\n* Detection failures persist after rollback\n\n* Safety guarantees cannot be validated\n\n* Detection outputs cannot be trusted\n\nEscalation path:\n\n1. AI Engineering\n\n2. Safety / Policy\n\n3. Observability / Platform Engineering\n\n4. Incident Commander\n\n---\n\n## Post-Incident Actions\n\nOnce resolved:\n\n* Document root cause and contributing factors\n\n* Improve schema validation robustness\n\n* Add early-warning alerts for detection degradation\n\n* Update evaluation fallback mechanisms\n\n* Review SLO thresholds if required\n\n---"
+                            }
+                        },
+                        "id": "cet1kdg8"
+                    }
+                ],
+                "time": {
+                    "live_span": "1h"
+                },
+                "metadata": {
+                    "take_snapshots": false,
+                    "is_template": false,
+                    "is_favorite": false,
+                    "type": "runbook"
+                },
+                "template_variables": [],
+                "status": "published",
+                "modified": "2025-12-31T11:49:44.358072+00:00",
+                "created": "2025-12-31T11:47:47.234520+00:00",
+                "deleted": null,
+                "tags": [],
+                "author": {
+                    "name": "wabi-sabi",
+                    "handle": "contact@wabi-sabi.beauty",
+                    "created_at": "2025-12-17T18:15:30.142172+00:00",
+                    "email": "contact@wabi-sabi.beauty",
+                    "icon": "https://secure.gravatar.com/avatar/3cd0d96fa00b2cf68c0c06a298c37e81?s=48&d=retro",
+                    "title": "",
+                    "verified": true,
+                    "disabled": false,
+                    "status": "Active"
+                }
+            }
+        },
+        {
+            "type": "notebooks",
+            "id": 263132,
+            "attributes": {
+                "name": "Runbook: LLM Hallucination Blast Radius Control",
+                "cells": [
+                    {
+                        "type": "notebook_cells",
+                        "attributes": {
+                            "definition": {
+                                "type": "markdown",
+                                "text": "## Alert Name\n\n**Hallucination blast radius exceeds safe threshold**\n\n---\n\n## Purpose\n\nThis runbook defines the operational response when the **hallucination blast radius SLO** is breached. The objective is to **contain the spread and impact of hallucinations**, especially those affecting **high-risk user personas**, and to **prevent harmful or misleading responses from reaching a large audience**.\n\nThis alert prioritizes **impact over frequency**, focusing on _who_ is affected rather than _how often_ hallucinations occur.\n\n---\n\n## Alert Description\n\nThis alert triggers when the **percentage of unaffected users** falls below the defined Service Level Objective over the rolling evaluation window.\n\nA breach indicates that hallucinations are:\n\n* Reaching a growing number of users\n\n* Affecting sensitive user personas (age, skin type, medical concerns)\n\n* Increasing real-world risk beyond acceptable limits\n\n---\n\n## Service Level Objective (SLO)\n\nSLO Link - [https://us5.datadoghq.com/slo/manage?sp=%5B%7B%22p%22%3A%7B%22id%22%3A%22314ceabac2795dc78562bdf559dced6f%22%2C%22timeFrame%22%3A%7B%22start%22%3A1766576496282%2C%22end%22%3A1767181296282%2C%22mode%22%3A%22sliding%22%2C%22fromUser%22%3Afalse%2C%22paused%22%3Afalse%7D%7D%2C%22i%22%3A%22slo-panel%22%7D%5D](https://us5.datadoghq.com/slo/manage?sp=%5B%7B%22p%22%3A%7B%22id%22%3A%22314ceabac2795dc78562bdf559dced6f%22%2C%22timeFrame%22%3A%7B%22start%22%3A1766576496282%2C%22end%22%3A1767181296282%2C%22mode%22%3A%22sliding%22%2C%22fromUser%22%3Afalse%2C%22paused%22%3Afalse%7D%7D%2C%22i%22%3A%22slo-panel%22%7D%5D)\n\n \n\nMonitor Link - [https://us5.datadoghq.com/monitors/17356223](https://us5.datadoghq.com/monitors/17356223)\n\n \n\n| Parameter| Value|\n|-|-|\n| SLO Type| Count-based|\n| Indicator| Unaffected users / Total chats|\n| Rolling Window| 7 days|\n| Target| \u2265 85%|\n| Warning Threshold| < 90%|\n| Critical Threshold| < 85%|\n\n---\n\n## Impact Assessment\n\nWhen this alert fires, the system is experiencing **uncontrolled hallucination propagation**. Potential consequences include:\n\n* Medical misinformation\n\n* Unsafe skincare recommendations\n\n* Loss of user trust\n\n* Regulatory or ethical risk\n\nImmediate containment is required.\n\n---\n\n## Initial Triage Checklist\n\nVerify the following before deep investigation:\n\n* Is the increase sudden or gradual?\n\n* Are specific user personas disproportionately affected?\n\n* Is the hallucination severity increasing, or just exposure?\n\n* Did the issue begin after a model, prompt, or policy change?\n\n---\n\n## Investigation Steps\n\n### 1. Identify Affected User Segments\n\nReview dashboards:\n\n* Hallucination Blast Radius Index (HBRS)\n\n* Risk Matrix by Persona\n\n* Hallucination Score Distribution\n\nConfirm:\n\n* Which personas are affected (age, skin concern, sensitivity)\n\n* Whether high-risk groups are impacted\n\n---\n\n### 2. Analyze Hallucination Severity vs Exposure\n\nCheck:\n\n* Average hallucination score trends\n\n* Total chat volume correlation\n\n* Whether impact is caused by:\n\n  * High severity, low volume events\n\n  * Low severity, high volume events\n\nThis determines containment strategy.\n\n---\n\n### 3. Validate Evaluation Gating Effectiveness\n\nReview:\n\n* Evaluation trigger rate\n\n* Prefilter classification distribution\n\n* Percentage of evaluated vs non-evaluated chats\n\nConfirm whether:\n\n* Risky prompts are being correctly routed for evaluation\n\n* Gating thresholds are too permissive\n\n---\n\n### 4. Review Recent Changes\n\nCheck for:\n\n* Model version upgrades\n\n* Prompt or system instruction changes\n\n* Prefilter rule updates\n\n* Persona risk weight adjustments\n\nRoll back changes if a regression is identified.\n\n---\n\n## Containment Actions\n\nDepending on findings, take one or more of the following actions:\n\n* Increase hallucination evaluation coverage temporarily\n\n* Lower prefilter thresholds for high-risk categories\n\n* Route high-risk personas to stricter validation models\n\n* Disable specific response patterns or flows\n\n* Apply prompt hotfixes to constrain unsafe outputs\n\n---\n\n## Verification Steps\n\nAfter containment actions:\n\n* Confirm affected user percentage is decreasing\n\n* Validate hallucination scores are stabilizing\n\n* Ensure no new personas are entering the affected set\n\n* Monitor blast radius metrics for at least one evaluation cycle\n\n---\n\n## Escalation Guidelines\n\nEscalate immediately if:\n\n* Medical or safety-critical hallucinations persist\n\n* High-risk personas continue to be affected\n\n* Automated controls fail to contain spread\n\nEscalation path:\n\n1. AI Engineering\n\n2. Safety / Policy Review\n\n3. Product Owner\n\n4. Incident Commander (if applicable)\n\n---\n\n## Post-Incident Actions\n\nOnce stabilized:\n\n* Document root cause and timeline\n\n* Update risk thresholds or persona weights\n\n* Improve evaluation selectivity or coverage\n\n* Update dashboards or alerts if blind spots are identified\n\n* Review this runbook for gaps\n\n---"
+                            }
+                        },
+                        "id": "9zco4k0m"
+                    }
+                ],
+                "time": {
+                    "live_span": "1h"
+                },
+                "metadata": {
+                    "take_snapshots": false,
+                    "is_template": false,
+                    "is_favorite": false,
+                    "type": "runbook"
+                },
+                "template_variables": [],
+                "status": "published",
+                "modified": "2025-12-31T11:45:12.053763+00:00",
+                "created": "2025-12-31T11:40:41.961599+00:00",
+                "deleted": null,
+                "tags": [],
+                "author": {
+                    "name": "wabi-sabi",
+                    "handle": "contact@wabi-sabi.beauty",
+                    "created_at": "2025-12-17T18:15:30.142172+00:00",
+                    "email": "contact@wabi-sabi.beauty",
+                    "icon": "https://secure.gravatar.com/avatar/3cd0d96fa00b2cf68c0c06a298c37e81?s=48&d=retro",
+                    "title": "",
+                    "verified": true,
+                    "disabled": false,
+                    "status": "Active"
+                }
+            }
+        },
+        {
+            "type": "notebooks",
+            "id": 263131,
+            "attributes": {
+                "name": "Runbook: Website Service Unavailability",
+                "cells": [
+                    {
+                        "type": "notebook_cells",
+                        "attributes": {
+                            "definition": {
+                                "type": "markdown",
+                                "text": "## Alert Name\n\n**Wabi-Sabi Website Availability SLO**\n\n---\n\n## Purpose\n\nThis runbook provides step-by-step guidance for responding to alerts triggered when the **Wabi-Sabi website availability SLO** breaches its defined threshold. The goal is to **quickly identify the cause of downtime**, **restore user access**, and **minimize user impact** while preserving service reliability.\n\n---\n\n## Alert Description\n\nThis alert is triggered when the **percentage of successful website availability checks** falls below the defined Service Level Objective over the configured rolling time window.\n\nA violation indicates that users may be **unable to access the Wabi-Sabi application**, impacting trust, engagement, and downstream AI interactions.\n\n---\n\n## Service Level Objective (SLO)\n\nSLO Link - [https://us5.datadoghq.com/slo/manage?sp=%5B%7B%22p%22%3A%7B%22id%22%3A%22e2cd2927f26c5526af468d2ae421c0c3%22%2C%22timeFrame%22%3A%7B%22start%22%3A1766576110042%2C%22end%22%3A1767180910042%2C%22mode%22%3A%22sliding%22%2C%22fromUser%22%3Afalse%2C%22paused%22%3Afalse%7D%7D%2C%22i%22%3A%22slo-panel%22%7D%5D](https://us5.datadoghq.com/slo/manage?sp=%5B%7B%22p%22%3A%7B%22id%22%3A%22e2cd2927f26c5526af468d2ae421c0c3%22%2C%22timeFrame%22%3A%7B%22start%22%3A1766576110042%2C%22end%22%3A1767180910042%2C%22mode%22%3A%22sliding%22%2C%22fromUser%22%3Afalse%2C%22paused%22%3Afalse%7D%7D%2C%22i%22%3A%22slo-panel%22%7D%5D)\n\n \n\nMonitor Link - [https://us5.datadoghq.com/monitors/17324924](https://us5.datadoghq.com/monitors/17324924)\n\n \n\n| Parameter| Value|\n|-|-|\n| SLO Type| Monitor-based|\n| Metric| Website uptime|\n| Rolling Window| 7 days|\n| Target| \u2265 99%|\n| Warning Threshold| < 99.5%|\n| Critical Threshold| < 99%|\n\n---\n\n## Initial Assessment Checklist\n\nWhen this alert fires, immediately verify:\n\n* Is the website currently unreachable for users?\n\n* Is the outage intermittent or sustained?\n\n* Are errors global or region-specific?\n\n* Did the issue coincide with a recent deployment or configuration change?\n\n---\n\n## Investigation Steps\n\n### 1. Confirm Website Status\n\n* Open the Wabi-Sabi website in a browser\n\n* Check access from multiple networks or regions (VPN if available)\n\n* Review Datadog **Synthetics \u2192 Uptime Monitor** results\n\n---\n\n### 2. Check Infrastructure Health\n\n* Review host-level metrics:\n\n  * CPU usage\n\n  * Memory utilization\n\n  * Disk saturation\n\n* Validate container and VM status\n\n* Ensure no resource exhaustion is occurring\n\n---\n\n### 3. Inspect Backend Service Health\n\n* Verify API availability (FastAPI / backend services)\n\n* Check recent **5xx error spikes** in APM\n\n* Inspect request latency trends\n\n---\n\n### 4. Review Deployment & Configuration Changes\n\n* Confirm if a recent frontend, backend, or infrastructure deployment occurred\n\n* Validate:\n\n  * Environment variables\n\n  * Secrets and credentials\n\n  * NGINX configuration\n\n* Roll back recent changes if necessary\n\n---\n\n### 5. Validate Networking & Dependencies\n\n* Check:\n\n  * Load balancer health\n\n  * DNS resolution\n\n  * Firewall or security group changes\n\n* Confirm upstream dependencies (Vertex AI, third-party APIs) are operational\n\n---\n\n## Remediation Actions\n\nBased on findings, take appropriate action:\n\n* Restart affected containers or services\n\n* Roll back faulty deployments\n\n* Scale resources if under-provisioned\n\n* Fix misconfigurations (NGINX, routing, TLS)\n\n* Restore networking connectivity\n\n---\n\n## Post-Recovery Validation\n\nAfter remediation:\n\n* Confirm the website is accessible from multiple regions\n\n* Ensure synthetic uptime checks return to **PASS**\n\n* Verify error rates and latency stabilize\n\n* Monitor SLO burn rate for at least 15\u201330 minutes\n\n---\n\n## Documentation & Follow-Up\n\n* Record incident details:\n\n  * Root cause\n\n  * Time to detect\n\n  * Time to resolve\n\n* Create a follow-up task if:\n\n  * A deployment caused the outage\n\n  * Automation or alerts can be improved\n\n* Update this runbook if gaps were identified"
+                            }
+                        },
+                        "id": "w37dul8x"
+                    }
+                ],
+                "time": {
+                    "live_span": "1h"
+                },
+                "metadata": {
+                    "take_snapshots": false,
+                    "is_template": false,
+                    "is_favorite": false,
+                    "type": "runbook"
+                },
+                "template_variables": [],
+                "status": "published",
+                "modified": "2025-12-31T11:39:00.857124+00:00",
+                "created": "2025-12-31T11:33:51.694351+00:00",
+                "deleted": null,
+                "tags": [],
+                "author": {
+                    "name": "wabi-sabi",
+                    "handle": "contact@wabi-sabi.beauty",
+                    "created_at": "2025-12-17T18:15:30.142172+00:00",
+                    "email": "contact@wabi-sabi.beauty",
+                    "icon": "https://secure.gravatar.com/avatar/3cd0d96fa00b2cf68c0c06a298c37e81?s=48&d=retro",
+                    "title": "",
+                    "verified": true,
+                    "disabled": false,
+                    "status": "Active"
+                }
+            }
+        }
+    ],
+    "meta": {
+        "page": {
+            "total_count": 6,
+            "total_filtered_count": 6
+        }
+    }
+}

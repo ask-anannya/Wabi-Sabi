@@ -1,0 +1,90 @@
+{
+    "data": [
+        {
+            "attributes": {
+                "createdAt": "2025-12-30T15:44:20.06825Z",
+                "creationSource": "workflows_ui",
+                "description": "Opens an incident when an alert is triggered",
+                "favorite": false,
+                "handle": "alert-incident-workflow",
+                "name": "alert-incident-workflow",
+                "specVersionId": "8dee792e-249a-4b59-a7d7-be4e40ffd516",
+                "systemTags": [
+                    "team:ai-engineering-team",
+                    "team:dev-team"
+                ],
+                "triggerTypes": [
+                    "TRIGGER_TYPE_MONITOR"
+                ],
+                "updatedAt": "2025-12-31T15:04:54.775809Z"
+            },
+            "id": "8c5d48a3-fb68-417e-9494-423b882975fe",
+            "relationships": {
+                "createdBy": {
+                    "data": {
+                        "id": "8d2d9183-53bc-4ca3-b028-b374d32d9306",
+                        "type": "users"
+                    }
+                },
+                "lastInstance": {
+                    "data": {
+                        "id": "d226b068-91ce-491e-bfcd-2b8bade1c4a0",
+                        "type": "instances"
+                    }
+                },
+                "lastUpdatedBy": {
+                    "data": {
+                        "id": "8d2d9183-53bc-4ca3-b028-b374d32d9306",
+                        "type": "users"
+                    }
+                },
+                "ownedBy": {
+                    "data": {
+                        "id": "8d2d9183-53bc-4ca3-b028-b374d32d9306",
+                        "type": "users"
+                    }
+                }
+            },
+            "type": "workflows"
+        }
+    ],
+    "included": [
+        {
+            "attributes": {
+                "endTimestamp": "2025-12-31T17:52:32.29477Z",
+                "instanceStatus": {
+                    "detailsKind": "SUCCEEDED",
+                    "displayName": "Success"
+                },
+                "source": {
+                    "handle": {
+                        "id": "17356223",
+                        "kind": "MONITOR",
+                        "payload": "{\"id\": 8437944384398268720, \"date_detected\": 1767203483, \"date_happened\": 1767203483, \"date_ended\": null, \"alert_type\": \"success\", \"event_type\": \"query_alert_monitor\", \"event_object\": \"d33ce71b10a12e801a089e959b797ee4\", \"aggregation_key\": \"67efb1516cf486428cfeaa0de1336e6f\", \"proxy_user\": null, \"related_to_event\": null, \"msg_title\": \"[P1] [Recovered] Hallucination blast radius exceeds safe threshold\", \"msg_text\": \"%%%\\nThe hallucination blast radius has exceeded the defined safety threshold over the past 7 days.\\n\\nThis indicates that hallucinations are affecting a broader audience, higher-risk personas, or exhibiting increased severity.\\n\\nFollow the runbook for next steps:\\n[runbook-llm-hallucination-blast-radius-control](https://us5.datadoghq.com/notebook/263132/runbook-llm-hallucination-blast-radius-control)\\n\\n@slack-llm-notifications-datadog \\n\\n@contact@wabi-sabi.beauty \\n\\n@workflow-alert-incident-workflow\\n\\n`sum(last_15m):sum:llm.hallucination.score{*}.as_count() / sum:llm.hallucination.persona_risk_weight{*}.weighted() \u003e 0.5`\\n\\nThe monitor was last triggered at Wed Dec 31 2025 17:12:23 UTC.\\n\\n- - -\\n\\n[[Monitor Status](https://us5.datadoghq.com/monitors/17356223?from_ts=1767202583000\u0026to_ts=1767203783000\u0026event_id=8437944384398268720\u0026link_source=monitor_notif)] \\u00b7 [[Edit Monitor](https://us5.datadoghq.com/monitors/17356223/edit?link_source=monitor_notif)] \\u00b7 [[Related Logs](https://us5.datadoghq.com/logs?query=%2A\u0026from_ts=1767202583000\u0026to_ts=1767203483000\u0026live=false\u0026link_source=monitor_notif)]\\n%%%\", \"msg_text_display\": null, \"monitor_id\": 17356223, \"monitor_group_status\": 0, \"monitor_groups\": [\"*\"], \"json_payload\": \"{\\\"monitor\\\": {\\\"id\\\": 17356223, \\\"org_id\\\": 1300799129, \\\"type\\\": \\\"query alert\\\", \\\"name\\\": \\\"Hallucination blast radius exceeds safe threshold\\\", \\\"message\\\": \\\"The hallucination blast radius has exceeded the defined safety threshold over the past 7 days.\\\\n\\\\nThis indicates that hallucinations are affecting a broader audience, higher-risk personas, or exhibiting increased severity.\\\\n\\\\nFollow the runbook for next steps:\\\\n[runbook-llm-hallucination-blast-radius-control](https://us5.datadoghq.com/notebook/263132/runbook-llm-hallucination-blast-radius-control)\\\\n\\\\n@slack-llm-notifications-datadog \\\\n\\\\n@contact@wabi-sabi.beauty \\\\n\\\\n@workflow-alert-incident-workflow\\\", \\\"tags\\\": [], \\\"query\\\": \\\"sum(last_15m):sum:llm.hallucination.score{*}.as_count() / sum:llm.hallucination.persona_risk_weight{*}.weighted() \u003e 0.5\\\", \\\"created_at\\\": 1767178815000, \\\"modified\\\": 1767200608000, \\\"deleted\\\": null, \\\"options\\\": {\\\"thresholds\\\": {\\\"critical\\\": 0.5, \\\"warning\\\": 0.25}, \\\"notify_audit\\\": false, \\\"on_missing_data\\\": \\\"resolve\\\", \\\"include_tags\\\": false, \\\"new_host_delay\\\": 300}, \\\"priority\\\": 1, \\\"templated_name\\\": \\\"Hallucination blast radius exceeds safe threshold\\\", \\\"draft_status\\\": \\\"published\\\", \\\"assets\\\": []}, \\\"avalanche_window\\\": null, \\\"result\\\": {\\\"result_id\\\": 8437944375845562109, \\\"result_ts\\\": 1767203483, \\\"evaluation_ts\\\": 1767203483, \\\"scheduled_ts\\\": 1767203543, \\\"group\\\": null, \\\"group_key\\\": null, \\\"state_id\\\": 0, \\\"avalanche\\\": false, \\\"num_groups\\\": 1, \\\"groups\\\": {\\\"None\\\": {\\\"status\\\": 0}}, \\\"display_logs_sample\\\": {}, \\\"logs_url\\\": \\\"/logs?query=%2A\u0026from_ts=1767202583000\u0026to_ts=1767203483000\u0026live=false\u0026link_source=monitor_notif\\\", \\\"metadata\\\": {\\\"alert_url\\\": \\\"/monitors/17356223?from_ts=1767202583000\u0026to_ts=1767203783000\u0026event_id=8437944384398268720\u0026link_source=monitor_notif\\\", \\\"monitor_id\\\": 17356223, \\\"snap_url\\\": \\\"\\\", \\\"from_js_ts\\\": 1767202583000, \\\"to_js_ts\\\": 1767203483000, \\\"process_url\\\": \\\"\\\", \\\"metric\\\": \\\"llm.hallucination.persona_risk_weight,llm.hallucination.score\\\", \\\"space_aggr\\\": null, \\\"priority_list\\\": {\\\"message\\\": null, \\\"recovery_message\\\": null, \\\"original_priority\\\": 1}}, \\\"state_counts\\\": {\\\"1\\\": 0, \\\"5\\\": 0, \\\"0\\\": 1, \\\"6\\\": 0, \\\"2\\\": 0, \\\"3\\\": 0}}, \\\"transition\\\": {\\\"trans_name\\\": \\\"Recovered\\\", \\\"trans_type\\\": \\\"warning recovery\\\"}, \\\"states\\\": {\\\"source_state\\\": \\\"Warn\\\", \\\"dest_state\\\": \\\"OK\\\"}, \\\"text_only_message\\\": \\\"The hallucination blast radius has exceeded the defined safety threshold over the past 7 days.\\\\n\\\\nThis indicates that hallucinations are affecting a broader audience, higher-risk personas, or exhibiting increased severity.\\\\n\\\\nFollow the runbook for next steps:\\\\n[runbook-llm-hallucination-blast-radius-control]( https://us5.datadoghq.com/notebook/263132/runbook-llm-hallucination-blast-radius-control )\\\\n\\\\n@slack-llm-notifications-datadog \\\\n\\\\n@contact@wabi-sabi.beauty \\\\n\\\\n@workflow-alert-incident-workflow\\\\n\\\\n`sum(last_15m):sum:llm.hallucination.score{*}.as_count() / sum:llm.hallucination.persona_risk_weight{*}.weighted() \u003e 0.5`\\\", \\\"reduced_message_text\\\": \\\"The hallucination blast radius has exceeded the defined safety threshold over the past 7 days.\\\\n\\\\nThis indicates that hallucinations are affecting a broader audience, higher-risk personas, or exhibiting increased severity.\\\\n\\\\nFollow the runbook for next steps:\\\\n[runbook-llm-hallucination-blast-radius-control](https://us5.datadoghq.com/notebook/263132/runbook-llm-hallucination-blast-radius-control)\\\\n\\\\n@slack-llm-notifications-datadog \\\\n\\\\n@contact@wabi-sabi.beauty \\\\n\\\\n@workflow-alert-incident-workflow\\\\n\\\\n`sum(last_15m):sum:llm.hallucination.score{*}.as_count() / sum:llm.hallucination.persona_risk_weight{*}.weighted() \u003e 0.5`\\\", \\\"alert_cycle_key\\\": 8437899081591905100, \\\"message_parts\\\": {\\\"links\\\": [{\\\"key\\\": \\\"status\\\", \\\"text\\\": \\\"Monitor Status\\\", \\\"url\\\": \\\"/monitors/17356223?from_ts=1767202583000\u0026to_ts=1767203783000\u0026event_id=8437944384398268720\u0026link_source=monitor_notif\\\"}, {\\\"key\\\": \\\"edit\\\", \\\"text\\\": \\\"Edit Monitor\\\", \\\"url\\\": \\\"/monitors/17356223/edit?link_source=monitor_notif\\\"}, {\\\"key\\\": \\\"logs\\\", \\\"text\\\": \\\"Related Logs\\\", \\\"url\\\": \\\"/logs?query=%2A\u0026from_ts=1767202583000\u0026to_ts=1767203483000\u0026live=false\u0026link_source=monitor_notif\\\"}], \\\"message\\\": \\\"%%%\\\\nThe hallucination blast radius has exceeded the defined safety threshold over the past 7 days.\\\\n\\\\nThis indicates that hallucinations are affecting a broader audience, higher-risk personas, or exhibiting increased severity.\\\\n\\\\nFollow the runbook for next steps:\\\\n[runbook-llm-hallucination-blast-radius-control](https://us5.datadoghq.com/notebook/263132/runbook-llm-hallucination-blast-radius-control)\\\\n\\\\n@slack-llm-notifications-datadog \\\\n\\\\n@contact@wabi-sabi.beauty \\\\n\\\\n@workflow-alert-incident-workflow\\\\n%%%\\\", \\\"last_triggered_ts\\\": \\\"2025-12-31T17:12:23Z\\\", \\\"query_summary\\\": \\\"%%%\\\\n`sum(last_15m):sum:llm.hallucination.score{*}.as_count() / sum:llm.hallucination.persona_risk_weight{*}.weighted() \u003e 0.5`\\\\n%%%\\\", \\\"query_plain\\\": \\\"sum(last_15m):sum:llm.hallucination.score{*}.as_count() / sum:llm.hallucination.persona_risk_weight{*}.weighted() \u003e 0.5\\\", \\\"message_prefix\\\": \\\"\\\", \\\"message_suffix\\\": \\\"\\\"}, \\\"sub_groups_sample\\\": null, \\\"sub_group_count\\\": null, \\\"assets\\\": [], \\\"group_transition_type\\\": \\\"no_grouping\\\", \\\"duration\\\": 2700000000000}\", \"abstraction_level\": 1, \"auto_priority\": 1, \"user_priority\": 1, \"private\": false, \"related_to_event_id\": null, \"aggregate_event_id\": null, \"top_level\": true, \"private_user_ids\": null, \"comments\": [], \"comment_count\": 0, \"stats\": null, \"metadata\": null, \"proxy_user_id\": null, \"proxy_user_uuid\": null, \"_annotation_expression\": null, \"sample_id\": null, \"_version\": null, \"mentioned_users\": [{\"id\": 8542547, \"email\": \"contact@wabi-sabi.beauty\", \"name\": \"wabi-sabi\", \"org_id\": 1300799129}], \"mentioned_integration_handles\": [\"slack-llm-notifications-datadog\", \"workflow-alert-incident-workflow\"], \"mentioned_custom_emails\": [], \"last_updated\": 1767203483, \"_context\": {\"key\": null, \"org_id\": 1300799129, \"source_type_id\": 36, \"host_id\": null, \"host_name\": null, \"device_name\": null, \"tags\": [\"monitor\", \"priority:p1\"]}, \"metric\": null, \"icon\": null, \"incident\": null, \"dim_context_key\": null, \"story_category\": null, \"ingress_timestamp\": null, \"koutris_trace\": null, \"koutris_ng_trace\": null, \"ingestion_point\": \"asn\", \"has_mentioned_users\": true}"
+                    }
+                },
+                "startTimestamp": "2025-12-31T17:52:23.880521Z",
+                "systemTags": [
+                    "team:ai-engineering-team",
+                    "team:dev-team"
+                ]
+            },
+            "id": "d226b068-91ce-491e-bfcd-2b8bade1c4a0",
+            "type": "instances"
+        },
+        {
+            "attributes": {
+                "userEmail": "contact@wabi-sabi.beauty",
+                "userName": "wabi-sabi"
+            },
+            "id": "8d2d9183-53bc-4ca3-b028-b374d32d9306",
+            "type": "users"
+        }
+    ],
+    "meta": {
+        "page": {
+            "totalCount": 1,
+            "totalFilteredCount": 1
+        }
+    }
+}

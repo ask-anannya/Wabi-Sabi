@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]
+httpx
+python-multipart
+Pillow
+sqlalchemy
+
+datadog
+ddtrace
+google-genai
+google-auth

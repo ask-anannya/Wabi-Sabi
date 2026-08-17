@@ -1,0 +1,744 @@
+[
+    {
+        "id": 17314188,
+        "org_id": 1300799129,
+        "type": "synthetics alert",
+        "name": "[Synthetics] - SSL Validity Check",
+        "message": "Alert - SSL Certificate for Wabi-Sabi will expire in less than 21 days.\n\n@slack-llm-notifications-datadog \n\n@contact@wabi-sabi.beauty",
+        "tags": [
+            "team:ai-engineering-team",
+            "probe_dc:aws:ap-northeast-2",
+            "probe_dc:aws:ap-south-1",
+            "probe_dc:aws:eu-west-2",
+            "probe_dc:aws:sa-east-1",
+            "probe_dc:aws:us-east-2",
+            "check_type:api-ssl",
+            "check_status:live",
+            "ci_execution_rule:blocking"
+        ],
+        "query": "no_query",
+        "options": {
+            "escalation_message": "",
+            "renotify_interval": 30,
+            "renotify_occurrences": 0,
+            "notification_preset_name": "show_all",
+            "on_missing_data": "show_no_data",
+            "notify_audit": false,
+            "new_host_delay": 300,
+            "include_tags": true,
+            "silenced": {}
+        },
+        "multi": false,
+        "created_at": 1766833481000,
+        "created": "2025-12-27T11:04:41.359281+00:00",
+        "modified": "2025-12-31T13:19:14.746813+00:00",
+        "deleted": null,
+        "priority": null,
+        "restricted_roles": null,
+        "draft_status": "published",
+        "assets": [],
+        "overall_state_modified": "2025-12-31T13:19:48+00:00",
+        "overall_state": "OK",
+        "creator": {
+            "name": "wabi-sabi",
+            "email": "contact@wabi-sabi.beauty",
+            "handle": "contact@wabi-sabi.beauty",
+            "id": 8542547
+        },
+        "matching_downtimes": []
+    },
+    {
+        "id": 17315558,
+        "org_id": 1300799129,
+        "type": "synthetics alert",
+        "name": "Latency / Response Time is slow for Wabi-Sabi website",
+        "message": "Response time for the Wabi-Sabi website is higher than the defined threshold.\n\nUsers may experience slower page loads or delayed interactions. Please investigate frontend, backend, and infrastructure latency using the linked dashboards and follow the associated runbook for remediation steps.\n\n@slack-llm-notifications-datadog \n\n@contact@wabi-sabi.beauty",
+        "tags": [
+            "team:ai-engineering-team",
+            "probe_dc:aws:ap-northeast-2",
+            "probe_dc:aws:ap-south-1",
+            "probe_dc:aws:eu-west-2",
+            "probe_dc:aws:sa-east-1",
+            "probe_dc:aws:us-east-2",
+            "check_type:api",
+            "check_status:live",
+            "ci_execution_rule:blocking"
+        ],
+        "query": "no_query",
+        "options": {
+            "notification_preset_name": "show_all",
+            "on_missing_data": "show_no_data",
+            "notify_audit": false,
+            "new_host_delay": 300,
+            "include_tags": true,
+            "silenced": {}
+        },
+        "multi": false,
+        "created_at": 1766862395000,
+        "created": "2025-12-27T19:06:35.121928+00:00",
+        "modified": "2025-12-31T13:18:39.000891+00:00",
+        "deleted": null,
+        "priority": null,
+        "restricted_roles": null,
+        "draft_status": "published",
+        "assets": [],
+        "overall_state_modified": "2025-12-30T19:11:08+00:00",
+        "overall_state": "OK",
+        "creator": {
+            "name": "wabi-sabi",
+            "email": "contact@wabi-sabi.beauty",
+            "handle": "contact@wabi-sabi.beauty",
+            "id": 8542547
+        },
+        "matching_downtimes": []
+    },
+    {
+        "id": 17315593,
+        "org_id": 1300799129,
+        "type": "synthetics alert",
+        "name": "[Synthetics] - Wabi-Sabi website down",
+        "message": "Alert - The Wabi-Sabi website is not reachable and is down\n\n@slack-llm-notifications-datadog \n\n@contact@wabi-sabi.beauty",
+        "tags": [
+            "team:ai-engineering-team",
+            "probe_dc:aws:ap-northeast-2",
+            "probe_dc:aws:ap-south-1",
+            "probe_dc:aws:eu-west-2",
+            "probe_dc:aws:sa-east-1",
+            "probe_dc:aws:us-east-2",
+            "check_type:api",
+            "check_status:live",
+            "ci_execution_rule:blocking"
+        ],
+        "query": "no_query",
+        "options": {
+            "notification_preset_name": "show_all",
+            "on_missing_data": "show_no_data",
+            "notify_audit": false,
+            "new_host_delay": 300,
+            "include_tags": true,
+            "silenced": {}
+        },
+        "multi": false,
+        "created_at": 1766863206000,
+        "created": "2025-12-27T19:20:06.776359+00:00",
+        "modified": "2025-12-31T13:20:22.752245+00:00",
+        "deleted": null,
+        "priority": null,
+        "restricted_roles": null,
+        "draft_status": "published",
+        "assets": [],
+        "overall_state_modified": "2025-12-30T19:08:43+00:00",
+        "overall_state": "OK",
+        "creator": {
+            "name": "wabi-sabi",
+            "email": "contact@wabi-sabi.beauty",
+            "handle": "contact@wabi-sabi.beauty",
+            "id": 8542547
+        },
+        "matching_downtimes": []
+    },
+    {
+        "id": 17324924,
+        "org_id": 1300799129,
+        "type": "slo alert",
+        "name": "Wabi-Sabi Website Availability SLO - Breached",
+        "message": "The Wabi-Sabi application availability has dropped below the expected reliability level over the defined evaluation window. \n\nPlease review service health, infrastructure status, and recent changes to ensure continued availability.\n\nFollow the runbook for next steps:\n[runbook-website-service-unavailability)](https://us5.datadoghq.com/notebook/263131/runbook-website-service-unavailability)\n\n@contact@wabi-sabi.beauty",
+        "tags": [
+            "team:ai-engineering-team",
+            "team:dev-team",
+            "check_status:live"
+        ],
+        "query": "error_budget(\"e2cd2927f26c5526af468d2ae421c0c3\").over(\"7d\") > 80",
+        "options": {
+            "thresholds": {
+                "critical": 80.0,
+                "warning": 50.0
+            },
+            "notify_no_data": false,
+            "notify_audit": false,
+            "new_host_delay": 300,
+            "include_tags": true,
+            "silenced": {}
+        },
+        "multi": false,
+        "created_at": 1766997005000,
+        "created": "2025-12-29T08:30:05.697183+00:00",
+        "modified": "2025-12-31T14:41:02.939314+00:00",
+        "deleted": null,
+        "priority": 1,
+        "restricted_roles": null,
+        "draft_status": "published",
+        "assets": [],
+        "overall_state_modified": "2025-12-31T11:06:45+00:00",
+        "overall_state": "OK",
+        "creator": {
+            "name": "wabi-sabi",
+            "email": "contact@wabi-sabi.beauty",
+            "handle": "contact@wabi-sabi.beauty",
+            "id": 8542547
+        },
+        "matching_downtimes": []
+    },
+    {
+        "id": 17325123,
+        "org_id": 1300799129,
+        "type": "slo alert",
+        "name": "Wabi-Sabi API response latency above acceptable threshold",
+        "message": "The Wabi-Sabi API is experiencing elevated response times beyond the expected performance threshold.\n\nPlease investigate backend performance, resource utilization, and dependency latency to restore normal response times.\n\nResponse time taken {{value}} at {{first_triggered_at}}\n\n@contact@wabi-sabi.beauty",
+        "tags": [
+            "check_type:api",
+            "service:fastapi",
+            "team:dev-team"
+        ],
+        "query": "error_budget(\"3d61773a5cfd587cbf8154f6881e6ef7\").over(\"7d\") > 100",
+        "options": {
+            "thresholds": {
+                "critical": 100.0
+            },
+            "notify_no_data": false,
+            "notify_audit": false,
+            "new_host_delay": 300,
+            "include_tags": true,
+            "silenced": {}
+        },
+        "multi": false,
+        "created_at": 1766998229000,
+        "created": "2025-12-29T08:50:29.689230+00:00",
+        "modified": "2025-12-29T11:48:39.417891+00:00",
+        "deleted": null,
+        "priority": null,
+        "restricted_roles": null,
+        "draft_status": "published",
+        "assets": [],
+        "overall_state_modified": "2025-12-31T10:27:03+00:00",
+        "overall_state": "Alert",
+        "creator": {
+            "name": "wabi-sabi",
+            "email": "contact@wabi-sabi.beauty",
+            "handle": "contact@wabi-sabi.beauty",
+            "id": 8542547
+        },
+        "matching_downtimes": []
+    },
+    {
+        "id": 17325251,
+        "org_id": 1300799129,
+        "type": "slo alert",
+        "name": "Wabi-Sabi API error rate above acceptable limit",
+        "message": "The Wabi-Sabi API error rate has increased beyond the expected range.\n\nPlease review recent deployments, logs, and upstream dependencies to identify and resolve the cause of failed requests.\n\nError encountered : {{value}} at {{first_triggered_at}}\n\n@contact@wabi-sabi.beauty",
+        "tags": [
+            "service:fastapi",
+            "check_type:api",
+            "service:grpc-client",
+            "check_status:live",
+            "team:ai-engineering-team",
+            "team:dev-team"
+        ],
+        "query": "error_budget(\"c1478ca5124256c987359731c6c12509\").over(\"7d\") > 80",
+        "options": {
+            "thresholds": {
+                "critical": 80.0,
+                "warning": 50.0
+            },
+            "notify_no_data": false,
+            "notify_audit": false,
+            "new_host_delay": 300,
+            "include_tags": true,
+            "silenced": {}
+        },
+        "multi": false,
+        "created_at": 1766998672000,
+        "created": "2025-12-29T08:57:52.572000+00:00",
+        "modified": "2025-12-29T11:50:46.950724+00:00",
+        "deleted": null,
+        "priority": null,
+        "restricted_roles": null,
+        "draft_status": "published",
+        "assets": [],
+        "overall_state_modified": "2025-12-30T17:56:11+00:00",
+        "overall_state": "Alert",
+        "creator": {
+            "name": "wabi-sabi",
+            "email": "contact@wabi-sabi.beauty",
+            "handle": "contact@wabi-sabi.beauty",
+            "id": 8542547
+        },
+        "matching_downtimes": []
+    },
+    {
+        "id": 17326627,
+        "org_id": 1300799129,
+        "type": "slo alert",
+        "name": "LLM Response Quality (Hallucinations Rate) SLO - Breached",
+        "message": "A higher-than-expected number of LLM responses are falling below the defined quality or grounding threshold.\n\nPlease review recent prompts, context retrieval logic, and model behavior to reduce the risk of inaccurate or hallucinated responses.\n\nFollow the runbook for next steps:\n[runbook-llm-response-quality-hallucinations-rate](https://us5.datadoghq.com/notebook/263134/runbook-llm-response-quality-hallucinations-rate)\n\n@contact@wabi-sabi.beauty",
+        "tags": [
+            "service:grpc-client",
+            "team:ai-engineering-team",
+            "product:apm"
+        ],
+        "query": "error_budget(\"560e7b29b7db5fce8d7dc111440da64e\").over(\"7d\") > 80",
+        "options": {
+            "thresholds": {
+                "critical": 80.0,
+                "warning": 50.0
+            },
+            "notify_no_data": false,
+            "notify_audit": false,
+            "new_host_delay": 300,
+            "include_tags": true,
+            "silenced": {}
+        },
+        "multi": false,
+        "created_at": 1767005842000,
+        "created": "2025-12-29T10:57:22.485630+00:00",
+        "modified": "2025-12-31T14:23:13.712887+00:00",
+        "deleted": null,
+        "priority": 1,
+        "restricted_roles": null,
+        "draft_status": "published",
+        "assets": [],
+        "overall_state_modified": "2025-12-29T10:57:27+00:00",
+        "overall_state": "OK",
+        "creator": {
+            "name": "wabi-sabi",
+            "email": "contact@wabi-sabi.beauty",
+            "handle": "contact@wabi-sabi.beauty",
+            "id": 8542547
+        },
+        "matching_downtimes": []
+    },
+    {
+        "id": 17326822,
+        "org_id": 1300799129,
+        "type": "slo alert",
+        "name": "Wabi-Sabi LLM taking more time to generate first token than the defined threshold",
+        "message": "LLM response times have increased beyond the expected performance threshold.\n\nPlease review model performance, request load, and upstream service health to ensure timely response generation.\n\n@contact@wabi-sabi.beauty",
+        "tags": [
+            "team:ai-engineering-team"
+        ],
+        "query": "error_budget(\"977aa9941a9f531191ad5dfe2f6829d8\").over(\"7d\") > 80",
+        "options": {
+            "thresholds": {
+                "critical": 80.0,
+                "warning": 50.0
+            },
+            "notify_no_data": false,
+            "notify_audit": false,
+            "new_host_delay": 300,
+            "include_tags": true,
+            "renotify_interval": 0,
+            "escalation_message": "",
+            "silenced": {}
+        },
+        "multi": false,
+        "created_at": 1767006711000,
+        "created": "2025-12-29T11:11:51.479272+00:00",
+        "modified": "2025-12-29T12:06:43.160608+00:00",
+        "deleted": null,
+        "priority": null,
+        "restricted_roles": null,
+        "draft_status": "published",
+        "assets": [],
+        "overall_state_modified": "2025-12-29T11:11:54+00:00",
+        "overall_state": "OK",
+        "creator": {
+            "name": "wabi-sabi",
+            "email": "contact@wabi-sabi.beauty",
+            "handle": "contact@wabi-sabi.beauty",
+            "id": 8542547
+        },
+        "matching_downtimes": []
+    },
+    {
+        "id": 17327239,
+        "org_id": 1300799129,
+        "type": "slo alert",
+        "name": "Wabi-Sabi LLM token cost exceeding the limit",
+        "message": "LLM usage costs have exceeded the expected budget threshold over the evaluation period.\n\nPlease review recent traffic patterns, prompt sizes, and model configuration to optimize cost efficiency.\n\n@contact@wabi-sabi.beauty",
+        "tags": [],
+        "query": "error_budget(\"e339a8b7481c5013a76e6ab8b05a98a3\").over(\"7d\") > 80",
+        "options": {
+            "thresholds": {
+                "critical": 80.0,
+                "warning": 50.0
+            },
+            "notify_no_data": false,
+            "notify_audit": false,
+            "new_host_delay": 300,
+            "include_tags": true,
+            "silenced": {}
+        },
+        "multi": false,
+        "created_at": 1767008446000,
+        "created": "2025-12-29T11:40:46.377677+00:00",
+        "modified": "2025-12-29T11:40:46.377677+00:00",
+        "deleted": null,
+        "priority": null,
+        "restricted_roles": null,
+        "draft_status": "published",
+        "assets": [],
+        "overall_state_modified": "2025-12-29T11:40:54+00:00",
+        "overall_state": "OK",
+        "creator": {
+            "name": "wabi-sabi",
+            "email": "contact@wabi-sabi.beauty",
+            "handle": "contact@wabi-sabi.beauty",
+            "id": 8542547
+        },
+        "matching_downtimes": []
+    },
+    {
+        "id": 17356156,
+        "org_id": 1300799129,
+        "type": "slo alert",
+        "name": "LLM Hallucination Detection Error Rate SLO - Breached",
+        "message": "The hallucination detection success rate has dropped below the defined SLO threshold over the last 7 days.\n\nThis indicates an increase in hallucination detection or JSON parsing failures, which may impact the reliability of safety validation for LLM responses.\n\nFollow the runbook for next steps::\n[runbook-llm-hallucination-detection-error-rate-elevation](https://us5.datadoghq.com/notebook/263133/runbook-llm-hallucination-detection-error-rate-elevation)\n\n@slack-llm-notifications-datadog \n\n@contact@wabi-sabi.beauty",
+        "tags": [
+            "service:fastapi",
+            "team:ai-engineering-team",
+            "check_type:api",
+            "team:dev-team"
+        ],
+        "query": "error_budget(\"f71c2610f6af5a8299bf18c0e6d28a28\").over(\"7d\") > 100",
+        "options": {
+            "thresholds": {
+                "critical": 100.0
+            },
+            "notify_no_data": false,
+            "notify_audit": false,
+            "new_host_delay": 300,
+            "include_tags": true,
+            "silenced": {}
+        },
+        "multi": false,
+        "created_at": 1767177965000,
+        "created": "2025-12-31T10:46:05.616083+00:00",
+        "modified": "2025-12-31T14:20:24.137599+00:00",
+        "deleted": null,
+        "priority": 1,
+        "restricted_roles": null,
+        "draft_status": "published",
+        "assets": [],
+        "overall_state_modified": "2025-12-31T13:36:16+00:00",
+        "overall_state": "OK",
+        "creator": {
+            "name": "wabi-sabi",
+            "email": "contact@wabi-sabi.beauty",
+            "handle": "contact@wabi-sabi.beauty",
+            "id": 8542547
+        },
+        "matching_downtimes": []
+    },
+    {
+        "id": 17356210,
+        "org_id": 1300799129,
+        "type": "slo alert",
+        "name": "LLM Hallucination Pre-Filter Accuracy SLO - Breached",
+        "message": "The hallucination pre-filter accuracy has dropped below the defined SLO threshold over the last 7 days.\n\nThis indicates that fewer evaluated prompts are being correctly flagged for hallucination risk, which may allow unsafe or misleading responses to progress further in the pipeline.\n\nFollow the runbook for next steps:\n[runbook-llm-hallucination-pre-filter-accuracy](https://us5.datadoghq.com/notebook/263135/runbook-llm-hallucination-pre-filter-accuracy)\n\n@slack-llm-notifications-datadog \n\n@contact@wabi-sabi.beauty",
+        "tags": [
+            "service",
+            "team:ai-engineering-team",
+            "service:fastapi"
+        ],
+        "query": "error_budget(\"881f142d4767505f805d03c0fe2983d2\").over(\"7d\") > 100",
+        "options": {
+            "thresholds": {
+                "critical": 100.0
+            },
+            "notify_no_data": false,
+            "notify_audit": false,
+            "new_host_delay": 300,
+            "include_tags": true,
+            "silenced": {}
+        },
+        "multi": false,
+        "created_at": 1767178487000,
+        "created": "2025-12-31T10:54:47.212719+00:00",
+        "modified": "2025-12-31T14:36:50.542408+00:00",
+        "deleted": null,
+        "priority": 1,
+        "restricted_roles": null,
+        "draft_status": "published",
+        "assets": [],
+        "overall_state_modified": "2025-12-31T10:54:52+00:00",
+        "overall_state": "Alert",
+        "creator": {
+            "name": "wabi-sabi",
+            "email": "contact@wabi-sabi.beauty",
+            "handle": "contact@wabi-sabi.beauty",
+            "id": 8542547
+        },
+        "matching_downtimes": []
+    },
+    {
+        "id": 17356223,
+        "org_id": 1300799129,
+        "type": "query alert",
+        "name": "Hallucination blast radius exceeds safe threshold",
+        "message": "The hallucination blast radius has exceeded the defined safety threshold over the past 7 days.\n\nThis indicates that hallucinations are affecting a broader audience, higher-risk personas, or exhibiting increased severity.\n\nFollow the runbook for next steps:\n[runbook-llm-hallucination-blast-radius-control](https://us5.datadoghq.com/notebook/263132/runbook-llm-hallucination-blast-radius-control)\n\n@slack-llm-notifications-datadog \n\n@contact@wabi-sabi.beauty \n\n@workflow-alert-incident-workflow",
+        "tags": [],
+        "query": "sum(last_15m):sum:llm.hallucination.score{*}.as_count() / sum:llm.hallucination.persona_risk_weight{*}.weighted() > 0.5",
+        "options": {
+            "thresholds": {
+                "critical": 0.5,
+                "warning": 0.25
+            },
+            "notify_audit": false,
+            "on_missing_data": "resolve",
+            "include_tags": false,
+            "new_host_delay": 300,
+            "silenced": {}
+        },
+        "multi": false,
+        "created_at": 1767178815000,
+        "created": "2025-12-31T11:00:15.605154+00:00",
+        "modified": "2025-12-31T17:03:28.436181+00:00",
+        "deleted": null,
+        "priority": 1,
+        "restricted_roles": null,
+        "draft_status": "published",
+        "assets": [],
+        "overall_state_modified": "2025-12-31T17:52:23+00:00",
+        "overall_state": "OK",
+        "creator": {
+            "name": "wabi-sabi",
+            "email": "contact@wabi-sabi.beauty",
+            "handle": "contact@wabi-sabi.beauty",
+            "id": 8542547
+        },
+        "matching_downtimes": []
+    },
+    {
+        "id": 17356359,
+        "org_id": 1300799129,
+        "type": "slo alert",
+        "name": "LLM Hallucination Affected Users Rate SLO - Breached",
+        "message": "The percentage of users affected by hallucinations has exceeded the defined safety threshold over the past 7 days.\n\nThis indicates an increased likelihood of users receiving incorrect or misleading responses.\n\nFollow the runbook for next steps: [runbook-llm-hallucination-affected-users](https://us5.datadoghq.com/notebook/263136/runbook-llm-hallucination-affected-users)\n\n@slack-llm-notifications-datadog \n\n@contact@wabi-sabi.beauty",
+        "tags": [
+            "service:fastapi",
+            "service",
+            "team:ai-engineering-team"
+        ],
+        "query": "error_budget(\"140a4691d3715dd1bd21d939f86b08ef\").over(\"7d\") > 100",
+        "options": {
+            "thresholds": {
+                "critical": 100.0
+            },
+            "notify_no_data": false,
+            "notify_audit": false,
+            "new_host_delay": 300,
+            "include_tags": true,
+            "silenced": {}
+        },
+        "multi": false,
+        "created_at": 1767180241000,
+        "created": "2025-12-31T11:24:01.071819+00:00",
+        "modified": "2025-12-31T14:31:03.669233+00:00",
+        "deleted": null,
+        "priority": 1,
+        "restricted_roles": null,
+        "draft_status": "published",
+        "assets": [],
+        "overall_state_modified": "2025-12-31T13:56:39+00:00",
+        "overall_state": "Alert",
+        "creator": {
+            "name": "wabi-sabi",
+            "email": "contact@wabi-sabi.beauty",
+            "handle": "contact@wabi-sabi.beauty",
+            "id": 8542547
+        },
+        "matching_downtimes": []
+    },
+    {
+        "id": 17357124,
+        "org_id": 1300799129,
+        "type": "query alert",
+        "name": "Users impacted by hallucinations exceed safe threshold",
+        "message": "The percentage of users affected by hallucinations has exceeded the defined safety threshold over the past 7 days.\n\nThis indicates an increased likelihood of users receiving incorrect or misleading responses.\n\nFollow the runbook for next steps: [runbook-llm-hallucination-affected-users](https://us5.datadoghq.com/notebook/263136/runbook-llm-hallucination-affected-users)\n\n@slack-llm-notifications-datadog \n\n@contact@wabi-sabi.beauty\n\n@workflow-alert-incident-workflow",
+        "tags": [],
+        "query": "sum(last_10m):avg:llm.users.affected{*}.as_count() / avg:llm.chats.total{*}.as_count() * 100 > 75",
+        "options": {
+            "thresholds": {
+                "critical": 75.0,
+                "warning": 50.0
+            },
+            "notify_audit": false,
+            "on_missing_data": "resolve",
+            "include_tags": false,
+            "new_host_delay": 300,
+            "silenced": {}
+        },
+        "multi": false,
+        "created_at": 1767190588000,
+        "created": "2025-12-31T14:16:28.248322+00:00",
+        "modified": "2025-12-31T14:16:28.248322+00:00",
+        "deleted": null,
+        "priority": 2,
+        "restricted_roles": null,
+        "draft_status": "published",
+        "assets": [],
+        "overall_state_modified": "2025-12-31T15:22:25+00:00",
+        "overall_state": "OK",
+        "creator": {
+            "name": "wabi-sabi",
+            "email": "contact@wabi-sabi.beauty",
+            "handle": "contact@wabi-sabi.beauty",
+            "id": 8542547
+        },
+        "matching_downtimes": []
+    },
+    {
+        "id": 17357147,
+        "org_id": 1300799129,
+        "type": "query alert",
+        "name": "Hallucination Detection Success Rate below target",
+        "message": "The hallucination detection success rate has dropped below the defined SLO threshold over the last 7 days.\n\nThis indicates an increase in hallucination detection or JSON parsing failures, which may impact the reliability of safety validation for LLM responses.\n\nFollow the runbook for next steps::\n[runbook-llm-hallucination-detection-error-rate-elevation](https://us5.datadoghq.com/notebook/263133/runbook-llm-hallucination-detection-error-rate-elevation)\n\n@slack-llm-notifications-datadog \n\n@contact@wabi-sabi.beauty\n\n@workflow-alert-incident-workflow",
+        "tags": [],
+        "query": "sum(last_15m):(avg:llm.errors.json_parsing_failure{*}.as_count() + avg:llm.errors.hallucination_detection_failure{*}.as_count()) / avg:llm.chats.total{*}.as_count() * 100 > 75",
+        "options": {
+            "thresholds": {
+                "critical": 75.0,
+                "warning": 50.0
+            },
+            "notify_audit": false,
+            "on_missing_data": "default",
+            "include_tags": false,
+            "new_host_delay": 300,
+            "silenced": {}
+        },
+        "multi": false,
+        "created_at": 1767190849000,
+        "created": "2025-12-31T14:20:49.893426+00:00",
+        "modified": "2025-12-31T17:04:01.498025+00:00",
+        "deleted": null,
+        "priority": 2,
+        "restricted_roles": null,
+        "draft_status": "published",
+        "assets": [],
+        "overall_state_modified": "2025-12-31T14:20:51+00:00",
+        "overall_state": "OK",
+        "creator": {
+            "name": "wabi-sabi",
+            "email": "contact@wabi-sabi.beauty",
+            "handle": "contact@wabi-sabi.beauty",
+            "id": 8542547
+        },
+        "matching_downtimes": []
+    },
+    {
+        "id": 17357152,
+        "org_id": 1300799129,
+        "type": "query alert",
+        "name": "Hallucinations scores are unstable",
+        "message": "A higher-than-expected number of LLM responses are falling below the defined quality or grounding threshold.\n\nPlease review recent prompts, context retrieval logic, and model behavior to reduce the risk of inaccurate or hallucinated responses.\n\nFollow the runbook for next steps:\n[runbook-llm-response-quality-hallucinations-rate](https://us5.datadoghq.com/notebook/263134/runbook-llm-response-quality-hallucinations-rate)\n\n@contact@wabi-sabi.beauty\n\n@workflow-alert-incident-workflow",
+        "tags": [],
+        "query": "sum(last_15m):avg:llm.hallucination.score{*}.as_count() / avg:llm.hallucination.evaluated.count{*}.as_count() >= 0.8",
+        "options": {
+            "thresholds": {
+                "critical": 0.8,
+                "warning": 0.5
+            },
+            "notify_audit": false,
+            "on_missing_data": "default",
+            "include_tags": false,
+            "new_host_delay": 300,
+            "silenced": {}
+        },
+        "multi": false,
+        "created_at": 1767191000000,
+        "created": "2025-12-31T14:23:20.625925+00:00",
+        "modified": "2025-12-31T17:02:55.112282+00:00",
+        "deleted": null,
+        "priority": 2,
+        "restricted_roles": null,
+        "draft_status": "published",
+        "assets": [],
+        "overall_state_modified": "2025-12-31T17:16:52+00:00",
+        "overall_state": "Warn",
+        "creator": {
+            "name": "wabi-sabi",
+            "email": "contact@wabi-sabi.beauty",
+            "handle": "contact@wabi-sabi.beauty",
+            "id": 8542547
+        },
+        "matching_downtimes": []
+    },
+    {
+        "id": 17357209,
+        "org_id": 1300799129,
+        "type": "query alert",
+        "name": "LLM hallucination pre-filter accuracy below target",
+        "message": "The hallucination pre-filter accuracy has dropped below the defined SLO threshold over the last 7 days.\n\nThis indicates that fewer evaluated prompts are being correctly flagged for hallucination risk, which may allow unsafe or misleading responses to progress further in the pipeline.\n\nFollow the runbook for next steps:\n[runbook-llm-hallucination-pre-filter-accuracy](https://us5.datadoghq.com/notebook/263135/runbook-llm-hallucination-pre-filter-accuracy)\n\n@slack-llm-notifications-datadog \n\n@contact@wabi-sabi.beauty\n\n@workflow-alert-incident-workflow",
+        "tags": [
+            "team:ai-engineering-team"
+        ],
+        "query": "sum(last_5m):cutoff_max(avg:llm.hallucination.clean.count{*}.as_count() / avg:llm.hallucination.evaluated.count{*}.as_count() * 100, 100) > 75",
+        "options": {
+            "thresholds": {
+                "critical": 75.0,
+                "warning": 50.0
+            },
+            "notify_audit": false,
+            "on_missing_data": "default",
+            "include_tags": false,
+            "new_host_delay": 300,
+            "silenced": {}
+        },
+        "multi": false,
+        "created_at": 1767191813000,
+        "created": "2025-12-31T14:36:53.070801+00:00",
+        "modified": "2025-12-31T16:36:34.772398+00:00",
+        "deleted": null,
+        "priority": 2,
+        "restricted_roles": null,
+        "draft_status": "published",
+        "assets": [],
+        "overall_state_modified": "2025-12-31T17:11:49+00:00",
+        "overall_state": "OK",
+        "creator": {
+            "name": "wabi-sabi",
+            "email": "contact@wabi-sabi.beauty",
+            "handle": "contact@wabi-sabi.beauty",
+            "id": 8542547
+        },
+        "matching_downtimes": []
+    },
+    {
+        "id": 17357231,
+        "org_id": 1300799129,
+        "type": "query alert",
+        "name": "Wabi-Sabi website service availability below defined uptime target",
+        "message": "The Wabi-Sabi application availability has dropped below the expected reliability level over the defined evaluation window. \n\nPlease review service health, infrastructure status, and recent changes to ensure continued availability.\n\nFollow the runbook for next steps:\n[runbook-website-service-unavailability)](https://us5.datadoghq.com/notebook/263131/runbook-website-service-unavailability)\n\n@contact@wabi-sabi.beauty\n\n@workflow-alert-incident-workflow",
+        "tags": [],
+        "query": "sum(last_1h):sum:synthetics.test_runs{check_id:ayj-kvd-t3f, status_code:200}.as_count() / sum:synthetics.test_runs{check_id:ayj-kvd-t3f}.as_count() * 100 < 50",
+        "options": {
+            "thresholds": {
+                "critical": 50.0,
+                "warning": 75.0
+            },
+            "notify_audit": false,
+            "on_missing_data": "show_no_data",
+            "include_tags": false,
+            "new_host_delay": 300,
+            "silenced": {}
+        },
+        "multi": false,
+        "created_at": 1767192071000,
+        "created": "2025-12-31T14:41:11.345931+00:00",
+        "modified": "2025-12-31T14:41:11.345931+00:00",
+        "deleted": null,
+        "priority": 2,
+        "restricted_roles": null,
+        "draft_status": "published",
+        "assets": [],
+        "overall_state_modified": "2025-12-31T14:41:20+00:00",
+        "overall_state": "OK",
+        "creator": {
+            "name": "wabi-sabi",
+            "email": "contact@wabi-sabi.beauty",
+            "handle": "contact@wabi-sabi.beauty",
+            "id": 8542547
+        },
+        "matching_downtimes": []
+    }
+]

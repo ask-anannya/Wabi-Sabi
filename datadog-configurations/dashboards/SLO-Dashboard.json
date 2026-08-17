@@ -1,0 +1,315 @@
+{
+    "title": "SLO Dashboard",
+    "description": "[[suggested_dashboards]]",
+    "widgets": [
+        {
+            "id": 6163700420002720,
+            "definition": {
+                "title": "Individual SLO Status",
+                "background_color": "green",
+                "show_title": true,
+                "type": "group",
+                "layout_type": "ordered",
+                "widgets": [
+                    {
+                        "id": 5102341378568084,
+                        "definition": {
+                            "title": "Wabi-Sabi LLM Cost Control SLO",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "slo",
+                            "slo_id": "e339a8b7481c5013a76e6ab8b05a98a3",
+                            "view_type": "detail",
+                            "view_mode": "overall",
+                            "time_windows": [
+                                "7d"
+                            ],
+                            "show_error_budget": true,
+                            "additional_query_filters": ""
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 0,
+                            "width": 3,
+                            "height": 2
+                        }
+                    },
+                    {
+                        "id": 2135582407449394,
+                        "definition": {
+                            "title": "Wabi-Sabi LLM First Token Latency",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "slo",
+                            "slo_id": "977aa9941a9f531191ad5dfe2f6829d8",
+                            "view_type": "detail",
+                            "view_mode": "overall",
+                            "time_windows": [
+                                "7d"
+                            ],
+                            "show_error_budget": true
+                        },
+                        "layout": {
+                            "x": 3,
+                            "y": 0,
+                            "width": 3,
+                            "height": 2
+                        }
+                    },
+                    {
+                        "id": 4953705019821057,
+                        "definition": {
+                            "title": "Wabi-Sabi LLM Hallucinations Score SLO",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "slo",
+                            "slo_id": "560e7b29b7db5fce8d7dc111440da64e",
+                            "view_type": "detail",
+                            "view_mode": "overall",
+                            "time_windows": [
+                                "7d"
+                            ],
+                            "show_error_budget": true
+                        },
+                        "layout": {
+                            "x": 6,
+                            "y": 0,
+                            "width": 3,
+                            "height": 2
+                        }
+                    },
+                    {
+                        "id": 2091160868850475,
+                        "definition": {
+                            "title": "Wabi-Sabi LLM Chat API Error Rate SLO",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "slo",
+                            "slo_id": "c1478ca5124256c987359731c6c12509",
+                            "view_type": "detail",
+                            "view_mode": "overall",
+                            "time_windows": [
+                                "7d"
+                            ],
+                            "show_error_budget": true
+                        },
+                        "layout": {
+                            "x": 9,
+                            "y": 0,
+                            "width": 3,
+                            "height": 2
+                        }
+                    },
+                    {
+                        "id": 7193428882514035,
+                        "definition": {
+                            "title": "Wabi-Sabi LLM Chat API Latency",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "slo",
+                            "slo_id": "3d61773a5cfd587cbf8154f6881e6ef7",
+                            "view_type": "detail",
+                            "view_mode": "overall",
+                            "time_windows": [
+                                "7d"
+                            ],
+                            "show_error_budget": true
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 2,
+                            "width": 3,
+                            "height": 2
+                        }
+                    },
+                    {
+                        "id": 669851281748125,
+                        "definition": {
+                            "title": "Wabi-Sabi Website Availability SLO",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "slo",
+                            "slo_id": "e2cd2927f26c5526af468d2ae421c0c3",
+                            "view_type": "detail",
+                            "view_mode": "overall",
+                            "time_windows": [
+                                "7d"
+                            ],
+                            "show_error_budget": true
+                        },
+                        "layout": {
+                            "x": 3,
+                            "y": 2,
+                            "width": 3,
+                            "height": 2
+                        }
+                    },
+                    {
+                        "id": 166053221672464,
+                        "definition": {
+                            "title": " LLM Hallucination Affected Users Rate SLO",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "slo",
+                            "slo_id": "140a4691d3715dd1bd21d939f86b08ef",
+                            "view_type": "detail",
+                            "view_mode": "overall",
+                            "time_windows": [
+                                "7d"
+                            ],
+                            "show_error_budget": true
+                        },
+                        "layout": {
+                            "x": 6,
+                            "y": 2,
+                            "width": 3,
+                            "height": 2
+                        }
+                    },
+                    {
+                        "id": 4669553050236019,
+                        "definition": {
+                            "title": "LLM Hallucination Detection Error Rate SLO",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "slo",
+                            "slo_id": "f71c2610f6af5a8299bf18c0e6d28a28",
+                            "view_type": "detail",
+                            "view_mode": "overall",
+                            "time_windows": [
+                                "7d"
+                            ],
+                            "show_error_budget": true
+                        },
+                        "layout": {
+                            "x": 9,
+                            "y": 2,
+                            "width": 3,
+                            "height": 2
+                        }
+                    },
+                    {
+                        "id": 3635191360982122,
+                        "definition": {
+                            "title": "LLM Hallucination Blast Radius Control SLO",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "slo",
+                            "slo_id": "314ceabac2795dc78562bdf559dced6f",
+                            "view_type": "detail",
+                            "view_mode": "overall",
+                            "time_windows": [
+                                "7d"
+                            ],
+                            "show_error_budget": true
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 4,
+                            "width": 3,
+                            "height": 2
+                        }
+                    },
+                    {
+                        "id": 338613788599738,
+                        "definition": {
+                            "title": "LLM Hallucination Pre-Filter Accuracy SLO",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "slo",
+                            "slo_id": "881f142d4767505f805d03c0fe2983d2",
+                            "view_type": "detail",
+                            "view_mode": "overall",
+                            "time_windows": [
+                                "7d"
+                            ],
+                            "show_error_budget": true
+                        },
+                        "layout": {
+                            "x": 3,
+                            "y": 4,
+                            "width": 3,
+                            "height": 2
+                        }
+                    }
+                ]
+            },
+            "layout": {
+                "x": 0,
+                "y": 0,
+                "width": 12,
+                "height": 7
+            }
+        },
+        {
+            "id": 5747515722004278,
+            "definition": {
+                "title": "SLO Summary ",
+                "background_color": "purple",
+                "show_title": true,
+                "type": "group",
+                "layout_type": "ordered",
+                "widgets": [
+                    {
+                        "id": 4190000402703430,
+                        "definition": {
+                            "title": "",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "slo_summary",
+                            "requests": [
+                                {
+                                    "request_type": "slo_summary",
+                                    "query": {
+                                        "query_string": ""
+                                    }
+                                }
+                            ]
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 0,
+                            "width": 12,
+                            "height": 3
+                        }
+                    },
+                    {
+                        "id": 7858997476227179,
+                        "definition": {
+                            "title": "SLO List",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "requests": [
+                                {
+                                    "request_type": "slo_list",
+                                    "query": {
+                                        "query_string": "",
+                                        "limit": 100
+                                    }
+                                }
+                            ],
+                            "type": "slo_list"
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 3,
+                            "width": 12,
+                            "height": 3
+                        }
+                    }
+                ]
+            },
+            "layout": {
+                "x": 0,
+                "y": 7,
+                "width": 12,
+                "height": 7
+            }
+        }
+    ],
+    "template_variables": [],
+    "layout_type": "ordered",
+    "notify_list": [],
+    "reflow_type": "fixed",
+    "pause_auto_refresh": false
+}
