@@ -4,6 +4,7 @@ httpx
 python-multipart
 Pillow
 sqlalchemy
+psycopg2-binary
 
 datadog
 ddtrace
