@@ -1,7 +1,8 @@
 """
-Minimum viable scan history. SQLite, file-backed on a mounted volume — no
-Postgres, per the implementation plan. This is the only persistence layer
-in the app; everything else is Datadog metrics.
+Scan history persistence. Uses Postgres (Supabase) when DATABASE_URL is set —
+required on serverless hosts like Vercel, whose filesystem is ephemeral and
+can't hold a SQLite file across requests. Falls back to a local SQLite file
+for development, where a persistent disk is just there.
 """
 
 import datetime
@@ -10,10 +11,18 @@ import os
 from sqlalchemy import JSON, Column, DateTime, Float, Integer, String, create_engine
 from sqlalchemy.orm import Session, declarative_base, sessionmaker
 
-SCAN_DB_PATH = os.getenv("SCAN_DB_PATH", "./scan_history.db")
+DATABASE_URL = os.getenv("DATABASE_URL")
 SIGNIFICANCE_THRESHOLD = 0.08  # normalised-score delta below this reads as "about the same"
 
-engine = create_engine(f"sqlite:///{SCAN_DB_PATH}", connect_args={"check_same_thread": False})
+if DATABASE_URL:
+    # Supabase/Postgres connection strings use the `postgresql://` scheme
+    # already, but normalise the legacy `postgres://` form just in case.
+    normalised_url = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+    engine = create_engine(normalised_url, pool_pre_ping=True)
+else:
+    SCAN_DB_PATH = os.getenv("SCAN_DB_PATH", "./scan_history.db")
+    engine = create_engine(f"sqlite:///{SCAN_DB_PATH}", connect_args={"check_same_thread": False})
+
 SessionLocal = sessionmaker(bind=engine)
 Base = declarative_base()
 
@@ -29,7 +38,15 @@ class ScanRecord(Base):
     advice_json = Column(JSON, nullable=False)
 
 
-Base.metadata.create_all(engine)
+try:
+    Base.metadata.create_all(engine)
+except Exception as e:
+    # Runs at import time, imported by main.py before the FastAPI app object
+    # even exists — a failure here (e.g. an unwritable filesystem on some
+    # hosts) must not take down chat/health/tts, which don't touch SQLite at
+    # all. Scan/history/auth endpoints will fail per-request instead, which
+    # FastAPI turns into a scoped 500 rather than the whole app refusing to boot.
+    print(f"[scan_store] Base.metadata.create_all failed, scan history will be unavailable: {e}")
 
 
 def save_scan(user_id: str, metrics: list[dict], trust_score: float, advice: list[dict]) -> ScanRecord:

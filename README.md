@@ -1,7 +1,7 @@
 <h1 align="center">Wabi-Sabi</h1>
 
 <p align="center">
-  <strong>A voice-first skin AI assistant that shows its work</strong>
+  <strong>Honest skincare shopping: measured by YouCam, fit to your tolerance, no hype</strong>
 </p>
 
 <p align="center">
@@ -25,6 +25,61 @@
   <a href="#quick-start">Quick Start</a> ·
   <a href="#resilience--fallbacks">Resilience</a>
 </p>
+
+---
+
+## Honest Match: the trust engine
+
+Influencer marketing makes hype cheap. A serum goes viral, everyone buys it, and people with sensitive skin burn their faces on a 1% retinol they were never ready for. **Something that worked for someone else is not evidence that it'll work for you.**
+
+Wabi-Sabi is an honest skincare shopping assistant. It only recommends products that:
+1. **do what your skin actually needs**, measured by a YouCam scan, not guessed;
+2. **sit within your personal tolerance**, a per-active ladder (retinoids, AHAs, BHAs, vitamin C, benzoyl peroxide…) learned from your history, your check-ins and your repeat YouCam scans;
+3. **are honestly priced**, comparing price per ml with products doing the same job at the same strength;
+4. **are worth more than their hype.**
+
+```mermaid
+flowchart TB
+    Y["YouCam Skin Analysis<br/>11 concerns · skin age · skin score<br/>→ needs + detected skin type"] --> T
+    U["Your tolerance ladder<br/>quiz · check-ins · rescans"] --> T
+    C["Curated catalog<br/>actives, %, price/ml"] --> T
+    S["Signals<br/>editorial buzz tier · community reactions · your style"] --> T
+    T(("Honest Match<br/>trust engine")) --> R["Honest Score + plain-language reasons<br/>Overpriced? Hyped? Not for your skin? Try this instead."]
+    R -. "rescan: redness / texture / dryness worse<br/>after a new active?" .-> U
+
+    style T fill:#1c1a1f,stroke:#d4807a,color:#fff
+    style Y fill:#1c1a1f,stroke:#5fb4d9,color:#fff
+```
+
+| Signal | Source | What the user sees |
+|---|---|---|
+| **Need** | YouCam scan bands → advice categories | "Provides a gradual retinoid, which your fine lines (moderate) reading calls for." |
+| **Tolerance** (hard gate) | Your ladder, from the quiz, check-ins and rescans | "You've reacted to this strength before, so it's off your list." |
+| **Value** | Catalog price per ml vs same job, same strength | "Overpriced: $6.07/ml, 4.7× typical. Maelove Glow Maker does the same at $1.07/ml." |
+| **Hype gap** | Editorial buzz tier (`api/data/brands.json`, labelled editorial in the UI) vs substance (evidence + value) | "La Mer is a viral-buzz brand, but this product's evidence and value score only 17/100." |
+| **People like you?** | This app's own check-ins, from users with the same skin type and the same experience with that active | "2 of 3 people with oily skin, new to vitamin C, reported redness or peeling on this." |
+| **Your style** | Style tags (budget, derm, clean, k-beauty, luxury, pharmacy) | A tiebreaker between equally honest options, never a reason to recommend something weaker. |
+| **Honest dupe / Try this instead** | Catalog + your ladder | "Same job, same strength, 88% less per ml", or, if it's too strong for you, "A version your skin can handle: Retinol 0.5%". |
+
+Every reason is assembled from structured facts. No LLM writes claims about products.
+
+## How we use the YouCam API
+
+Everything starts from **YouCam AI Skin Analysis** (S2S API v2), called server-side in [api/services/youcam_client.py](api/services/youcam_client.py):
+
+1. `POST /s2s/v2.0/file` → a file id and a pre-signed upload request; the image is PUT exactly as instructed.
+2. `POST /s2s/v2.0/task/skin-analysis` with `src_file_id` and **11 concerns**: moisture, wrinkle, redness, age_spot, acne, pore, oiliness, radiance, texture, firmness, eye_bag.
+3. `GET /s2s/v2.0/task/skin-analysis/{task_id}` polled (non-blocking) until `success`.
+4. The result zip is downloaded and parsed: `score_info.json` gives a `ui_score` per concern, plus `skin_age` and the composite `all.score`; the annotated mask PNG for each concern is shown in the app.
+
+What the app does with that data:
+- **Needs:** each concern's `ui_score` is normalised to a severity band (clear / mild / moderate / significant), and each band maps to ingredient categories to recommend and avoid ([api/domain/advice_bands.py](api/domain/advice_bands.py)). The categories drive which products count as "what your skin needs".
+- **Skin type detection:** oiliness, moisture and redness classify skin as oily, dry, combination, normal or sensitive. This feeds the tolerance model and the "people like you" cohort, without relying on self-report.
+- **Safety constraints:** the avoid lists become filters. For example, moderate redness rules out fragranced products, and significant dryness blocks any retinoid escalation.
+- **Scan-verified tolerance:** on every rescan, a measurable worsening in redness, texture or moisture after starting an active raises an alert ("Your redness reading got worse since you started X. Was it irritating your skin?"). Confirming it lowers that active's ladder.
+- **Progress:** scan-to-scan deltas count only if they exceed a noise threshold, so the app never overstates improvement.
+- **Grounded advice:** Gemini voices the advice, and every claim is checked against the measured metrics before it's spoken (see the grounding engine below).
+
 
 ---
 

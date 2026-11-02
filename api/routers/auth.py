@@ -30,12 +30,15 @@ async def google_sign_in(payload: GoogleSignInRequest):
         raise ExceptionBase(status_code=401, message="Invalid Google sign-in token.") from e
 
     user_id = claims["sub"]
-    user = upsert_user(
-        user_id=user_id,
-        email=claims.get("email"),
-        name=claims.get("name"),
-        picture=claims.get("picture"),
-    )
+    try:
+        user = upsert_user(
+            user_id=user_id,
+            email=claims.get("email"),
+            name=claims.get("name"),
+            picture=claims.get("picture"),
+        )
+    except Exception as e:
+        raise ExceptionBase(status_code=503, message="Sign-in storage is unavailable right now.") from e
 
     return {
         "result": {

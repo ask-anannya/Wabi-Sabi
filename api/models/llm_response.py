@@ -1,4 +1,5 @@
 from models.grounding import TrustResult
+from models.profile import HonestMatch, ReactionAlert
 from models.user import User
 from pydantic import BaseModel, Field
 from services.youcam_client import SkinMetric
@@ -33,7 +34,13 @@ class ProgressDelta(BaseModel):
 
 class ScanResponse(BaseModel):
     spoken_script: str  # PRIMARY output — full narration, in order
+    reading_summary: str = ""  # written form of the opening summary line, for on-screen display
     metrics: list[SkinMetric]
     advice: list[AdviceItem]
     trust: TrustResult
     progress: ProgressDelta | None = None
+    honest_matches: list[HonestMatch] = Field(default_factory=list)
+    reaction_alerts: list[ReactionAlert] = Field(default_factory=list)
+    skin_age: int | None = None  # YouCam score_info.json skin_age
+    overall_score: float | None = None  # YouCam all.score, 0-100, higher = healthier
+    inferred_skin_type: str | None = None  # from YouCam oiliness/moisture/redness

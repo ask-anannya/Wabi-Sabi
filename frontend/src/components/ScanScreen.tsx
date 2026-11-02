@@ -5,6 +5,8 @@ import { postScan } from "../services/api";
 import { speech } from "../services/speech";
 import TrustLine from "./TrustLine";
 import ProgressView from "./ProgressView";
+import HonestMatchCard from "./HonestMatchCard";
+import ReactionAlertCard from "./ReactionAlertCard";
 import Button from "./ui/Button";
 import type { ScanResponse } from "../entities/types";
 
@@ -55,9 +57,11 @@ type ScanStatus = "idle" | "uploading" | "analysing" | "ready" | "error";
 interface ScanScreenProps {
   userId: string;
   onTalkToAssistant?: (summary: string) => void;
+  onSeeMatches?: () => void;
 }
 
-const ScanScreen: React.FC<ScanScreenProps> = ({ userId, onTalkToAssistant }) => {
+const ScanScreen: React.FC<ScanScreenProps> = ({ userId, onTalkToAssistant, onSeeMatches }) => {
+  const [resolvedAlerts, setResolvedAlerts] = useState<number[]>([]);
   const [status, setStatus] = useState<ScanStatus>("idle");
   const [result, setResult] = useState<ScanResponse | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -250,6 +254,27 @@ const ScanScreen: React.FC<ScanScreenProps> = ({ userId, onTalkToAssistant }) =>
 
           <TrustLine band={result.trust.band} score={result.trust.score} spokenLine={result.trust.spoken_line} />
 
+          {(result.overall_score !== null || result.skin_age !== null || result.inferred_skin_type) && (
+            <dl className="grid grid-cols-3 gap-2 text-center" aria-label="YouCam skin summary">
+              <div className="p-2 rounded-xl bg-ink-card border border-white/5">
+                <dt className="text-[11px] text-gray-500">Skin score</dt>
+                <dd className="text-lg font-semibold text-gray-100">{result.overall_score ?? "–"}</dd>
+              </div>
+              <div className="p-2 rounded-xl bg-ink-card border border-white/5">
+                <dt className="text-[11px] text-gray-500">Skin age</dt>
+                <dd className="text-lg font-semibold text-gray-100">{result.skin_age ?? "–"}</dd>
+              </div>
+              <div className="p-2 rounded-xl bg-ink-card border border-white/5">
+                <dt className="text-[11px] text-gray-500">Skin type (detected)</dt>
+                <dd className="text-lg font-semibold text-gray-100 capitalize">{result.inferred_skin_type ?? "–"}</dd>
+              </div>
+            </dl>
+          )}
+
+          {result.reading_summary && (
+            <p className="text-sm text-gray-200 leading-relaxed px-1">{result.reading_summary}</p>
+          )}
+
           {uploadedPreviewUrl && (
             <figure className="flex flex-col items-center">
               <img
@@ -269,13 +294,25 @@ const ScanScreen: React.FC<ScanScreenProps> = ({ userId, onTalkToAssistant }) =>
                   .filter((m) => m.output_image)
                   .map((m) => (
                     <figure key={m.name} className="flex flex-col items-center">
-                      <img
-                        src={m.output_image as string}
-                        alt={`YouCam's annotated ${m.name.replace("_", " ")} analysis, band: ${m.band}`}
-                        className="w-full aspect-square object-cover rounded-xl border border-white/10 shadow-soft"
-                      />
+                      {/* YouCam masks are transparent overlays: layer each on the photo so the
+                          highlighted areas land on the face they describe. */}
+                      <div className="relative w-full aspect-[3/4] rounded-xl overflow-hidden border border-white/10 shadow-soft bg-ink-card">
+                        {uploadedPreviewUrl && (
+                          <img
+                            src={uploadedPreviewUrl}
+                            alt=""
+                            aria-hidden="true"
+                            className="absolute inset-0 w-full h-full object-contain opacity-70"
+                          />
+                        )}
+                        <img
+                          src={m.output_image as string}
+                          alt={`YouCam's annotated ${m.name.replace("_", " ")} analysis, band: ${m.band}`}
+                          className="absolute inset-0 w-full h-full object-contain"
+                        />
+                      </div>
                       <figcaption className="text-xs text-gray-500 mt-1 capitalize">
-                        {m.name.replace("_", " ")}
+                        {m.name.replace("_", " ")} · {m.band} · {Math.round(m.raw_score)}/100
                       </figcaption>
                     </figure>
                   ))}
@@ -293,6 +330,33 @@ const ScanScreen: React.FC<ScanScreenProps> = ({ userId, onTalkToAssistant }) =>
           </ul>
 
           {result.progress && <ProgressView progress={result.progress} />}
+
+          {result.reaction_alerts
+            ?.filter((a) => !resolvedAlerts.includes(a.reaction_id))
+            .map((a) => (
+              <ReactionAlertCard
+                key={a.reaction_id}
+                alert={a}
+                userId={userId}
+                onResolved={() => setResolvedAlerts((prev) => [...prev, a.reaction_id])}
+              />
+            ))}
+
+          {result.honest_matches?.length > 0 && (
+            <section aria-label="Honest picks for this reading" className="space-y-3">
+              <div className="flex items-center justify-between gap-2">
+                <h3 className="text-xs uppercase tracking-wide text-gray-500">Honest picks for this reading</h3>
+              </div>
+              {result.honest_matches.map((m) => (
+                <HonestMatchCard key={m.product.id} match={m} />
+              ))}
+              {onSeeMatches && (
+                <button onClick={onSeeMatches} className="text-sm text-brand-400 hover:underline">
+                  See all honest picks & hype-check a product →
+                </button>
+              )}
+            </section>
+          )}
 
           <div className="mt-auto flex flex-col items-center gap-2">
             {onTalkToAssistant && (

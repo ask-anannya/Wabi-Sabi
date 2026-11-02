@@ -42,7 +42,10 @@ async def scan(
 
 @router.get("/scan/history")
 async def scan_history(user_id: str, limit: int = 10):
-    records = scan_store.get_scan_history(user_id, limit)
+    try:
+        records = scan_store.get_scan_history(user_id, limit)
+    except Exception as e:
+        raise ExceptionBase(status_code=503, message="Scan history is unavailable right now.") from e
     return {
         "result": [
             {
@@ -59,7 +62,10 @@ async def scan_history(user_id: str, limit: int = 10):
 
 @router.delete("/scan/history/{scan_id}")
 async def delete_scan(scan_id: int, user_id: str):
-    deleted = scan_store.delete_scan(scan_id, user_id)
+    try:
+        deleted = scan_store.delete_scan(scan_id, user_id)
+    except Exception as e:
+        raise ExceptionBase(status_code=503, message="Scan history is unavailable right now.") from e
     if not deleted:
         return JSONResponse(status_code=404, content={"message": "Scan not found."})
     return {"result": "deleted"}

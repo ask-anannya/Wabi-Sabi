@@ -23,7 +23,10 @@ class UserRecord(Base):
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
 
 
-Base.metadata.create_all(engine)
+try:
+    Base.metadata.create_all(engine)
+except Exception as e:
+    print(f"[auth_store] Base.metadata.create_all failed, sign-in persistence will be unavailable: {e}")
 
 
 def upsert_user(user_id: str, email: str | None, name: str | None, picture: str | None) -> UserRecord:

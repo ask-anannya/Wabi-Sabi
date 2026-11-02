@@ -83,6 +83,8 @@ class SkinMetric(BaseModel):
 
 class SkinAnalysisResult(BaseModel):
     metrics: list[SkinMetric]
+    skin_age: int | None = None  # score_info.json "skin_age"
+    overall_score: float | None = None  # score_info.json "all.score", 0-100, higher = healthier
     file_id: str
     task_id: str
     raw_payload: dict
@@ -108,6 +110,13 @@ METRIC_CONFIG = {
     "age_spot": {"raw_range": (0, 100), "polarity": "higher_is_better"},
     "acne": {"raw_range": (0, 100), "polarity": "higher_is_better"},
     "pore": {"raw_range": (0, 100), "polarity": "higher_is_better"},
+    # Same verified skin-analysis task, extra concerns (names verified valid via
+    # live probing — see module docstring). Same ui_score scale and polarity.
+    "oiliness": {"raw_range": (0, 100), "polarity": "higher_is_better"},
+    "radiance": {"raw_range": (0, 100), "polarity": "higher_is_better"},
+    "texture": {"raw_range": (0, 100), "polarity": "higher_is_better"},
+    "firmness": {"raw_range": (0, 100), "polarity": "higher_is_better"},
+    "eye_bag": {"raw_range": (0, 100), "polarity": "higher_is_better"},
 }
 
 BAND_BOUNDARIES = [
@@ -160,7 +169,16 @@ def _extract_scores(results) -> dict:
     raise ValueError(f"Unrecognised YouCam results shape, update _extract_scores: {results!r}")
 
 
-async def _fetch_results(client: httpx.AsyncClient, results) -> tuple[dict, dict]:
+def _extract_summary(payload: dict) -> tuple[int | None, float | None]:
+    """skin_age and the composite all.score, present alongside per-metric
+    entries in score_info.json (and in the mock fixture)."""
+    skin_age = payload.get("skin_age")
+    overall = (payload.get("all") or {}).get("score") if isinstance(payload.get("all"), dict) else None
+    return (int(skin_age) if isinstance(skin_age, (int, float)) else None,
+            round(float(overall), 1) if isinstance(overall, (int, float)) else None)
+
+
+async def _fetch_results(client: httpx.AsyncClient, results) -> tuple[dict, dict, dict]:
     """CONFIRMED (2026-08-16, real successful task): a completed task's
     `results` field is {"url": "<pre-signed S3 zip url>"}, NOT inline
     scores. The zip contains skinanalysisResult/score_info.json with
@@ -170,9 +188,10 @@ async def _fetch_results(client: httpx.AsyncClient, results) -> tuple[dict, dict
     that get skipped here since they don't have a "ui_score" field.
     ui_score (not raw_score) is used — see METRIC_CONFIG comment for why.
 
-    Returns (scores, output_images) where output_images maps metric name ->
-    a data: URI of that metric's annotated PNG, for metrics whose mask was
-    present in the zip."""
+    Returns (scores, output_images, score_info) where output_images maps
+    metric name -> a data: URI of that metric's annotated PNG, for metrics
+    whose mask was present in the zip, and score_info is the raw file (for
+    skin_age / all.score)."""
     if isinstance(results, dict) and "url" in results:
         resp = await client.get(results["url"])
         resp.raise_for_status()
@@ -195,8 +214,8 @@ async def _fetch_results(client: httpx.AsyncClient, results) -> tuple[dict, dict
                     mime = "image/png" if mask_path.lower().endswith(".png") else "image/jpeg"
                     encoded = base64.b64encode(zf.read(mask_path)).decode("ascii")
                     output_images[name] = f"data:{mime};base64,{encoded}"
-        return scores, output_images
-    return _extract_scores(results), {}
+        return scores, output_images, score_info
+    return _extract_scores(results), {}, {}
 
 
 def _to_skin_metrics(raw_scores: dict, output_images: dict | None = None) -> list[SkinMetric]:
@@ -319,7 +338,7 @@ async def _poll_task(client: httpx.AsyncClient, task_id: str, timeout_s: float =
             return data
         if status == "error":
             raise RuntimeError(f"YouCam task {task_id} failed: {data.get('error')}")
-        time.sleep(2.0)
+        await asyncio.sleep(2.0)
     raise TimeoutError(f"YouCam task {task_id} did not complete within {timeout_s}s")
 
 
@@ -331,8 +350,11 @@ def _load_mock_fixture() -> dict:
 async def analyse_skin(image_bytes: bytes, concerns: list[str]) -> SkinAnalysisResult:
     if YOUCAM_MOCK_MODE:
         payload = _load_mock_fixture()
+        skin_age, overall = _extract_summary(payload)
         return SkinAnalysisResult(
             metrics=_to_skin_metrics(_extract_scores(payload["results"])),
+            skin_age=skin_age,
+            overall_score=overall,
             file_id="mock-file-id",
             task_id=f"mock-task-{uuid.uuid4()}",
             raw_payload=payload,
@@ -345,11 +367,33 @@ async def analyse_skin(image_bytes: bytes, concerns: list[str]) -> SkinAnalysisR
         await _upload_image(client, upload_request, image_bytes)
         task_id = await _create_task(client, file_id, concerns)
         raw_payload = await _poll_task(client, task_id)
-        scores, output_images = await _fetch_results(client, raw_payload.get("results"))
+        scores, output_images, score_info = await _fetch_results(client, raw_payload.get("results"))
 
+    skin_age, overall = _extract_summary(score_info)
     return SkinAnalysisResult(
         metrics=_to_skin_metrics(scores, output_images),
+        skin_age=skin_age,
+        overall_score=overall,
         file_id=file_id,
         task_id=task_id,
         raw_payload=raw_payload,
     )
+
+
+def infer_skin_type(metrics: list[SkinMetric]) -> str | None:
+    """Skin type from measured oiliness + moisture severity (0 = clear,
+    1 = significant). Redness at moderate+ marks skin as sensitive first —
+    the tolerance model cares about that more than oil."""
+    by_name = {m.name: m.normalised for m in metrics}
+    oil, dry, red = by_name.get("oiliness"), by_name.get("moisture"), by_name.get("redness")
+    if oil is None or dry is None:
+        return None
+    if red is not None and red >= 0.5:
+        return "sensitive"
+    if oil >= 0.5 and dry >= 0.5:
+        return "combination"
+    if oil >= 0.5:
+        return "oily"
+    if dry >= 0.5:
+        return "dry"
+    return "normal"
