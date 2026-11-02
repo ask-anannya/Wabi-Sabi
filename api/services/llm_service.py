@@ -4,8 +4,9 @@ from llm.hallucination import hallucination_detector
 from llm.prefilter import wabi_sabi_prefilter
 from domain.advice_bands import ADVICE_BANDS
 from models.llm_response import AdviceItem, LLMResponse, ProgressDelta, ScanResponse
+from models.profile import HonestMatch, ReactionAlert
 from models.user import User
-from services import scan_store, youcam_client
+from services import catalog, profile_store, scan_store, tolerance, trust_engine, youcam_client
 from services.llm_datadog_metrics import llm_metrics
 from services.user_persona_metrics import user_persona_metrics
 from utils.ai_msg import get_vertex_ai_message
@@ -90,6 +91,38 @@ def _generate_scan_advice(
     return reading_summary, advice_items, progress_note, derm_referral
 
 
+async def _honest_layer(
+    user_id: str, deltas: dict, metrics: list[youcam_client.SkinMetric]
+) -> tuple[list[HonestMatch], list[ReactionAlert], str | None]:
+    """Everything this scan teaches the tolerance model, plus the top honest
+    matches. Best-effort like the history read: a failure here must not cost
+    the user their scan.
+      - skin type is inferred from YouCam oiliness/moisture/redness unless
+        the user set it themselves;
+      - an irritation reading (redness, texture, dryness) that worsened after
+        starting an active logs an unconfirmed reaction for the user to confirm."""
+    try:
+        profile = profile_store.get_profile(user_id)
+        inferred = youcam_client.infer_skin_type(metrics)
+        if inferred and profile.skin_type_source != "you" and inferred != profile.skin_type:
+            profile = profile_store.save_profile(
+                profile.model_copy(update={"skin_type": inferred, "skin_type_source": "scan"}))
+
+        usage = [(catalog.get(u.product_id), u.started_at) for u in profile_store.active_usage(user_id)]
+        severity = tolerance.scan_severity(tolerance.irritation_readings(deltas))
+        alerts = []
+        for product in tolerance.scan_reaction_suspects(deltas, [(p, s) for p, s in usage if p]):
+            record = profile_store.log_reaction(user_id, product.id, severity, source="scan", confirmed=False)
+            alerts.append(tolerance.reaction_alert(record.id, product, severity))
+
+        stored = [m.model_dump(exclude={"output_image"}) for m in metrics]
+        result = await trust_engine.honest_matches(profile, stored, limit=3)
+        return result["matches"], alerts, inferred
+    except Exception as e:
+        print(f"[analyse_and_advise] honest layer failed, returning scan without matches: {e}")
+        return [], [], None
+
+
 async def analyse_and_advise(image_bytes: bytes, profile: User, user_id: str) -> ScanResponse:
     concerns = list(ADVICE_BANDS.keys())
     scan_result = await youcam_client.analyse_skin(image_bytes, concerns)
@@ -97,10 +130,17 @@ async def analyse_and_advise(image_bytes: bytes, profile: User, user_id: str) ->
 
     metrics_for_storage = [m.model_dump(exclude={"output_image"}) for m in scan_result.metrics]
 
-    previous_scan = scan_store.get_last_scan(user_id)
+    # History read is a best-effort enhancement (progress-tracking), not core
+    # to a single scan's grounded advice — on hosts where SQLite isn't
+    # reliably writable (e.g. serverless with an ephemeral filesystem), a
+    # scan should still return a full result rather than fail entirely.
     deltas = {}
-    if previous_scan is not None:
-        deltas = scan_store.compute_deltas(previous_scan.metrics_json, metrics_for_storage)
+    try:
+        previous_scan = scan_store.get_last_scan(user_id)
+        if previous_scan is not None:
+            deltas = scan_store.compute_deltas(previous_scan.metrics_json, metrics_for_storage)
+    except Exception as e:
+        print(f"[analyse_and_advise] get_last_scan failed, continuing without progress: {e}")
 
     reading_summary, advice_items, progress_note, derm_referral = _generate_scan_advice(
         scan_result.metrics, profile, deltas
@@ -156,22 +196,38 @@ async def analyse_and_advise(image_bytes: bytes, profile: User, user_id: str) ->
     if derm_referral or trust.band == "see_a_dermatologist":
         script_parts.append("Please see a dermatologist for a proper evaluation.")
     script_parts.append(trust.spoken_line)
+
+    honest, reaction_alerts, inferred_skin_type = await _honest_layer(user_id, deltas, scan_result.metrics)
+    script_parts.extend(alert.text for alert in reaction_alerts)
+    if honest:
+        top = honest[0].product
+        script_parts.append(f"Your top honest match is {top.brand} {top.name}.")
     spoken_script = " ".join(part for part in script_parts if part)
 
     # output_image (base64 PNG, can be ~1MB per metric) is kept in the live
     # ScanResponse below but excluded from persisted history to keep the
-    # SQLite scan store lean.
-    scan_store.save_scan(
-        user_id=user_id,
-        metrics=metrics_for_storage,
-        trust_score=trust.score,
-        advice=[a.model_dump() for a in advice_items],
-    )
+    # SQLite scan store lean. Same best-effort reasoning as the read above —
+    # a failed save must not cost the user their (already-computed) result.
+    try:
+        scan_store.save_scan(
+            user_id=user_id,
+            metrics=metrics_for_storage,
+            trust_score=trust.score,
+            advice=[a.model_dump() for a in advice_items],
+        )
+    except Exception as e:
+        print(f"[analyse_and_advise] save_scan failed, this scan won't appear in history: {e}")
 
     return ScanResponse(
         spoken_script=spoken_script,
+        reading_summary=reading_summary,
         metrics=scan_result.metrics,
         advice=advice_items,
         trust=trust,
         progress=progress,
+        honest_matches=honest,
+        reaction_alerts=reaction_alerts,
+        skin_age=scan_result.skin_age,
+        overall_score=scan_result.overall_score,
+        inferred_skin_type=inferred_skin_type,
     )

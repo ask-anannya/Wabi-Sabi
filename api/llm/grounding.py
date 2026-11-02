@@ -65,18 +65,24 @@ class GroundingChecker:
         """4a pass 2. One judge call over surviving text."""
         metrics_summary = [{"name": m.name, "band": m.band, "normalised": m.normalised} for m in metrics]
         prompt = f"Measured metrics: {metrics_summary}\nAdvice: {advice_text}\nEvaluate grounding."
-        try:
-            llm_response = self.llm.chat_model.generate_content(prompt)
-            res_dict = safe_json_loads(llm_response.text)
-            claims = [GroundingClaim(**c) for c in res_dict.get("claims", [])]
-            return GroundingResult(
-                claims=claims,
-                grounding_score=float(res_dict.get("grounding_score", 0.0)),
-                unsupported_claims=res_dict.get("unsupported_claims", []),
-            )
-        except Exception as e:
-            print(f"Error during grounding check: {e}")
-            return GroundingResult(error=str(e))
+        # One retry: seen live, the judge call occasionally drops the connection
+        # ("Server disconnected"), and a failed check scores grounding as 0,
+        # which would misreport a clean reading as low-confidence.
+        last_error: Exception | None = None
+        for _attempt in range(2):
+            try:
+                llm_response = self.llm.chat_model.generate_content(prompt)
+                res_dict = safe_json_loads(llm_response.text)
+                claims = [GroundingClaim(**c) for c in res_dict.get("claims", [])]
+                return GroundingResult(
+                    claims=claims,
+                    grounding_score=float(res_dict.get("grounding_score", 0.0)),
+                    unsupported_claims=res_dict.get("unsupported_claims", []),
+                )
+            except Exception as e:
+                last_error = e
+                print(f"Error during grounding check: {e}")
+        return GroundingResult(error=str(last_error))
 
     def check_claims(self, metrics: list[SkinMetric], advice_text: str) -> GroundingResult:
         deterministic_result = self.deterministic_check(advice_text)

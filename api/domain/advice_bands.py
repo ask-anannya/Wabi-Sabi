@@ -83,6 +83,58 @@ ADVICE_BANDS = {
             "significant": ["occlusive_heavy"],
         },
     },
+    # Normalised severity for the metrics below likewise means "more of the
+    # problem": oilier, duller, rougher, less firm, puffier under the eyes.
+    "oiliness": {
+        "bands": {"clear": (0.0, 0.25), "mild": (0.25, 0.5), "moderate": (0.5, 0.75), "significant": (0.75, 1.0)},
+        "recommend": {
+            "mild": ["oil_control"],
+            "moderate": ["oil_control", "non_comedogenic"],
+            "significant": ["oil_control", "non_comedogenic", "pore_minimizing"],
+        },
+        "avoid": {
+            "moderate": ["occlusive_heavy"],
+            "significant": ["occlusive_heavy"],
+        },
+    },
+    "radiance": {
+        "bands": {"clear": (0.0, 0.25), "mild": (0.25, 0.5), "moderate": (0.5, 0.75), "significant": (0.75, 1.0)},
+        "recommend": {
+            "mild": ["antioxidant", "sunscreen_strict"],
+            "moderate": ["vitamin_c", "antioxidant", "exfoliant_mild"],
+            "significant": ["vitamin_c", "exfoliant_mild", "sunscreen_strict"],
+        },
+        "avoid": {},
+    },
+    "texture": {
+        "bands": {"clear": (0.0, 0.25), "mild": (0.25, 0.5), "moderate": (0.5, 0.75), "significant": (0.75, 1.0)},
+        "recommend": {
+            "mild": ["exfoliant_mild", "hydrating"],
+            "moderate": ["exfoliant_mild", "retinoid_gradual", "hydrating"],
+            "significant": ["retinoid_gradual", "barrier_repair", "derm_referral"],
+        },
+        "avoid": {
+            "significant": ["harsh_scrub", "high_pct_exfoliant"],
+        },
+    },
+    "firmness": {
+        "bands": {"clear": (0.0, 0.25), "mild": (0.25, 0.5), "moderate": (0.5, 0.75), "significant": (0.75, 1.0)},
+        "recommend": {
+            "mild": ["antioxidant", "sunscreen_strict"],
+            "moderate": ["retinoid_gradual", "antioxidant", "sunscreen_strict"],
+            "significant": ["retinoid_gradual", "sunscreen_strict", "derm_referral"],
+        },
+        "avoid": {},
+    },
+    "eye_bag": {
+        "bands": {"clear": (0.0, 0.25), "mild": (0.25, 0.5), "moderate": (0.5, 0.75), "significant": (0.75, 1.0)},
+        "recommend": {
+            "mild": ["hydrating", "fragrance_free"],
+            "moderate": ["hydrating", "fragrance_free"],
+            "significant": ["hydrating", "fragrance_free", "derm_referral"],
+        },
+        "avoid": {},
+    },
 }
 
 # Seeded from the old llm/prefilter.py MEDICAL_TERMS list. Anything outside
@@ -95,6 +147,11 @@ SUPPORTED_CLAIMS = {
     "pigmentation_level",
     "acne_severity",
     "pore_visibility",
+    "oiliness_level",
+    "radiance_level",
+    "texture_level",
+    "firmness_level",
+    "eye_bag_level",
 }
 
 UNSUPPORTED_TERMS = [
