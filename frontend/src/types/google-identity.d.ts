@@ -13,6 +13,7 @@ interface GoogleIdConfiguration {
 }
 
 interface GoogleButtonConfiguration {
+  type?: "standard" | "icon";
   theme?: "outline" | "filled_black" | "filled_blue";
   size?: "small" | "medium" | "large";
   shape?: "rectangular" | "pill" | "circle" | "square";

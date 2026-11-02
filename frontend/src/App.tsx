@@ -4,9 +4,11 @@ import type { AuthUser, Message, Profile, RoutineStep, Screen } from "./entities
 import ChatbotScreen from "./components/ChatbotScreen";
 import HistoryScreen from "./components/HistoryScreen";
 import LandingScreen from "./components/LandingScreen";
+import MatchesScreen from "./components/MatchesScreen";
 import NavBar from "./components/NavBar";
 import RoutineDetailModal from "./components/RoutineDetailModal";
 import ScanScreen from "./components/ScanScreen";
+import ToleranceScreen from "./components/ToleranceScreen";
 import { chatLLM } from "./services/api";
 import { datadogRum } from "@datadog/browser-rum";
 
@@ -155,7 +157,16 @@ const App: React.FC = () => {
       <div className="relative flex-1 min-h-0">
         <AnimatePresence mode="wait">
           {screen === "scan" ? (
-            <ScanScreen key="scan" userId={userId} onTalkToAssistant={handleTalkToAssistant} />
+            <ScanScreen
+              key="scan"
+              userId={userId}
+              onTalkToAssistant={handleTalkToAssistant}
+              onSeeMatches={() => setScreen("matches")}
+            />
+          ) : screen === "matches" ? (
+            <MatchesScreen key="matches" userId={userId} />
+          ) : screen === "tolerance" ? (
+            <ToleranceScreen key="tolerance" userId={userId} />
           ) : screen === "chat" ? (
             <ChatbotScreen
               key="chat"

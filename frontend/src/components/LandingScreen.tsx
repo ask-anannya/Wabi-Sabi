@@ -112,18 +112,18 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ onStartScan, onAskWabi })
         <div className="relative z-10 flex flex-col items-center gap-8 max-w-4xl">
           <div className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/5 backdrop-blur-md border border-white/10 shadow-glass">
             <Sparkles size={16} className="text-brand-400" aria-hidden="true" />
-            <span className="text-sm font-semibold uppercase tracking-wider text-gray-300">Voice-first skin AI</span>
+            <span className="text-sm font-semibold uppercase tracking-wider text-gray-300">Honest skincare · powered by YouCam Skin AI</span>
           </div>
 
           <span className="text-2xl font-display font-semibold tracking-wide text-gray-100">Wabi · Sabi</span>
 
           <h1 className="text-5xl md:text-7xl font-display font-semibold leading-tight bg-gradient-to-br from-white via-brand-400 to-lavender bg-clip-text text-transparent">
-            Skincare advice that shows its work.
+            Skincare that works for you, not the hype.
           </h1>
 
           <p className="text-xl md:text-2xl text-gray-400 max-w-2xl">
-            Take a photo. Wabi-Sabi measures your skin, checks every piece of advice against those measurements,
-            and speaks the result — advice and confidence together.
+            Take a photo. YouCam measures 11 skin concerns, Wabi-Sabi learns what your skin can tolerate, and
+            recommends only products that actually help you, flagging the overpriced and the overhyped.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center gap-4">

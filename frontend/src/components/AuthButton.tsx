@@ -47,10 +47,14 @@ const AuthButton: React.FC<AuthButtonProps> = ({ user, onSignIn, onSignOut }) =>
           }
         },
       });
+      // Icon-only on phones: the full "Sign in with Google" pill doesn't fit
+      // beside five nav tabs at 390px.
+      const narrow = window.matchMedia("(max-width: 639px)").matches;
       window.google.accounts.id.renderButton(buttonSlotRef.current, {
+        type: narrow ? "icon" : "standard",
         theme: "filled_black",
         size: "medium",
-        shape: "pill",
+        shape: narrow ? "circle" : "pill",
       });
     });
   }, [user, onSignIn]);

@@ -1,4 +1,4 @@
-import { Camera, History, MessageCircle } from "lucide-react";
+import { Activity, Camera, History, MessageCircle, ShieldCheck } from "lucide-react";
 import AuthButton from "./AuthButton";
 import logo from "../assets/wabi-logo.png";
 import type { AuthUser, Screen } from "../entities/types";
@@ -13,13 +13,15 @@ interface NavBarProps {
 
 const NAV_ITEMS: { screen: Screen; label: string; icon: typeof Camera }[] = [
   { screen: "scan", label: "Scan", icon: Camera },
+  { screen: "matches", label: "Honest picks", icon: ShieldCheck },
+  { screen: "tolerance", label: "Tolerance", icon: Activity },
   { screen: "chat", label: "Chat", icon: MessageCircle },
   { screen: "history", label: "History", icon: History },
 ];
 
 const NavBar: React.FC<NavBarProps> = ({ screen, onNavigate, authUser, onSignIn, onSignOut }) => {
   return (
-    <nav className="flex items-center justify-between gap-4 px-4 md:px-6 h-16 flex-shrink-0 bg-ink-card/60 backdrop-blur-md border-b border-white/5 z-30">
+    <nav className="flex items-center justify-between gap-2 sm:gap-4 px-3 sm:px-4 md:px-6 h-16 flex-shrink-0 bg-ink-card/60 backdrop-blur-md border-b border-white/5 z-30">
       <button
         onClick={() => onNavigate("landing")}
         className="flex items-center gap-2 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 focus-visible:ring-offset-ink"
@@ -37,8 +39,9 @@ const NavBar: React.FC<NavBarProps> = ({ screen, onNavigate, authUser, onSignIn,
               key={item.screen}
               role="tab"
               aria-selected={isActive}
+              aria-label={item.label}
               onClick={() => onNavigate(item.screen)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm transition ${
+              className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-sm transition ${
                 isActive ? "bg-white/10 text-gray-100" : "text-gray-400 hover:text-gray-200 hover:bg-white/5"
               }`}
             >
