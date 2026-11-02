@@ -110,10 +110,11 @@ flowchart LR
     style F fill:#1c1a1f,stroke:#d4807a,color:#f88
 ```
 
-1. **Scan** — take a photo. It's sent to YouCam Skin AI, which returns real numeric scores (moisture, wrinkle, redness, age spots, acne, pore visibility) plus an annotated visualisation image per metric.
-2. **Advice generation** — Gemini turns the measured scores into warm, friend-toned spoken advice, restricted to ingredient/property categories (never brand names) drawn from a static, auditable lookup table — not invented by the model.
+1. **Scan** — take a photo. It's sent to YouCam Skin AI, which returns real numeric scores for 11 concerns (moisture, wrinkle, redness, age spots, acne, pores, oiliness, radiance, texture, firmness, eye bags), a skin age, an overall skin score, and an annotated visualisation image per metric.
+2. **Advice generation** — Gemini turns the measured scores into warm, friend-toned spoken advice, restricted to ingredient/property categories drawn from a static, auditable lookup table — not invented by the model. Product names never come from the LLM: specific products are only ever recommended by the deterministic Honest Match engine, from the curated catalog.
 3. **Grounding check** — before anything is spoken, every claim is checked: does it trace to a measured metric? Is it consistent with the severity band? Is the underlying measurement itself borderline/ambiguous? Anything that fails is stripped, not softened with a caveat.
 4. **Spoken result** — the reading, the (already-verified) advice, a progress note if you've scanned before, and a trust line stating exactly how confident the result is — all spoken aloud, usable with the screen off.
+5. **Honest picks** — the same scan feeds the Honest Match engine: the top products for your needs, within your tolerance, at an honest price, plus an alert if a reading got worse since you started a new active.
 
 See [`GROUNDING.md`](GROUNDING.md) for the full reasoning on why this is grounding rather than hallucination *detection*, and [`ARCHITECTURE.md`](ARCHITECTURE.md) for the complete technical breakdown.
 
@@ -121,11 +122,20 @@ See [`GROUNDING.md`](GROUNDING.md) for the full reasoning on why this is groundi
 
 ## Features
 
+### Honest shopping
+- **Honest picks** — products ranked by what your scan says you need, gated by your tolerance, scored on evidence and price per ml
+- **Hype check** — search any product you saw on your feed and get an honest verdict for *your* skin: overpriced? more hype than substance? too strong for you?
+- **Honest dupes and "try this instead"** — the same strength for less, or the strongest version you can actually handle
+- **Tolerance ladders** — per-active strength ladders (retinoids, AHAs, BHAs, vitamin C, benzoyl peroxide, niacinamide, azelaic acid) that learn from your onboarding quiz, check-ins and rescans
+- **People like you** — what other users with your skin type and experience level actually logged, instead of what worked for an influencer
+
 ### Voice-first skin scan
-- Real skin measurements via the YouCam Skin AI API (not simulated) — moisture, wrinkle, redness, age spots, acne, pore visibility
+- Real skin measurements via the YouCam Skin AI API (not simulated) — 11 concerns, plus skin age and an overall skin score
+- Skin type detected from the scan (oiliness, moisture, redness) rather than relying on self-report
 - Every result is spoken via Gemini TTS (with automatic browser-voice fallback) — the primary output is `spoken_script`, not the visual layer
-- Per-metric annotated analysis images displayed alongside your submitted photo
+- YouCam's per-metric annotated masks laid over your own photo, each labelled with its band and score
 - Progress tracking between scans, with a significance threshold so measurement noise is never reported as "improvement"
+- Rescans that catch irritation: worse redness, texture or dryness after starting a new active raises an alert you can confirm
 
 ### The grounding engine
 - **Claim grounding** — a cheap deterministic keyword pass catches absolute/unsupported language for free; anything that survives goes to one LLM judge call that checks each claim against the measured metrics
@@ -169,8 +179,9 @@ See [`GROUNDING.md`](GROUNDING.md) for the full reasoning on why this is groundi
 |:---|:---|
 | **FastAPI** | Request orchestration, all routing |
 | **Gemini API** (`google-genai`) | Chat generation, scan-advice generation, grounding judge calls, text-to-speech |
-| **YouCam Skin AI API** | Real skin measurement (file upload → task → poll → results) |
-| **SQLAlchemy + SQLite** | Scan history, user records — single file, no external DB |
+| **YouCam Skin AI API** | Real skin measurement (file upload → task → poll → results), 11 concerns |
+| **SQLAlchemy + SQLite / Postgres** | Scans, users, profiles, product usage, reactions — SQLite locally, Postgres via `DATABASE_URL` |
+| **Honest Match engine** (`trust_engine.py`) | Deterministic product scoring over a curated catalog (`api/data/`) |
 | **google-auth** | Server-side Google ID token verification |
 | **Datadog** (`datadog`, `ddtrace`) | Metrics, APM tracing |
 | **Docker Compose + Nginx** | Orchestration and reverse proxy |
@@ -181,7 +192,7 @@ See [`GROUNDING.md`](GROUNDING.md) for the full reasoning on why this is groundi
 
 ```mermaid
 flowchart TD
-    M["Measured metrics<br/>(moisture, wrinkle, redness,<br/>age_spot, acne, pore)"] --> G["Advice generation<br/>(Gemini, category-restricted)"]
+    M["Measured metrics<br/>(11 YouCam concerns)"] --> G["Advice generation<br/>(Gemini, category-restricted)"]
     G --> C1["4a. Claim grounding<br/>keyword pass → LLM judge"]
     G --> C2["4b. Directional consistency<br/>vs ADVICE_BANDS (deterministic)"]
     M --> C3["4c. Metric ambiguity<br/>from band_distance (deterministic)"]
@@ -206,7 +217,8 @@ Full writeup: [`GROUNDING.md`](GROUNDING.md). Implementation: `api/llm/grounding
 
 - **No account required.** Scanning and viewing history work with a local, randomly generated ID stored only in the browser.
 - **Sign-in is optional and stateless-by-design.** Google Sign-In uses the Identity Services ID-token flow — the backend verifies the token's signature directly against Google's public keys (`google-auth`), no authorization-code exchange, no client secret, no third-party auth provider in the loop.
-- **One SQLite file**, two tables: `scans` (metrics, trust score, advice — text only) and `users` (id = Google `sub`, email, name, picture). Annotated analysis images are never persisted — they exist only in the live response for the scan you just took.
+- **One database** (SQLite file, or Postgres via `DATABASE_URL`), five tables: `scans` (metrics, trust score, advice — text only), `users` (id = Google `sub`, email, name, picture), `user_profiles` (skin type, sensitizers, tolerance ladders, style preferences), `product_usage` and `reactions`. Annotated analysis images are never persisted — they exist only in the live response for the scan you just took.
+- **Community data stays aggregate.** "People like you" only ever shows counts ("2 of 3 people with oily skin…"), never who reported what.
 - **Mock mode.** `YOUCAM_MOCK_MODE=true` runs the entire pipeline — advice generation, grounding, trust scoring — against a fixture built from a real captured response, so the app is fully testable without spending YouCam's limited free-tier units.
 
 ---
@@ -222,26 +234,34 @@ wabi-sabi/
 │   │   ├── grounding.py          The grounding engine (scan path)
 │   │   ├── prefilter.py          Keyword risk prefilter (chat path, unchanged)
 │   │   └── hallucination.py      Judge-LLM hallucination scorer (chat path, unchanged)
+│   ├── data/                     products.json (curated catalog), brands.json (editorial buzz + styles)
 │   ├── domain/
-│   │   └── advice_bands.py       Static metric-band → advice-category lookup
-│   ├── models/                   Pydantic models (llm_response, grounding, user, hallucination)
+│   │   ├── advice_bands.py       Static metric-band → advice-category lookup (11 metrics)
+│   │   └── actives.py            Per-active strength ladders and sensitizers
+│   ├── models/                   Pydantic models (llm_response, profile, grounding, user, hallucination)
 │   ├── services/
-│   │   ├── llm_service.py        Orchestration: llm_chat() + analyse_and_advise()
-│   │   ├── youcam_client.py      YouCam Skin AI client (upload/task/poll/parse)
-│   │   ├── scan_store.py         SQLite scan history (save/get/delete/deltas)
-│   │   ├── auth_store.py         SQLite users table
+│   │   ├── llm_service.py        Orchestration: llm_chat() + analyse_and_advise() + honest layer
+│   │   ├── youcam_client.py      YouCam Skin AI client (upload/task/poll/parse, skin type inference)
+│   │   ├── trust_engine.py       Honest Match scoring, dupes, safer alternatives
+│   │   ├── tolerance.py          Tolerance ladder rules (pure functions)
+│   │   ├── catalog.py            Catalog + brand signal loading
+│   │   ├── profile_store.py      Profiles, product usage, reactions, community cohorts
+│   │   ├── scan_store.py         Scan history (save/get/delete/deltas), shared DB engine
+│   │   ├── auth_store.py         Users table
 │   │   ├── tts_service.py        Gemini TTS → WAV
 │   │   ├── user_persona_metrics.py
 │   │   └── llm_datadog_metrics.py
-│   ├── routers/                  llm.py, scan.py, auth.py, tts.py, health.py
+│   ├── routers/                  scan.py, profile.py, matches.py, llm.py, auth.py, tts.py, health.py
 │   ├── prompts/                  System prompts (chat, scan, grounding judge, hallucination judge)
 │   └── webhooks/, datadog_agent/, utils/
 ├── frontend/                     React + Vite
 │   └── src/
-│       ├── App.tsx                Screen state machine (landing/scan/chat/history)
+│       ├── App.tsx                Screen state machine (landing/scan/matches/tolerance/chat/history)
 │       ├── components/
-│       │   ├── LandingScreen.tsx  Full-screen-per-section descriptive landing page
-│       │   ├── ScanScreen.tsx     Capture → results → voice playback → chat handoff
+│       │   ├── LandingScreen.tsx  Landing page
+│       │   ├── ScanScreen.tsx     Capture → results → masks on photo → honest picks → voice → chat handoff
+│       │   ├── MatchesScreen.tsx, OnboardingScreen.tsx, HonestMatchCard.tsx, ProductHonestModal.tsx
+│       │   ├── ToleranceScreen.tsx, ReactionAlertCard.tsx   Check-ins + tolerance ladders
 │       │   ├── ChatbotScreen.tsx, ChatBubble.tsx, RoutineDisplay*.tsx
 │       │   ├── HistoryScreen.tsx  Scan history + delete
 │       │   ├── TrustLine.tsx, ProgressView.tsx   Icon+text confidence/delta display
@@ -252,7 +272,8 @@ wabi-sabi/
 ├── nginx/, scripts/, docker-compose*.yml
 ├── env_samples/.env.samples      Copy to env/app.env
 ├── GROUNDING.md                  Why grounding, not hallucination detection
-└── ARCHITECTURE.md               Full technical deep-dive + diagrams
+├── ARCHITECTURE.md               Full technical deep-dive + diagrams
+└── SUBMISSION.md                 Devpost submission text
 ```
 
 ---
@@ -288,7 +309,14 @@ Open **http://localhost:8001**.
 ```bash
 python -m pytest tests/
 ```
-All 33 tests run against `YOUCAM_MOCK_MODE=true` with mocked LLM calls — no real credentials needed.
+All 60 tests run against `YOUCAM_MOCK_MODE=true` with mocked LLM calls — no real credentials needed. They cover the grounding engine, YouCam parsing (including the 11-concern fixture), the tolerance rules, the trust engine and the HTTP endpoints.
+
+### Run without Docker
+```bash
+cd api && uvicorn main:app --port 8010          # with env/app.env variables exported
+cd frontend && VITE_API_BASE_URL=http://localhost:8010 npm run dev
+```
+Without nginx, routes aren't under `/api/v1`, so point the frontend straight at the API.
 
 ---
 
@@ -299,14 +327,15 @@ All 33 tests run against `YOUCAM_MOCK_MODE=true` with mocked LLM calls — no re
 | **Voice** | Gemini TTS fails or times out | Automatic switch to the browser's built-in `SpeechSynthesis` |
 | **YouCam network calls** | Transient connection error | Retried automatically (short backoff, up to 3 attempts) |
 | **YouCam image spec** | Under-spec / rejected image | Client-fixable error surfaced directly, not a generic failure |
+| **Grounding judge** | Dropped connection | Retried once before falling back |
 | **Grounding judge** | Malformed JSON from the LLM | Safe fallback result (fails closed — treated as ungrounded, not silently passed) |
+| **Honest Match layer** | Any failure inside a scan | Scan still returns its reading and advice, just without picks |
+| **Community data** | Fewer than 3 matching reports | Says there isn't enough data yet, instead of guessing |
 | **Google Sign-In** | Not configured | Backend returns a clean `503`; frontend shows "Sign-in unavailable" instead of a broken button — app stays fully usable anonymously |
 | **Datadog** | Agent unreachable | Fire-and-forget UDP metrics; app never blocks on it |
 
 ---
 
----
-
 ## Hackathon
 
-Built for the **YouCam API Skin AI Hackathon**. MIT-licensed foundation (see `LICENSE`), adapted and substantially rebuilt from a text-chatbot base into a grounded, voice-first photo-scan product.
+Submitted to the **YouCam API Skin AI & eCommerce VTO Hackathon**. Built on an MIT-licensed foundation (see `LICENSE`): first rebuilt from a text-chatbot base into a grounded, voice-first photo-scan product (for the earlier YouCam API Skin AI Hackathon), then extended for this event into an honest skincare shopping assistant: the Honest Match engine, tolerance ladders, 11-concern YouCam analysis, and the Honest picks, Hype check and Tolerance screens. See the git history for exactly what was added when.

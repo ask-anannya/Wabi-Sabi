@@ -28,7 +28,7 @@ We use **YouCam AI Skin Analysis (S2S API v2)**, entirely server-side:
 1. `POST /s2s/v2.0/file` creates the upload, and the image goes to the pre-signed URL.
 2. `POST /s2s/v2.0/task/skin-analysis` runs with 11 concerns.
 3. `GET /s2s/v2.0/task/skin-analysis/{task_id}` is polled asynchronously until the task succeeds.
-4. The result zip is downloaded. From `score_info.json` we read every concern's `ui_score`, `skin_age` and `all.score`, and we display YouCam's annotated mask image for each concern.
+4. The result zip is downloaded. From `score_info.json` we read every concern's `ui_score`, `skin_age` and `all.score`, and we lay YouCam's annotated mask for each concern over the user's own photo.
 
 The scores power the whole product:
 - They set the **needs**: severity bands map to ingredient categories.

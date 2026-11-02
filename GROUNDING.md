@@ -57,3 +57,29 @@ isn't said.
 unchanged. It has no photo, no measurements — grounding has nothing to
 verify against there, so the old free-text approach remains the right tool
 for that path.
+
+## Grounding in the Honest Match layer
+
+The shopping layer (`api/services/trust_engine.py`) applies the same idea
+one step further: **no LLM ever writes a claim about a product.** Every
+reason shown on a product card ("Overpriced: 2.5x the typical price",
+"You've reacted to this strength before", "2 of 3 people with oily skin
+reported redness") is assembled from structured facts:
+
+- the YouCam metric bands (what the skin needs),
+- the user's own tolerance ladder and sensitizers (a hard gate),
+- the curated catalog's actives, concentrations and prices,
+- the app's own aggregate reaction reports.
+
+Each reason carries its `source` (`youcam`, `you`, `catalog`, `editorial`,
+`community`), and the UI shows it, so a reader can see where every claim
+came from. The one hand-labelled input, the brand buzz tier, is marked
+"editorial" rather than presented as a measurement.
+
+## Judge reliability
+
+The grounding judge call retries once. In live testing the Gemini call
+occasionally dropped the connection, and because a failed judge scores
+grounding as 0, a clean reading was being reported as "uncertain". The retry
+keeps a transient network error from being mistaken for an ungrounded claim;
+if both attempts fail, the pipeline still fails closed.

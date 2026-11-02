@@ -2,148 +2,52 @@
 
 ## Inspiration
 
-Wabi-Sabi was inspired by a simple but serious problem: **people increasingly rely on AI for skincare advice**, yet skincare guidance directly affects real human bodies. Unlike casual chatbots, incorrect or hallucinated skincare recommendations can lead to irritation, long-term skin damage, or loss of trust.
+Skincare shopping is driven by hype. A serum goes viral, and thousands of people buy it on the strength of someone else's skin. Retinoids show the damage most clearly: there are many forms (HPR, retinol, retinal, adapalene) at very different strengths, and people with sensitive skin regularly burn their faces by jumping straight to a 1% retinol they were never ready for. Meanwhile, the same active at the same strength can cost 2× to 20× more depending on the logo.
 
-While building AI-driven skincare experiences, we realized that **traditional LLM observability treats hallucinations as a binary correctness issue**, often evaluating every prompt uniformly. This approach is expensive, noisy, and fails to answer a more important question:
+**Something that worked for someone else is not evidence that it'll work for you.** Wabi-Sabi is built around that idea: look at *your* skin, remember what *your* skin has tolerated, and tell you honestly whether a product is worth it for you.
 
-> *If a hallucination occurs, how many users does it actually affect, and who are they?*
+## What it does
 
-This insight led us to design Wabi-Sabi not just as an AI skincare assistant, but as a **production-grade system where AI reliability, risk, and impact are observable**.
+- **Scans your skin with YouCam AI Skin Analysis.** It measures 11 concerns (moisture, wrinkles, redness, dark spots, acne, pores, oiliness, radiance, texture, firmness, eye bags) and returns a skin age and overall score. Your skin type is detected from the scan.
+- **Learns your tolerance.** Each active ingredient has a strength ladder. You climb one careful step at a time; anything that irritated you is blocked for good. The ladder learns from an onboarding quiz, quick check-ins, and repeat scans that catch rising redness, texture or dryness after a new product.
+- **Recommends honestly.** Every product gets an Honest Score with plain-language reasons: does it address what your scan found, is it within your tolerance, is it fairly priced per ml, and is its buzz backed by substance. It flags overpriced products and names an honest dupe, or, when something is too strong for you, the version you *can* handle.
+- **Hype check.** Search any product you saw on your feed and get the verdict for your skin.
+- **Grounded, voice-first advice.** The scan result is spoken aloud, and every claim is checked against the measured scores before it's voiced.
 
+## How we built it
 
+- **FastAPI (Python) backend**:
+  - a YouCam S2S v2 client (upload → task → poll → results zip);
+  - a deterministic Honest Match trust engine and tolerance model;
+  - a grounding engine for the spoken advice;
+  - SQLAlchemy storage on SQLite or Postgres.
+- **Curated catalog** of about 60 real products with actives, concentrations (undisclosed ones flagged and treated as strong) and prices, plus editorial brand signals.
+- **Gemini** for spoken advice, the grounding judge and text-to-speech. Product claims never come from the LLM.
+- **React 19 + TypeScript + Vite + Tailwind** frontend.
+- **pytest**: 60 tests covering tolerance rules, the trust engine, YouCam parsing, grounding and the endpoints.
+- **Datadog** for metrics and tracing across the chat and scan paths.
 
-## What We Built
+## How it got here
 
-Wabi-Sabi is an AI-powered skincare assistant that:
-- Provides **personalized skincare routines**
-- Explains **ingredients and formulations**
-- Answers **skin concern–specific questions**
-- Tailors responses using **user attributes** such as age, skin type, and skin concern
+Wabi-Sabi started as a text skincare chatbot with an LLM-observability layer. That layer is still running on the chat path: a risk-based prefilter that decides *when* to run hallucination evaluation, and a persona-weighted "hallucination blast radius" built from atomic Datadog metrics (see `Metrics.md` and `Datadog-metrics.md`).
 
-On top of this user-facing functionality, we built a **novel LLM observability layer** focused on **selective hallucination evaluation and hallucination blast radius measurement**.
+For the first YouCam hackathon it was rebuilt into a photo-scan product with a grounding engine. Once real skin measurements exist, the question changes from "does this *sound* hallucinated?" to "does this advice trace back to something we measured?" (see `GROUNDING.md`).
 
+For the YouCam Skin AI & eCommerce VTO Hackathon it became an honest shopping assistant: the Honest Match engine, tolerance ladders, 11-concern analysis, and the Honest picks, Hype check and Tolerance screens.
 
+## Challenges
 
-## How We Built It
+- Turning YouCam's 0–100 health scores into consistent severity bands, then into advice and product needs that never contradict the measurement.
+- Making tolerance rules strict enough to prevent burns but flexible enough to let people progress, and handling undisclosed concentrations honestly.
+- Keeping recommendations honest: popularity and style can break ties, but they can never outrank substance or override your tolerance.
+- Live-testing surprises, like a dropped Gemini connection silently turning a clean reading "uncertain" (now retried).
 
-### System Architecture
+## What we learned
 
-- **Google Cloud**  
-  Used for LLM inference and backend infrastructure to ensure scalability and reliability, Metric emission through Dataflow and BigQuery.
-- **Python + FastAPI**  
-  Handles request orchestration, persona enrichment, and metric emission.
-- **React + Vite**
-  Facilitates the seamless user interface.
-- **Datadog**  
-  Used as the central observability platform for metrics, dashboards, alerts, and runbooks.
+Measurement changes the conversation. With real skin scores you can check advice against them, catch irritation a person might dismiss, and say "no, not for you" with evidence instead of vibes.
 
+## What's next
 
-### Selective Hallucination Evaluation
-
-Instead of evaluating hallucinations for every prompt, Wabi-Sabi introduces a **risk-based prefilter** that assigns a risk score.
-Only prompts with risk score more than 0.25 are evaluated for hallucination. Importantly, **the decision to evaluate is itself observable**.
-
-This allows us to track:
-- How often evaluation is triggered
-- Why it was triggered
-- Affected users along with Pre-filter accuracy
-
-### Hallucination Blast Radius
-
-Detecting a hallucination alone is not enough. We wanted to understand **real-world impact**.
-
-We introduced the **Hallucination Blast Radius Index (HBRS)**, derived inside Datadog using observable signals:
-
-```
-HBRS = HallucinationScore * ChatVolume * UserPersonaRiskWeight
-```
-
-Where:
-- Hallucination Score measures semantic deviation [ Score : 0-1 ]
-- Chat Volume represents real user exposure
-- Persona Risk Weight reflects sensitivity based on age group and skin concern  [  Score : 1-2 ]
-
-By emitting **atomic metrics** and deriving impact dynamically, we keep the system transparent, tunable, and production-realistic.
-
-### Persona-Aware Impact Visualization
-
-User attributes such as:
-- `user.age_bucket`
-- `user.skin_type`
-- `user.skin_concern`
-
-are emitted as **low-cardinality Datadog tags**.
-
-This enables heatmaps and breakdowns that show:
-- Which user personas are affected
-- How hallucinations propagate across cohorts
-- Why the same hallucination can be low-risk or high-risk depending on audience
-
-
-
-## Challenges we ran into
-
-### 1. Avoiding Metric Noise  
-Evaluating hallucinations everywhere creates alert fatigue. Designing a selective pipeline required careful prefiltering without missing critical cases.
-
-### 2. Balancing Simplicity and Novelty  
-We had to ensure the system was explainable to judges while still demonstrating deep SRE and AI reliability thinking.
-
-### 3. Designing Judge-Safe Observability  
-We avoided black-box scores and sensitive logic by emitting only atomic, auditable metrics and deriving insights transparently in Datadog.
-
-### 4. Mapping AI Safety to Business Impact  
-Translating hallucination scores into something operationally meaningful required rethinking traditional LLM monitoring approaches.
-
-### 5. GCP Hallucination compatibility :
-Since Datadog doesn't have native integration of GCP LLMs such as VertexAI for Hallucination evaluation, we had to 
-create an LLM to evaluate the hallucination.
-
-
-
-## Accomplishments We’re Proud Of
-
-### 1. Designed selective hallucination evaluation
-Instead of evaluating every LLM response, we built a risk-based prefilter that decides when and why hallucination evaluation happens — and made that decision itself observable.
-
-### 2. Turned hallucinations into measurable impact
-We moved beyond raw hallucination scores by computing a hallucination blast radius, correlating severity with real traffic and user personas to understand who was affected and how far issues spread.
-
-### 3. Built end-to-end AI observability with Datadog
-We integrated Datadog across APM, infrastructure, AI observability, and custom hallucination metrics to create a single, coherent operational view of the system.
-
-### 4. Defined SLOs for AI behavior, not just uptime
-We established SLOs around hallucination impact, allowing AI reliability to be measured and enforced like any other production service.
-
-### 5. Implemented actionable detection, alerts, and runbooks
-Detection rules trigger Slack alerts when blast radius thresholds are breached, each linked to a runbook that guides engineers through assessment and mitigation steps.
-
-### 6. Delivered a production-grade reliability pattern
-Wabi-Sabi demonstrates a reusable approach for operating LLMs safely at scale — where hallucinations are managed as incidents with clear signals, thresholds, and response workflows.
-
-
-
-## What We Learned
-
-- **Not all hallucinations matter equally** — exposure and user context define risk
-- Observability should measure **impact**, not just model behavior
-- Making *evaluation decisions observable* is as important as evaluating outcomes
-- Domain-aware personas dramatically improve interpretability of AI incidents
-- Separating raw signals from derived metrics increases flexibility and trust
-
-
-## What's next for Wabi-Sabi - AI Skincare assitant
-### Adaptive risk-aware evaluation
-- Evolve selective hallucination evaluation by dynamically adjusting prefilter thresholds based on live SLO health, traffic patterns, and incident history.
-
-### Feedback-driven reliability loops
-- Use post-incident data and runbook outcomes to continuously refine detection rules, persona risk weights, and evaluation strategies.
-
-### Deeper integration with Datadog AI features
-- Expand use of Datadog’s AI Observability to track prompt patterns, response drift, and long-term hallucination trends across model versions.
-
-### Proactive user impact prevention
-- Introduce automated mitigation actions, such as safe-response fallbacks or response throttling, before blast radius thresholds are breached.
-
-### Model and prompt version observability
-- Compare hallucination behavior across model and prompt versions to support safer rollouts and controlled experimentation.
+- YouCam AI Makeup and Skin VTO, to try tinted sunscreens and foundations before buying.
+- A larger catalog from retailer feeds, with live prices.
+- Using community reaction data to suggest starting strengths for each skin type.
