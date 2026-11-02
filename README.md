@@ -63,6 +63,36 @@ flowchart TB
 
 Every reason is assembled from structured facts. No LLM writes claims about products.
 
+### The buzz meter (hype gap)
+
+Every product card has a **hype meter**: one track with two markers.
+
+```
+Hype meter                                   More hype than substance
+├──●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━●──┤
+   substance (0.17)                                        buzz (0.95)
+```
+
+- **Coral marker, buzz:** how heavily the *brand* is marketed and talked about on social media. Each brand has a hand-labelled tier in [`api/data/brands.json`](api/data/brands.json): `viral` = 0.95, `popular` = 0.75, `niche` = 0.4. It is an editorial judgement, not a measurement, so the UI labels it **"Buzz (editorial)"**.
+- **Green marker, substance:** what's actually in the bottle, computed from the catalog:
+
+  ```
+  substance = 0.6 × evidence + 0.4 × value
+  evidence  = strong 1.0 · moderate 0.6 · weak 0.25   (× 0.8 if the brand hides the concentration)
+  value     = min(1, typical price per ml for the same job & strength ÷ this product's price per ml)
+  ```
+- **The gap between them is the hype gap** (`buzz − substance`), and it sets the label:
+
+| Gap | Label | Meaning |
+|---|---|---|
+| > +0.25 | **More hype than substance** | The marketing is ahead of the formula or the price. Shown in red, and the Honest Score is docked `0.5 × (gap − 0.25)` (about 26 points for La Mer). |
+| −0.25 to +0.25 | **Buzz is earned** | Popularity roughly matches what you get. If it's still overpriced, it reads **"Formula earns it, price doesn't"**. |
+| < −0.25 | **Under the radar** | Better than its buzz suggests, typically a niche brand with a proven active at a fair price. |
+
+Example: **La Mer Crème de la Mer** is a viral-buzz brand (0.95), but weak evidence for its key ingredient and $6.67/ml (23.5× the typical moisturizer) give it a substance of 0.17. The card reads *"La Mer is a viral-buzz brand, but this product's evidence and value score only 17/100"*, and it offers an honest dupe.
+
+The meter only ever *lowers* a score for unearned hype. Being popular never raises a product's score, and buzz can never get a product past your tolerance gate. Implementation: `hype_info()` and `substance()` in [`api/services/trust_engine.py`](api/services/trust_engine.py), and `HypeMeter` in [`frontend/src/components/HonestMatchCard.tsx`](frontend/src/components/HonestMatchCard.tsx).
+
 ## How we use the YouCam API
 
 Everything starts from **YouCam AI Skin Analysis** (S2S API v2), called server-side in [api/services/youcam_client.py](api/services/youcam_client.py):
