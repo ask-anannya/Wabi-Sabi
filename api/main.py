@@ -1,5 +1,15 @@
+import os
+import sys
+
+# The whole codebase uses flat imports (`from routers import ...`, `from
+# services import ...`) that assume api/ itself is on sys.path — true when
+# run via Docker (WORKDIR=/app=api/, uvicorn's CWD puts it there
+# automatically) but not guaranteed by every runtime that might import this
+# module directly (e.g. Vercel's Python runtime does not add it).
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 from fastapi import FastAPI, Request
-from routers import auth, health, llm, scan, tts
+from routers import auth, health, llm, matches, profile, scan, tts
 from utils.exception_handler import ExceptionBase 
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -37,6 +47,8 @@ app.include_router(llm.router, prefix="/llm")
 app.include_router(scan.router)
 app.include_router(auth.router)
 app.include_router(tts.router)
+app.include_router(profile.router)
+app.include_router(matches.router)
 app.include_router(health.router, prefix="/health")
 app.include_router(datadog_incident.router, prefix="/webhooks/datadog")
 
