@@ -5,7 +5,11 @@
 </p>
 
 <p align="center">
-  <em>Instead of an AI that just sounds confident, Wabi-Sabi measures your skin,<br/>checks every piece of advice against those measurements, and tells you exactly how sure it is — out loud.</em>
+  <em>What worked for someone else isn't evidence it'll work for you. Wabi-Sabi measures your skin with YouCam,<br/>remembers what your skin can tolerate, and only recommends products that actually help you, at an honest price.</em>
+</p>
+
+<p align="center">
+  <a href="https://frontend-two-blush-t4kahgjhky.vercel.app"><strong>Live demo</strong></a>
 </p>
 
 <p align="center">
@@ -17,9 +21,10 @@
 </p>
 
 <p align="center">
-  <a href="#the-problem">The Problem</a> ·
-  <a href="#how-it-works">How It Works</a> ·
   <a href="#features">Features</a> ·
+  <a href="#how-we-use-the-youcam-api">YouCam API</a> ·
+  <a href="#the-buzz-meter-hype-gap">Buzz meter</a> ·
+  <a href="#how-it-works">How It Works</a> ·
   <a href="#tech-stack">Tech Stack</a> ·
   <a href="#the-grounding-engine">Grounding Engine</a> ·
   <a href="#quick-start">Quick Start</a> ·
@@ -57,9 +62,9 @@ flowchart TB
 | **Tolerance** (hard gate) | Your ladder, from the quiz, check-ins and rescans | "You've reacted to this strength before, so it's off your list." |
 | **Value** | Catalog price per ml vs same job, same strength | "Overpriced: $6.07/ml, 4.7× typical. Maelove Glow Maker does the same at $1.07/ml." |
 | **Hype gap** | Editorial buzz tier (`api/data/brands.json`, labelled editorial in the UI) vs substance (evidence + value) | "La Mer is a viral-buzz brand, but this product's evidence and value score only 17/100." |
-| **People like you?** | This app's own check-ins, from users with the same skin type and the same experience with that active | "2 of 3 people with oily skin, new to vitamin C, reported redness or peeling on this." |
+| **People like you?** | This app's own check-ins, from users with the same skin type and the same experience with that active | "2 of 3 people with oily skin who are new to vitamin C reported redness or peeling on this." |
 | **Your style** | Style tags (budget, derm, clean, k-beauty, luxury, pharmacy) | A tiebreaker between equally honest options, never a reason to recommend something weaker. |
-| **Honest dupe / Try this instead** | Catalog + your ladder | "Same job, same strength, 88% less per ml", or, if it's too strong for you, "A version your skin can handle: Retinol 0.5%". |
+| **Honest dupe / Try this instead** | Catalog + your ladder | "Same job (hydration), 99% less per ml: Vanicream Moisturizing Cream", or, if it's too strong for you, "A version your skin can handle: Retinol 0.5%". |
 
 Every reason is assembled from structured facts. No LLM writes claims about products.
 
@@ -152,43 +157,120 @@ See [`GROUNDING.md`](GROUNDING.md) for the full reasoning on why this is groundi
 
 ## Features
 
-### Honest shopping
-- **Honest picks** — products ranked by what your scan says you need, gated by your tolerance, scored on evidence and price per ml
-- **Hype check** — search any product you saw on your feed and get an honest verdict for *your* skin: overpriced? more hype than substance? too strong for you?
-- **Honest dupes and "try this instead"** — the same strength for less, or the strongest version you can actually handle
-- **Tolerance ladders** — per-active strength ladders (retinoids, AHAs, BHAs, vitamin C, benzoyl peroxide, niacinamide, azelaic acid) that learn from your onboarding quiz, check-ins and rescans
-- **People like you** — what other users with your skin type and experience level actually logged, instead of what worked for an influencer
+**Try it live:** https://frontend-two-blush-t4kahgjhky.vercel.app
 
-### Voice-first skin scan
-- Real skin measurements via the YouCam Skin AI API (not simulated) — 11 concerns, plus skin age and an overall skin score
-- Skin type detected from the scan (oiliness, moisture, redness) rather than relying on self-report
-- Every result is spoken via Gemini TTS (with automatic browser-voice fallback) — the primary output is `spoken_script`, not the visual layer
-- YouCam's per-metric annotated masks laid over your own photo, each labelled with its band and score
-- Progress tracking between scans, with a significance threshold so measurement noise is never reported as "improvement"
-- Rescans that catch irritation: worse redness, texture or dryness after starting a new active raises an alert you can confirm
+### At a glance
 
-### The grounding engine
-- **Claim grounding** — a cheap deterministic keyword pass catches absolute/unsupported language for free; anything that survives goes to one LLM judge call that checks each claim against the measured metrics
-- **Directional consistency** — fully deterministic (no LLM): recommending something on the *avoid* list for the measured severity band is a hard failure
-- **Metric ambiguity** — a reading sitting near a band boundary is genuinely uncertain, regardless of how well the advice is worded, and lowers confidence accordingly
-- **Persona-weighted trust score** — the same measured severity yields a lower stated confidence and an earlier dermatologist referral for higher-risk personas (sensitive skin, acne, teen age bucket)
-- **Hard rule**: a failing claim is stripped before it's spoken — never voiced with a low-confidence caveat attached
+| Where | What you do | What you get |
+|---|---|---|
+| **Honest picks → onboarding** | Tell it what burned your skin, what worked, what you react to | A personal tolerance ladder for every active ingredient |
+| **Scan** | Upload a selfie | 11 YouCam skin readings, skin age, skin score, detected skin type, and the masks drawn on your face |
+| **Scan → honest picks** | Nothing, it's automatic | Your top 3 products for *this* reading, within your tolerance, at an honest price |
+| **Honest picks** | Browse | A routine (one pick per job), each with an Honest Score and a "Why?" |
+| **Hype check** | Search any product you saw online | The verdict *for your skin*: fits or not, overpriced or not, hype or substance, plus a cheaper or safer alternative |
+| **Tolerance** | Tap how your skin reacted | Your ladder climbs or caps itself; products that hurt you never come back |
+| **Rescan** | Scan again later | An alert if redness, texture or dryness got worse since you started something new |
+| **Chat / History** | Ask questions, review past scans | A skincare assistant seeded with your scan, and your progress over time |
 
-### Chat handoff
-- A secondary text-chat assistant (the original product surface) for open-ended skincare questions and routine generation
-- One tap ("Talk to Wabi, the skincare assistant!") takes a completed scan straight into a chat, pre-seeded with the full result as context
+---
 
-### Accounts are optional
-- Fully usable anonymously — a local random ID is all that's needed to scan and see history
-- Optional Google Sign-In (real ID-token verification server-side, not just client-side decoding) for history that follows you across devices — no client secret involved, no separate account system beyond that
+### 1. A real skin reading from YouCam
 
-### Scan history
-- Every scan is saved (metrics, trust score, advice — not the annotated images, to keep the store lean) and browsable from the History tab
-- Delete any scan, scoped so one user can never delete another's
+You upload a selfie and YouCam AI Skin Analysis measures **11 concerns**: moisture, wrinkles, redness, dark spots, acne, pores, oiliness, radiance, texture, firmness and eye bags. It also returns a **skin age** and an **overall skin score**.
 
-### Observability
-- Datadog metrics across both the chat and scan paths — request volume, grounding scores, consistency violations, trust-band distribution, YouCam task latency/failures, voice playback events
-- The original chat path's selective-hallucination-evaluation and persona-risk-weighting design is untouched and still running
+- **Each reading becomes a band:** clear, mild, moderate or significant. The bands decide what your skin needs (e.g. "pores: mild" calls for oil control and pore care) and what to avoid (e.g. "redness: moderate" rules out fragranced products).
+- **Your skin type is detected from the scan** (oily, dry, combination, normal or sensitive, from oiliness, moisture and redness), so you don't have to guess. If you set it yourself, your choice wins.
+- **YouCam's analysis masks are laid over your own photo**, each labelled like *"Pore · Mild · 66/100"*, so you can see exactly where each reading comes from.
+- **The result is spoken aloud**, so you can use it with the screen off. Every sentence is checked against the measurements before it's voiced (see [The grounding engine](#the-grounding-engine)).
+
+### 2. Onboarding: your skin's history, not an influencer's
+
+The first visit to **Honest picks** asks a few quick questions:
+- **Ingredients your skin reacts to** (fragrance, essential oils, drying alcohol, lanolin, coconut-derived oils). Any product containing one is a hard no, however good it looks.
+- **Products that burned, stung or peeled your skin.** Search the catalog and pick them. Nothing at that strength is ever suggested again.
+- **Actives you've used happily for a month or more.** These prove what you tolerate, so the app can suggest the *next* careful step.
+- **What you want to work on**, used until your first scan, and your **shopping style** (budget, derm, clean, k-beauty, luxury, pharmacy), used only to break ties.
+
+### 3. Tolerance ladders: one careful step at a time
+
+Every active ingredient has a ladder from gentlest to strongest. For retinoids that's HPR → 0.3% retinol → 0.5% → 1% / retinal 0.1% → strong retinal / adapalene. Similar ladders cover AHAs, BHAs, vitamin C, benzoyl peroxide, niacinamide and azelaic acid.
+
+- **You can only go one rung above what you've proven.** New to an active? You start at the bottom rung, or one rung up for gentler actives like vitamin C, BHA and niacinamide (e.g. L-ascorbic acid up to 10%).
+- **A rung that irritated you becomes a hard cap.** Nothing at or above it is recommended again.
+- **The brand doesn't say how strong it is?** Then the app treats it as strong. Hiding the number isn't rewarded.
+- **The Tolerance screen** shows every ladder, colour-coded with text labels (proven, safe next step, locked, irritated you), so it doesn't rely on colour alone.
+
+### 4. Check-ins and rescans: it keeps learning
+
+- **"I'm using this"** on any pick starts tracking it.
+- **Check-ins** have four buttons: *All good, Tingling, Redness, Peeling.*
+  - **Redness or peeling** caps that strength immediately and stops tracking the product.
+  - **Tingling** gets practical advice (go to 2-3 nights a week).
+  - **28 days of "All good"** proves the rung and unlocks the next one.
+- **Rescans catch what you might miss.** If redness, texture or dryness gets measurably worse (beyond a noise threshold) after you started a new active, the app asks: *"Your redness reading got worse since you started The Ordinary Retinol 0.5%. Was it irritating your skin?"* You confirm or dismiss it; the scan alone never changes your ladder.
+
+### 5. Honest picks and the Honest Score
+
+Your picks are a **routine, not a list of six retinols**: the best product for each job your skin needs (sun protection, cleansing, hydration, a retinoid…). Every card shows:
+- **An Honest Score (0–100)**, which weighs what your skin needs (40%), substance, meaning evidence plus value (30%), how comfortably it fits your tolerance (20%) and your style (10%). Unearned hype subtracts from it.
+- **Chips:** *Your skin needs this · Fits your tolerance · Great value / Fair price / Overpriced*.
+- **A "Why?" panel** listing every reason with its source: *YouCam scan, You, Ingredients & price, Editorial buzz rating* or *People like you*. Nothing is a black box.
+- **"I'm using this"** to start tracking it.
+
+**Honest picks never include a product the app itself flags as overpriced or as more hype than substance.** Those are still easy to look up through Hype check.
+
+### 6. Hype check: is it worth it *for you*?
+
+Saw something on your feed? Search it and get the full honest check, whether or not it's in your picks:
+
+> **Drunk Elephant A-Passioni (1% retinol)** for someone the 1% retinol burned:
+> - *Not for your skin:* "You've reacted to this strength before, so it's off your list."
+> - *Overpriced:* "$2.47/ml, 2.5× the typical price for this job."
+> - *Formula earns it, price doesn't:* the buzz is backed by a proven formula, but you pay a brand premium.
+> - **Try this instead:** "The Ordinary Retinol 0.5% in Squalane", the next safe step on *your* ladder, at $0.26/ml.
+
+### 7. The buzz meter
+
+Every card has a hype meter: **buzz** (how heavily the brand is marketed, an editorial tier) against **substance** (evidence plus value). A big gap reads *"More hype than substance"* and lowers the score; popularity never raises it. Full explanation in [The buzz meter](#the-buzz-meter-hype-gap).
+
+> **La Mer Crème de la Mer**: viral buzz (0.95) against substance 0.17, at $6.67/ml (22.7× the typical price for hydration). *"More hype than substance"*, and an **honest dupe: Vanicream Moisturizing Cream, 99% less per ml.**
+
+### 8. Honest dupes and "try this instead"
+
+- **Honest dupe:** the same job at the same strength, at least as well evidenced, for at most 60% of the price per ml, and only if it fits *your* tolerance.
+- **Try this instead:** when a product is too strong for you, the strongest version of the same job that you *can* handle.
+- **Products are only named when you can use them.** The app never points you to a cheaper product that would also hurt you; in that case it just quotes the cheaper price.
+
+### 9. People like you
+
+Instead of "it worked for her", the app shows what **other Wabi-Sabi users with your skin type and the same experience with that active** actually logged, e.g. *"2 of 3 people with oily skin who are new to vitamin C reported redness or peeling on this."* It needs at least 3 matching reports; until then it says so instead of guessing. Only counts are ever shown, never who reported what.
+
+### 10. Grounded, voice-first advice
+
+- **Gemini writes the scan advice, but it can only use ingredient categories allowed for your measured bands.**
+- **Every claim is checked before it's spoken:**
+  - a keyword pass for absolute or medical language;
+  - a judge call checking each claim against the metrics;
+  - a deterministic consistency check against the "avoid" lists;
+  - an ambiguity score for readings near a band edge.
+- **Claims that fail are removed, not softened.** A trust line says how confident the reading is, from "confident" to "see a dermatologist".
+- **Product claims never come from the LLM.** They're built from the catalog and your data.
+
+### 11. Chat, history and accounts
+
+- **Chat:** one tap hands a finished scan to the skincare assistant, already filled in with your results.
+- **History:** every scan's readings and advice, deletable; the annotated images are never stored.
+- **No account needed:** an anonymous ID works for everything. Optional Google Sign-In (verified server-side) keeps your history across devices.
+- **Works on phones:** icon-only navigation with screen-reader labels, and no sideways scrolling.
+
+### 12. Built to fail safely
+
+- **If the shopping layer fails, the scan still returns** its reading and advice.
+- **The grounding judge retries a dropped connection once.**
+- **Voice falls back** to the browser's own speech.
+- **YouCam has a mock mode** for offline development, built from a real captured response.
+
+See [Resilience & Fallbacks](#resilience--fallbacks).
 
 ---
 
@@ -214,7 +296,9 @@ See [`GROUNDING.md`](GROUNDING.md) for the full reasoning on why this is groundi
 | **Honest Match engine** (`trust_engine.py`) | Deterministic product scoring over a curated catalog (`api/data/`) |
 | **google-auth** | Server-side Google ID token verification |
 | **Datadog** (`datadog`, `ddtrace`) | Metrics, APM tracing |
-| **Docker Compose + Nginx** | Orchestration and reverse proxy |
+| **Docker Compose + Nginx** | Local / self-hosted orchestration and reverse proxy |
+| **Vercel** | Production hosting: FastAPI as a Python serverless function, React as a static build |
+| **pytest** | 61 tests, all runnable without real API keys |
 
 ---
 
