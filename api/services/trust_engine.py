@@ -405,7 +405,9 @@ async def honest_matches(profile: UserProfile, metrics: list[dict] | None, limit
         if need <= 0:
             continue
         match = _evaluate(product, profile, needs, ctx)
-        if match.fits_tolerance:
+        # Honest picks only: never recommend something the engine itself flags as
+        # overpriced or more hype than substance (it stays visible via Hype check).
+        if match.fits_tolerance and not match.value.overpriced and match.hype.label != "hyped":
             evaluated.append(match)
 
     # One pick per need category first (a routine, not six retinols), then fill by score.

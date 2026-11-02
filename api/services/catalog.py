@@ -40,8 +40,12 @@ def rungs(product: Product) -> dict[str, int]:
 
 
 def value_group(product: Product) -> str:
-    # Active products compete with the same active; everything else with its category.
-    return f"active:{product.primary_family}" if product.primary_family else f"category:{product.category}"
+    # Active products compete with the same active; everything else with products
+    # doing the same main job (e.g. "hydrating"), not the same format. A one-off
+    # format like an "essence" would otherwise only be compared with itself.
+    if product.primary_family:
+        return f"active:{product.primary_family}"
+    return f"job:{product.categories[0]}" if product.categories else f"category:{product.category}"
 
 
 @lru_cache(maxsize=1)

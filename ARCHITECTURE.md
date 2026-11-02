@@ -262,7 +262,7 @@ flowchart TB
 |---|---|---|
 | Need | YouCam bands → `ADVICE_BANDS` → product `categories` | Baseline needs (sunscreen, gentle cleansing, hydration) at low weight, so basics show up before a first scan |
 | Tolerance | `tolerance.fits()` | **Hard gate.** No other signal can push a product past it |
-| Value | `catalog.value_group()` medians | Active products compete with the same active; others with their category. The "Overpriced" reason only *names* an equivalent the user can use; otherwise it quotes the price alone |
+| Value | `catalog.value_group()` medians | Active products compete with the same active; everything else with products doing the same main job (e.g. hydration), not the same format. Honest picks never include a product the engine flags as overpriced or hyped. The "Overpriced" reason only *names* an equivalent the user can use; otherwise it quotes the price alone |
 | Hype gap | `brands.json` buzz tier | Editorial judgement, labelled "editorial" in the UI |
 | People like you | `profile_store.cohort_reports()` | Other users with the same skin type and the same experience (new vs experienced) with the product's active; needs ≥ 3 reports, otherwise says so |
 | Style | `brands.json` style tags ∩ `style_prefs` | Jaccard similarity; a 0.10-weight tiebreaker only |

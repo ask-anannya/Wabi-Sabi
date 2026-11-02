@@ -125,3 +125,11 @@ def test_overpriced_never_names_a_product_that_burned_the_user():
     match = _run(trust_engine.honest_check(catalog.get("de-a-passioni"), profile, WRINKLES))["match"]
     overpriced = next(r for r in match.reasons if r.label == "Overpriced")
     assert "Retinol 1% in Squalane" not in overpriced.text
+
+
+def test_honest_picks_exclude_overpriced_and_hyped_products():
+    result = _run(trust_engine.honest_matches(UserProfile(user_id="u"), None, limit=12))
+    assert result["matches"]
+    for m in result["matches"]:
+        assert not m.value.overpriced
+        assert m.hype.label != "hyped"

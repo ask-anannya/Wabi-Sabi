@@ -1,0 +1,14 @@
+# Backend-only deploy (vercel.json routes everything to api/main.py).
+# Never upload local secrets or the separately deployed frontend.
+env/
+**/.env*
+frontend/
+frontend-build/
+nginx/
+datadog-configurations/
+scripts/
+tests/
+**/*.db
+**/__pycache__/
+.pytest_cache/
+*.md

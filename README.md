@@ -89,7 +89,7 @@ Hype meter                                   More hype than substance
 | −0.25 to +0.25 | **Buzz is earned** | Popularity roughly matches what you get. If it's still overpriced, it reads **"Formula earns it, price doesn't"**. |
 | < −0.25 | **Under the radar** | Better than its buzz suggests, typically a niche brand with a proven active at a fair price. |
 
-Example: **La Mer Crème de la Mer** is a viral-buzz brand (0.95), but weak evidence for its key ingredient and $6.67/ml (23.5× the typical moisturizer) give it a substance of 0.17. The card reads *"La Mer is a viral-buzz brand, but this product's evidence and value score only 17/100"*, and it offers an honest dupe.
+Example: **La Mer Crème de la Mer** is a viral-buzz brand (0.95), but weak evidence for its key ingredient and $6.67/ml (22.7× the typical price for hydration) give it a substance of 0.17. The card reads *"La Mer is a viral-buzz brand, but this product's evidence and value score only 17/100"*, and it offers an honest dupe.
 
 The meter only ever *lowers* a score for unearned hype. Being popular never raises a product's score, and buzz can never get a product past your tolerance gate. Implementation: `hype_info()` and `substance()` in [`api/services/trust_engine.py`](api/services/trust_engine.py), and `HypeMeter` in [`frontend/src/components/HonestMatchCard.tsx`](frontend/src/components/HonestMatchCard.tsx).
 
